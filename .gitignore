@@ -1,0 +1,5 @@
+Deroute/bin
+Deroute/obj
+Deroute/.vs
+*.iobj
+*.suo
