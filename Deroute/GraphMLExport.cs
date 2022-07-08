@@ -268,6 +268,7 @@ namespace DerouteSharp
         /// <param name="wire">Source wire</param>
         /// <param name="entities">Collection of source entities (all entities)</param>
         /// <param name="tier">Recursion depth</param>
+        /// <param name="vias_intersections">Vias сrossing сounter</param>
         private static void TraverseWire (List<FutureEdge> edgesAll, FutureEdge edge, Entity wire, List<Entity> entities, int tier = 1, int vias_intersections = 0)
         {
             float maxDist = traverseLambdaDelta;
@@ -291,6 +292,8 @@ namespace DerouteSharp
                         continue;
                 }
 
+                // If the number of intersections of segments with vias >= 2 - interrupt the process (terminate the segment).
+
                 if (entity.IsVias() && IsViasInWire(entity, wire, maxDist))
                 {
                     vias_intersections++;
@@ -300,6 +303,8 @@ namespace DerouteSharp
                     }
                 }
 
+                // Continue the segment only if there is no vias at the intersection
+
                 else if (entity.IsWire() && !WireExistsInFutureEdges(edgesAll, entity))
                 {
                     PointF pointStart = new PointF(entity.LambdaX, entity.LambdaY);
@@ -308,7 +313,7 @@ namespace DerouteSharp
                     dist = (float)Math.Sqrt(Math.Pow(entity.LambdaX - wire.LambdaX, 2) +
                                              Math.Pow(entity.LambdaY - wire.LambdaY, 2));
 
-                    if (dist < maxDist && !edge.segments.Contains(entity))
+                    if (dist < maxDist && !edge.segments.Contains(entity) && !ViasFoundNear(wire.LambdaX, wire.LambdaY, entities))
                     {
                         TraverseWire(edgesAll, edge, entity, entities, tier+1, vias_intersections);
                         continue;
@@ -317,7 +322,7 @@ namespace DerouteSharp
                     dist = (float)Math.Sqrt(Math.Pow(entity.LambdaX - wire.LambdaEndX, 2) +
                                              Math.Pow(entity.LambdaY - wire.LambdaEndY, 2));
 
-                    if (dist < maxDist && !edge.segments.Contains(entity))
+                    if (dist < maxDist && !edge.segments.Contains(entity) && !ViasFoundNear(wire.LambdaEndX, wire.LambdaEndY, entities))
                     {
                         TraverseWire(edgesAll, edge, entity, entities, tier+1, vias_intersections);
                         continue;
@@ -326,7 +331,7 @@ namespace DerouteSharp
                     dist = (float)Math.Sqrt(Math.Pow(entity.LambdaEndX - wire.LambdaEndX, 2) +
                                              Math.Pow(entity.LambdaEndY - wire.LambdaEndY, 2));
 
-                    if (dist < maxDist && !edge.segments.Contains(entity))
+                    if (dist < maxDist && !edge.segments.Contains(entity) && !ViasFoundNear(wire.LambdaEndX, wire.LambdaEndY, entities))
                     {
                         TraverseWire(edgesAll, edge, entity, entities, tier+1, vias_intersections);
                         continue;
@@ -335,7 +340,7 @@ namespace DerouteSharp
                     dist = (float)Math.Sqrt(Math.Pow(entity.LambdaEndX - wire.LambdaX, 2) +
                                              Math.Pow(entity.LambdaEndY - wire.LambdaY, 2));
 
-                    if (dist < maxDist && !edge.segments.Contains(entity))
+                    if (dist < maxDist && !edge.segments.Contains(entity) && !ViasFoundNear(wire.LambdaX, wire.LambdaY, entities))
                     {
                         TraverseWire(edgesAll, edge, entity, entities, tier+1, vias_intersections);
                         continue;
@@ -345,6 +350,23 @@ namespace DerouteSharp
 			}
 
         }
+
+        private static bool ViasFoundNear(float x, float y, List<Entity> entities)
+		{
+            float maxDist = traverseLambdaDelta;
+
+            foreach (Entity entity in entities)
+			{
+                if (entity.IsVias())
+                {
+                    float dist = (float)Math.Sqrt(Math.Pow(entity.LambdaX - x, 2) + Math.Pow(entity.LambdaY - y, 2));
+                    if (dist < maxDist)
+                        return true;
+                }
+            }
+
+            return false;
+		}
 
         private static bool IsViasInWire(Entity vias, Entity wire, float delta)
         {
