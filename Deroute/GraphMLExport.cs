@@ -10,14 +10,10 @@ using System.Drawing;
 
 /*
 Features of saving entities as Netlist:
-- All vias are saved as nodes of the graph. If there are 2 or more vias with the same name, such vias are counted as single node.
-    This is done in order to "match" entities from different chip or PCB layers where they diverge between the pictures of the layers;
-- Wires are treated as oriented edges of the graph. Several segments of wires are combined into one edge of the graph.
-    The rules for combining segments are similar to the traverse rules used in Deroute. 
-    The name of an edge is by concatenating the names of all the wires included into this edge;
-- If some vias are "inside" a standard cell or unit, then this standard cell/unit is treated as a node of the graph, and edge connections
-    are made to this cell/unit instead of a set of vias. In this case to the old name of the wire is added the name of the vias, 
-    which is now treated as the input/output of a standard cell/unit.
+- All vias are nodes.
+- Connections of wires between vias are edges. A multi-segment wire becomes a single wire.
+- Cells and units - group
+- Cell vias are grouped in the last step
 */
 
 namespace DerouteSharp
@@ -37,11 +33,7 @@ namespace DerouteSharp
         {
             public string name = "";
             public Entity baseVias;
-            public List<Entity> aliases = new List<Entity>();
-            /// <summary>
-            /// true: This node is excluded from the final collection because it is part of the standard cell/unit.
-            /// </summary>
-            public bool skip = false;
+            public int id = 0;
         }
 
         /// <summary>
@@ -53,10 +45,13 @@ namespace DerouteSharp
             public List<Entity> segments = new List<Entity>();
             public FutureNode from;     // can be null (open-begin)
             public FutureNode to;   // can be null (open-end)
+            public int id = 0;
         }
 
-        public static string ExportEntitiesNetlist (List<Entity> entities)
+        public static string ExportEntitiesNetlist (List<Entity> entities, float ViasSize)
         {
+            Console.WriteLine("\nExportEntitiesNetlist");
+
             // FutureNodes + FutureEdges => GraphModel.
 
             List<FutureNode> nodes = new List<FutureNode>();
@@ -64,31 +59,20 @@ namespace DerouteSharp
 
             // STEP 1: Get nodes
 
-            // Get a list of all vias that will become nodes of the graph. If the list already contains a vias with the same name - add an alias to it.
-            // In the future, all wires of the original vias and its aliases will be treated as edges of the same node.
+            // Get a list of all vias that will become nodes of the graph.
+
+            int node_counter = 0;
 
             foreach (Entity ent in entities)
             {
                 if (ent.IsVias())
                 {
-                    bool exists = false;
-
-                    foreach (FutureNode n in nodes)
-                    {
-                        if (n.name == ent.Label && ent.Label != "")
-                        {
-                            n.aliases.Add(ent);
-                            exists = true;
-                        }
-                    }
-
-                    if (!exists)
-                    {
-                        FutureNode node = new FutureNode();
-                        node.baseVias = ent;
-                        node.name = ent.Label;
-                        nodes.Add(node);
-                    }
+                    FutureNode node = new FutureNode();
+                    node.baseVias = ent;
+                    node.name = ent.Label;
+                    node.id = node_counter;
+                    nodes.Add(node);
+                    node_counter++;
                 }
             }
 
@@ -96,12 +80,14 @@ namespace DerouteSharp
 
             foreach (FutureNode node in nodes)
             {
-                Console.WriteLine("node: `" + node.name + "`, pos: " + node.baseVias.LambdaX + ", " + node.baseVias.LambdaY);
+                Console.WriteLine("node " + node.id.ToString() + ": `" + node.name + "`, pos: " + node.baseVias.LambdaX + ", " + node.baseVias.LambdaY);
             }
 
             // STEP 2: Get edges
 
             // Get a set of graph edges from wires (no connections yet)
+
+            int edge_counter = 0;
 
             foreach (Entity ent in entities)
             {
@@ -110,8 +96,19 @@ namespace DerouteSharp
                     FutureEdge edge = new FutureEdge();
                     TraverseWire (edges, edge, ent, entities);
                     edge.name = edge.name.Trim();
+                    edge.id = edge_counter;
                     edges.Add(edge);
+                    edge_counter++;
                 }
+            }
+
+            // DEBUG: Output all edges before connections.
+
+            Console.WriteLine("BEFORE CONNECT:");
+
+            foreach (FutureEdge edge in edges)
+            {
+                Console.WriteLine("edge " + edge.id.ToString() + ": `" + edge.name + "`, segments: " + edge.segments.Count.ToString());
             }
 
             // Connect the ends of the edges with the corresponding vias, which will become the nodes of the graph (establish connections)
@@ -158,32 +155,32 @@ namespace DerouteSharp
 
             // DEBUG: Output all edges for debugging.
 
+            Console.WriteLine("AFTER CONNECT:");
+
             foreach (FutureEdge edge in edges)
             {
                 if (edge.from == null || edge.to == null)
                 {
                     if (edge.from == null && edge.to != null)
                     {
-                        Console.WriteLine("Open-Begin edge: `" + edge.name + "`, from: NONE, to: " + edge.to.name);
+                        Console.WriteLine("Open-Begin edge " + edge.id.ToString() + ": `" + edge.name + "`, from: NONE, to: " + edge.to.name);
                     }
                     else if (edge.from != null && edge.to == null)
                     {
-                        Console.WriteLine("Open-End edge: `" + edge.name + "`, from: " + edge.from.name + ", to: NONE");
+                        Console.WriteLine("Open-End edge " + edge.id.ToString() + ": `" + edge.name + "`, from: " + edge.from.name + ", to: NONE");
                     }
                     else
                     {
-                        Console.WriteLine("Open edge: `" + edge.name + "`");
+                        Console.WriteLine("Open edge " + edge.id.ToString() + ": `" + edge.name + "`");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("edge: `" + edge.name + "`, from: " + edge.from.name + ", to: " + edge.to.name);
+                    Console.WriteLine("edge " + edge.id.ToString() + ": `" + edge.name + "`, from: " + edge.from.name + ", to: " + edge.to.name);
                 }
             }
 
-            // STEP 3: Joint cells
-
-            // If vias are inside a standard cell/unit, merge them all as a new node of the graph, and modify the name of connected edges by adding the node name.
+            // STEP 3: Group cells
 
             // TBD.
 
@@ -192,15 +189,14 @@ namespace DerouteSharp
             GraphModel netlist = new GraphModel();
 
             // Prepare the final model: get node and edges of the final graph from Future collections.
-            // Skip nodes marked as `skip`; Ignore open edges (without assigned start/end).
+            // Ignore open edges (without assigned start/end).
+
+            float geom_scale_factor = 3.0f;
 
             foreach (FutureNode node in nodes)
             {
-                if (node.skip)
-                    continue;
-
                 GraphNode n = new GraphNode();
-                n.id = node.name;
+                n.id = "n" + node.id.ToString();
 
                 // yEd specific
 
@@ -210,6 +206,11 @@ namespace DerouteSharp
                 d6.node = new YedShapeNode();
                 d6.node.label = new YedNodeLabel();
                 d6.node.label.text = node.name;
+                d6.node.geometry = new YedNodeGeometry();
+                d6.node.geometry.x = node.baseVias.LambdaX * geom_scale_factor;
+                d6.node.geometry.y = node.baseVias.LambdaY * geom_scale_factor;
+                d6.node.geometry.width = ViasSize * 2;
+                d6.node.geometry.height = ViasSize * 2;
 
                 n.data.Add(d6);
 
@@ -222,9 +223,9 @@ namespace DerouteSharp
                     continue;
 
                 GraphEdge e = new GraphEdge();
-                e.id = edge.name;
-                e.source = edge.from.name;
-                e.target = edge.to.name;
+                e.id = "e" + edge.id.ToString();
+                e.source = "n" + edge.from.id.ToString();
+                e.target = "n" + edge.to.id.ToString();
 
                 // yEd specific
 
@@ -267,7 +268,7 @@ namespace DerouteSharp
         /// <param name="wire">Source wire</param>
         /// <param name="entities">Collection of source entities (all entities)</param>
         /// <param name="tier">Recursion depth</param>
-        private static void TraverseWire (List<FutureEdge> edgesAll, FutureEdge edge, Entity wire, List<Entity> entities, int tier = 1)
+        private static void TraverseWire (List<FutureEdge> edgesAll, FutureEdge edge, Entity wire, List<Entity> entities, int tier = 1, int vias_intersections = 0)
         {
             float maxDist = traverseLambdaDelta;
             float dist;
@@ -290,9 +291,13 @@ namespace DerouteSharp
                         continue;
                 }
 
-                if (entity.IsVias() && IsViasInWire(entity, wire, maxDist) && tier != 1)
+                if (entity.IsVias() && IsViasInWire(entity, wire, maxDist))
                 {
-                    break;
+                    vias_intersections++;
+                    if (vias_intersections >= 2)
+                    {
+                        break;
+                    }
                 }
 
                 else if (entity.IsWire() && !WireExistsInFutureEdges(edgesAll, entity))
@@ -305,7 +310,7 @@ namespace DerouteSharp
 
                     if (dist < maxDist && !edge.segments.Contains(entity))
                     {
-                        TraverseWire(edgesAll, edge, entity, entities, tier+1);
+                        TraverseWire(edgesAll, edge, entity, entities, tier+1, vias_intersections);
                         continue;
                     }
 
@@ -314,7 +319,7 @@ namespace DerouteSharp
 
                     if (dist < maxDist && !edge.segments.Contains(entity))
                     {
-                        TraverseWire(edgesAll, edge, entity, entities, tier+1);
+                        TraverseWire(edgesAll, edge, entity, entities, tier+1, vias_intersections);
                         continue;
                     }
 
@@ -323,7 +328,7 @@ namespace DerouteSharp
 
                     if (dist < maxDist && !edge.segments.Contains(entity))
                     {
-                        TraverseWire(edgesAll, edge, entity, entities, tier+1);
+                        TraverseWire(edgesAll, edge, entity, entities, tier+1, vias_intersections);
                         continue;
                     }
 
@@ -332,11 +337,12 @@ namespace DerouteSharp
 
                     if (dist < maxDist && !edge.segments.Contains(entity))
                     {
-                        TraverseWire(edgesAll, edge, entity, entities, tier+1);
+                        TraverseWire(edgesAll, edge, entity, entities, tier+1, vias_intersections);
                         continue;
                     }
                 }
-            }
+
+			}
 
         }
 
@@ -397,17 +403,6 @@ namespace DerouteSharp
                 if (dist < maxDist)
                 {
                     return node;
-                }
-
-                foreach (Entity entity in node.aliases)
-                {
-                    dist = (float)Math.Sqrt(Math.Pow(entity.LambdaX - point.X, 2) +
-                                             Math.Pow(entity.LambdaY - point.Y, 2));
-
-                    if (dist < maxDist)
-                    {
-                        return node;
-                    }
                 }
             }
 
@@ -549,6 +544,8 @@ namespace DerouteSharp
     {
         [XmlElement(ElementName = "NodeLabel", Namespace = "http://www.yworks.com/xml/graphml")]
         public YedNodeLabel label;
+        [XmlElement(ElementName = "Geometry", Namespace = "http://www.yworks.com/xml/graphml")]
+        public YedNodeGeometry geometry;
     }
 
     public class YedNodeLabel
@@ -566,6 +563,14 @@ namespace DerouteSharp
         [XmlAttribute] public float height = 18;
         [XmlText]
         public string text;
+	}
+
+	public class YedNodeGeometry
+	{
+        [XmlAttribute] public float x = 0;
+        [XmlAttribute] public float y = 0;
+        [XmlAttribute] public float width = 15.0f;
+        [XmlAttribute] public float height = 15.0f;
     }
 
     public class YedPolyLineEdge

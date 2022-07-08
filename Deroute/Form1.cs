@@ -209,7 +209,7 @@ namespace DerouteSharp
 
             if (result == DialogResult.OK)
             {
-                string text = GraphMLExport.ExportEntitiesNetlist(entityBox1.GetEntities());
+                string text = GraphMLExport.ExportEntitiesNetlist(entityBox1.GetEntities(), entityBox1.ViasBaseSize);
 
                 File.WriteAllText(saveFileDialog3.FileName, text);
             }
