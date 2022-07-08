@@ -455,6 +455,37 @@ namespace System.Windows.Forms
             }
         }
 
+        /// <summary>
+        /// Simply add an entity of the `Layer` type.
+        /// </summary>
+        public void AddLayer(bool update = true)
+		{
+            Entity item = new Entity();
+
+            item.Type = EntityType.Layer;
+            item.Label = "Layer";
+            item.LabelAlignment = TextAlignment.GlobalSettings;
+            item.Priority = 0;
+            item.Selected = false;
+            item.LambdaX = 0;
+            item.LambdaY = 0;
+            item.FontOverride = null;
+            item.SetParentControl(this);
+            item.parent = insertionNode;
+
+            while (DrawInProgress) ;
+
+            insertionNode.Children.Add(item);
+
+            if (update)
+            {
+                SortEntities();
+                Invalidate();
+            }
+
+            OnEntityCountChanged?.Invoke(this, EventArgs.Empty);
+            OnEntityAdd?.Invoke(this, item, EventArgs.Empty);
+        }
 
     }
 }

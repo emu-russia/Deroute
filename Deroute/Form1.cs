@@ -209,7 +209,7 @@ namespace DerouteSharp
 
             if (result == DialogResult.OK)
             {
-                string text = GraphMLExport.ExportEntitiesNetlist(entityBox1.GetEntities());
+                string text = GraphMLExport.ExportEntitiesNetlist(entityBox1.GetEntities(), entityBox1.ViasBaseSize);
 
                 File.WriteAllText(saveFileDialog3.FileName, text);
             }
@@ -1177,6 +1177,22 @@ namespace DerouteSharp
             form.Show();
         }
 
+        /// <summary>
+        /// Places vias on the ends of the highlighted wires.
+        /// </summary>
+        private void addViasAtTheWireEndsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var wires = entityBox1.GetSelectedWires();
+            foreach (var wire in wires)
+			{
+                var start = entityBox1.LambdaToScreen(wire.LambdaX, wire.LambdaY);
+                var end = entityBox1.LambdaToScreen(wire.LambdaEndX, wire.LambdaEndY);
+
+                entityBox1.AddVias(EntityType.ViasConnect, start.X, start.Y, Color.Black);
+                entityBox1.AddVias(EntityType.ViasConnect, end.X, end.Y, Color.Black);
+            }
+            entityBox1.Invalidate();
+        }
 
         #endregion
 
@@ -1392,13 +1408,18 @@ namespace DerouteSharp
 
 
 
-        #endregion "Machine Learning"
+
+		#endregion "Machine Learning"
+
+		private void addLayerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+            entityBox1.AddLayer();
+		}
+
+	}       // Form1
 
 
-    }       // Form1
-
-
-    internal class TimeSpentStats
+	internal class TimeSpentStats
     {
         public Font normalFont;
         public Font penaltyFont;
