@@ -13,161 +13,161 @@ using System.Linq;
 
 namespace System.Windows.Forms
 {
-    public partial class EntityBox : Control
-    {
+	public partial class EntityBox : Control
+	{
 
-        public void RemoveSelection()
-        {
-            bool UpdateRequired = false;
+		public void RemoveSelection()
+		{
+			bool UpdateRequired = false;
 
-            foreach (Entity entity in GetEntities())
-            {
-                if (entity.Selected == true)
-                {
-                    entity.Selected = false;
-                    UpdateRequired = true;
-                }
-            }
+			foreach (Entity entity in GetEntities())
+			{
+				if (entity.Selected == true)
+				{
+					entity.Selected = false;
+					UpdateRequired = true;
+				}
+			}
 
-            if (UpdateRequired == true)
-                Invalidate();
+			if (UpdateRequired == true)
+				Invalidate();
 
-            if (entityGrid != null)
-                entityGrid.SelectedObject = null;
-        }
+			if (entityGrid != null)
+				entityGrid.SelectedObject = null;
+		}
 
-        public void AssociateSelectionPropertyGrid(PropertyGrid propertyGrid)
-        {
-            entityGrid = propertyGrid;
-        }
+		public void AssociateSelectionPropertyGrid(PropertyGrid propertyGrid)
+		{
+			entityGrid = propertyGrid;
+		}
 
-        /// <summary>
-        /// Get selected and visible controls.
-        /// With the introduction of the hierarchy you now also need to take into account that all parents above are visible.
-        /// </summary>
-        /// <returns>List of visible entities</returns>
-        public List<Entity> GetSelected()
-        {
-            List<Entity> _selected = new List<Entity>();
-            List<Entity> _entities = GetEntities();
+		/// <summary>
+		/// Get selected and visible controls.
+		/// With the introduction of the hierarchy you now also need to take into account that all parents above are visible.
+		/// </summary>
+		/// <returns>List of visible entities</returns>
+		public List<Entity> GetSelected()
+		{
+			List<Entity> _selected = new List<Entity>();
+			List<Entity> _entities = GetEntities();
 
-            foreach (Entity entity in _entities)
-            {
-                if (entity.Selected && entity.Visible)
-                {
-                    // Check that all parents are visible
+			foreach (Entity entity in _entities)
+			{
+				if (entity.Selected && entity.Visible)
+				{
+					// Check that all parents are visible
 
-                    Entity parent = entity.parent;
-                    bool parentsVisible = true;
+					Entity parent = entity.parent;
+					bool parentsVisible = true;
 
-                    while (parent != null)
-                    {
-                        if (!parent.Visible)
-                        {
-                            parentsVisible = false;
-                            break;
-                        }
+					while (parent != null)
+					{
+						if (!parent.Visible)
+						{
+							parentsVisible = false;
+							break;
+						}
 
-                        parent = parent.parent;
-                    }
+						parent = parent.parent;
+					}
 
-                    if (parentsVisible)
-                        _selected.Add(entity);
-                }
-            }
+					if (parentsVisible)
+						_selected.Add(entity);
+				}
+			}
 
-            return _selected;
-        }
+			return _selected;
+		}
 
-        public List<Entity> GetSelectedVias()
-        {
-            List<Entity> _selected = new List<Entity>();
-            List<Entity> _entities = GetEntities();
+		public List<Entity> GetSelectedVias()
+		{
+			List<Entity> _selected = new List<Entity>();
+			List<Entity> _entities = GetEntities();
 
-            foreach (Entity entity in _entities)
-            {
-                if (entity.IsVias() && entity.Selected)
-                {
-                    _selected.Add(entity);
-                }
-            }
+			foreach (Entity entity in _entities)
+			{
+				if (entity.IsVias() && entity.Selected)
+				{
+					_selected.Add(entity);
+				}
+			}
 
-            return _selected;
-        }
+			return _selected;
+		}
 
-        public List<Entity> GetSelectedWires()
-        {
-            List<Entity> _selected = new List<Entity>();
-            List<Entity> _entities = GetEntities();
+		public List<Entity> GetSelectedWires()
+		{
+			List<Entity> _selected = new List<Entity>();
+			List<Entity> _entities = GetEntities();
 
-            foreach (Entity entity in _entities)
-            {
-                if (entity.IsWire() && entity.Selected)
-                {
-                    _selected.Add(entity);
-                }
-            }
+			foreach (Entity entity in _entities)
+			{
+				if (entity.IsWire() && entity.Selected)
+				{
+					_selected.Add(entity);
+				}
+			}
 
-            return _selected;
-        }
+			return _selected;
+		}
 
-        public Entity GetLastSelected()
-        {
-            List<Entity> _selected = GetSelected();
+		public Entity GetLastSelected()
+		{
+			List<Entity> _selected = GetSelected();
 
-            if (_selected.Count == 0)
-            {
-                return null;
-            }
+			if (_selected.Count == 0)
+			{
+				return null;
+			}
 
-            Entity lastSelected =
-                _selected.Where(m => m.SelectTimeStamp == _selected.Max(p => p.SelectTimeStamp)).FirstOrDefault();
+			Entity lastSelected =
+				_selected.Where(m => m.SelectTimeStamp == _selected.Max(p => p.SelectTimeStamp)).FirstOrDefault();
 
-            return lastSelected;
-        }
+			return lastSelected;
+		}
 
-        public void SelectEntity(Entity entity)
-        {
-            entity.Selected = true;
+		public void SelectEntity(Entity entity)
+		{
+			entity.Selected = true;
 
-            if (OnEntitySelect != null)
-                OnEntitySelect(this, entity, EventArgs.Empty);
-        }
+			if (OnEntitySelect != null)
+				OnEntitySelect(this, entity, EventArgs.Empty);
+		}
 
-        //
-        // Select All
-        //
+		//
+		// Select All
+		//
 
-        public void SelectAll(EntitySelection kind = EntitySelection.All)
-        {
-            foreach (Entity entity in GetEntities())
-            {
-                switch (kind)
-                {
-                    case EntitySelection.Vias:
-                        if (entity.IsVias())
-                            SelectEntity(entity);
-                        break;
+		public void SelectAll(EntitySelection kind = EntitySelection.All)
+		{
+			foreach (Entity entity in GetEntities())
+			{
+				switch (kind)
+				{
+					case EntitySelection.Vias:
+						if (entity.IsVias())
+							SelectEntity(entity);
+						break;
 
-                    case EntitySelection.Wire:
-                        if (entity.IsWire())
-                            SelectEntity(entity);
-                        break;
+					case EntitySelection.Wire:
+						if (entity.IsWire())
+							SelectEntity(entity);
+						break;
 
-                    case EntitySelection.Cell:
-                        if (entity.IsCell())
-                            SelectEntity(entity);
-                        break;
+					case EntitySelection.Cell:
+						if (entity.IsCell())
+							SelectEntity(entity);
+						break;
 
-                    default:
-                    case EntitySelection.All:
-                        SelectEntity(entity);
-                        break;
-                }
-            }
+					default:
+					case EntitySelection.All:
+						SelectEntity(entity);
+						break;
+				}
+			}
 
-            Invalidate();
-        }
+			Invalidate();
+		}
 
-    }
+	}
 }

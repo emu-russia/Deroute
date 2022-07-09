@@ -13,26 +13,26 @@ using System.Linq;
 
 namespace System.Windows.Forms
 {
-    public partial class EntityBox : Control
-    {
-        public List<Entity> SortEntities()
-        {
-            List<Entity> _entities = GetEntities();
+	public partial class EntityBox : Control
+	{
+		public List<Entity> SortEntities()
+		{
+			List<Entity> _entities = GetEntities();
 
-            if (AutoPriority == true)
-                _entities = _entities.OrderBy(o => o.Priority).ToList();
+			if (AutoPriority == true)
+				_entities = _entities.OrderBy(o => o.Priority).ToList();
 
-            return _entities;
-        }
+			return _entities;
+		}
 
-        public List<Entity> SortEntitiesReverse()
-        {
-            List<Entity> _entities = GetEntities();
+		public List<Entity> SortEntitiesReverse()
+		{
+			List<Entity> _entities = GetEntities();
 
-            List<Entity> reversed = _entities.OrderByDescending(o => o.Priority).ToList();
+			List<Entity> reversed = _entities.OrderByDescending(o => o.Priority).ToList();
 
-            return reversed;
-        }
+			return reversed;
+		}
 
-    }
+	}
 }
