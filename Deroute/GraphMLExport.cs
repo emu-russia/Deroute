@@ -493,6 +493,8 @@ namespace DerouteSharp
 		public string id;
 		[XmlElement(ElementName = "data")]
 		public List<YedData> data = new List<YedData>();
+		[XmlElement(IsNullable=false)]
+		public Graph graph;
 	}
 
 	public class GraphEdge
@@ -540,10 +542,34 @@ namespace DerouteSharp
 		public string key;
 		[XmlAttribute(AttributeName = "xml:space")]
 		public string xmlSpace;
-		[XmlElement(ElementName = "ShapeNode", Namespace = "http://www.yworks.com/xml/graphml")]
+		[XmlElement(ElementName = "ShapeNode", Namespace = "http://www.yworks.com/xml/graphml", IsNullable = false)]
 		public YedShapeNode node;
-		[XmlElement(ElementName = "PolyLineEdge", Namespace = "http://www.yworks.com/xml/graphml")]
+		[XmlElement(ElementName = "PolyLineEdge", Namespace = "http://www.yworks.com/xml/graphml", IsNullable = false)]
 		public YedPolyLineEdge edge;
+		[XmlElement(ElementName = "ProxyAutoBoundsNode", Namespace = "http://www.yworks.com/xml/graphml", IsNullable = false)]
+		public YedProxyAutoBoundsNode group_node;
+	}
+
+	public class YedProxyAutoBoundsNode
+	{
+		[XmlElement(ElementName = "Realizers", Namespace = "http://www.yworks.com/xml/graphml")]
+		public YedRealizers realizers;
+	}
+
+	public class YedRealizers
+	{
+		[XmlAttribute]
+		public int active = 0;
+		[XmlElement(ElementName = "GroupNode", Namespace = "http://www.yworks.com/xml/graphml")]
+		public YedGroupNode group;
+	}
+
+	public class YedGroupNode
+	{
+		[XmlElement(ElementName = "NodeLabel", Namespace = "http://www.yworks.com/xml/graphml")]
+		public YedGroupNodeLabel label;
+		[XmlElement(ElementName = "Geometry", Namespace = "http://www.yworks.com/xml/graphml")]
+		public YedNodeGeometry geometry;
 	}
 
 	public class YedShapeNode
@@ -567,6 +593,27 @@ namespace DerouteSharp
 		[XmlAttribute] public float y = 0;
 		[XmlAttribute] public float width = 13;
 		[XmlAttribute] public float height = 18;
+		[XmlText]
+		public string text;
+	}
+
+	public class YedGroupNodeLabel
+	{
+		[XmlAttribute] public string alignment = "right";
+		[XmlAttribute] public string autoSizePolicy = "node_width";
+		[XmlAttribute] public string backgroundColor = "#EBEBEB";
+		[XmlAttribute] public float borderDistance = 0.0f;
+		[XmlAttribute] public string fontFamily = "Dialog";
+		[XmlAttribute] public int fontSize = 15;
+		[XmlAttribute] public string fontStyle = "plain";
+		[XmlAttribute] public bool hasLineColor = false;
+		[XmlAttribute] public float height = 22.37f;
+		[XmlAttribute] public string modelName = "internal";
+		[XmlAttribute] public string modelPosition = "t";
+		[XmlAttribute] public string textColor = "#000000";
+		[XmlAttribute] public bool visible = true;
+		[XmlAttribute] public float x = 0.0f;
+		[XmlAttribute] public float y = 0.0f;
 		[XmlText]
 		public string text;
 	}
