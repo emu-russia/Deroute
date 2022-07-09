@@ -34,6 +34,7 @@ namespace DerouteSharp
 			public string name = "";
 			public Entity baseVias;
 			public int id = 0;
+			public bool in_group = false;
 		}
 
 		/// <summary>
@@ -48,14 +49,27 @@ namespace DerouteSharp
 			public int id = 0;
 		}
 
+		/// <summary>
+		/// A collection of future nodes that form the group.
+		/// </summary>
+		internal class FutureGroup
+		{
+			public string name = "";
+			public Entity baseEntity;
+			public List<FutureNode> nodes = new List<FutureNode>();
+			public int id = 0;
+		}
+
+
 		public static string ExportEntitiesNetlist (List<Entity> entities, float ViasSize)
 		{
 			Console.WriteLine("\nExportEntitiesNetlist");
 
-			// FutureNodes + FutureEdges => GraphModel.
+			// FutureNodes + FutureEdges + FutureGroups => GraphModel.
 
 			List<FutureNode> nodes = new List<FutureNode>();
 			List<FutureEdge> edges = new List<FutureEdge>();
+			List<FutureGroup> groups = new List<FutureGroup>();
 
 			// STEP 1: Get nodes
 
@@ -182,7 +196,37 @@ namespace DerouteSharp
 
 			// STEP 3: Group cells
 
-			// TBD.
+			int group_counter = 0;
+
+			foreach (Entity ent in entities)
+			{
+				if (ent.IsCell() || ent.IsUnit())
+				{
+					FutureGroup group = new FutureGroup();
+					group.name = ent.Label;
+					group.id = group_counter;
+					group.baseEntity = ent;
+					groups.Add(group);
+					group_counter++;
+				}
+			}
+
+			foreach (FutureNode node in nodes)
+			{
+				if ( !(node.baseVias.Type == EntityType.ViasInput || 
+					node.baseVias.Type == EntityType.ViasOutput ||
+					node.baseVias.Type == EntityType.ViasInout) )
+				{
+					continue;
+				}
+
+				FutureGroup group = GetParentGroup(node, groups);
+				if (group != null)
+				{
+					group.nodes.Add(node);
+					node.in_group = true;
+				}
+			}
 
 			// STEP 4: Output
 
@@ -195,6 +239,9 @@ namespace DerouteSharp
 
 			foreach (FutureNode node in nodes)
 			{
+				if (node.in_group)
+					continue;
+
 				GraphNode n = new GraphNode();
 				n.id = "n" + node.id.ToString();
 
@@ -213,6 +260,57 @@ namespace DerouteSharp
 				d6.node.geometry.height = ViasSize * 2;
 
 				n.data.Add(d6);
+
+				netlist.graph.nodes.Add(n);
+			}
+
+			foreach (FutureGroup group in groups)
+			{
+				GraphNode n = new GraphNode();
+				n.id = "gn" + group.id.ToString();
+
+				n.graph = new Graph();
+				n.graph.id = "g" + group.id.ToString();
+
+				YedData d6 = new YedData();
+
+				d6.key = "d6";
+				d6.group_node = new YedProxyAutoBoundsNode();
+				d6.group_node.realizers = new YedRealizers();
+				d6.group_node.realizers.group = new YedGroupNode();
+				var gnode = d6.group_node.realizers.group;
+				gnode.label = new YedGroupNodeLabel();
+				gnode.label.text = group.name;
+				gnode.geometry = new YedNodeGeometry();
+				gnode.geometry.x = group.baseEntity.LambdaX * geom_scale_factor;
+				gnode.geometry.y = group.baseEntity.LambdaY * geom_scale_factor;
+				gnode.geometry.width = group.baseEntity.LambdaWidth * geom_scale_factor;
+				gnode.geometry.height = group.baseEntity.LambdaHeight * geom_scale_factor;
+
+				n.data.Add(d6);
+
+				foreach (FutureNode node in group.nodes)
+				{
+					GraphNode gn = new GraphNode();
+					gn.id = "n" + node.id.ToString();
+
+					// yEd specific
+
+					YedData nd6 = new YedData();
+
+					nd6.key = "d6";
+					nd6.node = new YedShapeNode();
+					nd6.node.label = new YedNodeLabel();
+					nd6.node.label.text = node.name;
+					nd6.node.geometry = new YedNodeGeometry();
+					nd6.node.geometry.x = node.baseVias.LambdaX * geom_scale_factor;
+					nd6.node.geometry.y = node.baseVias.LambdaY * geom_scale_factor;
+					nd6.node.geometry.width = ViasSize * 2;
+					nd6.node.geometry.height = ViasSize * 2;
+
+					gn.data.Add(nd6);
+					n.graph.nodes.Add(gn);
+				}
 
 				netlist.graph.nodes.Add(n);
 			}
@@ -245,6 +343,25 @@ namespace DerouteSharp
 			XmlDocument doc = SerializeGraphModel(netlist);
 
 			return doc.OuterXml;
+		}
+
+		private static FutureGroup GetParentGroup(FutureNode node, List<FutureGroup> groups)
+		{
+			FutureGroup parent = null;
+			PointF point = new PointF(node.baseVias.LambdaX, node.baseVias.LambdaY);
+
+			foreach (FutureGroup group in groups)
+			{
+				RectangleF rect = new RectangleF(group.baseEntity.LambdaX, group.baseEntity.LambdaY,
+					group.baseEntity.LambdaWidth, group.baseEntity.LambdaHeight);
+				if (rect.Contains(point))
+				{
+					parent = group;
+					break;
+				}
+			}
+
+			return parent;
 		}
 
 		private static bool WireExistsInFutureEdges(List<FutureEdge> edges, Entity wire)
@@ -493,6 +610,8 @@ namespace DerouteSharp
 		public string id;
 		[XmlElement(ElementName = "data")]
 		public List<YedData> data = new List<YedData>();
+		[XmlElement(IsNullable=false)]
+		public Graph graph;
 	}
 
 	public class GraphEdge
@@ -540,10 +659,34 @@ namespace DerouteSharp
 		public string key;
 		[XmlAttribute(AttributeName = "xml:space")]
 		public string xmlSpace;
-		[XmlElement(ElementName = "ShapeNode", Namespace = "http://www.yworks.com/xml/graphml")]
+		[XmlElement(ElementName = "ShapeNode", Namespace = "http://www.yworks.com/xml/graphml", IsNullable = false)]
 		public YedShapeNode node;
-		[XmlElement(ElementName = "PolyLineEdge", Namespace = "http://www.yworks.com/xml/graphml")]
+		[XmlElement(ElementName = "PolyLineEdge", Namespace = "http://www.yworks.com/xml/graphml", IsNullable = false)]
 		public YedPolyLineEdge edge;
+		[XmlElement(ElementName = "ProxyAutoBoundsNode", Namespace = "http://www.yworks.com/xml/graphml", IsNullable = false)]
+		public YedProxyAutoBoundsNode group_node;
+	}
+
+	public class YedProxyAutoBoundsNode
+	{
+		[XmlElement(ElementName = "Realizers", Namespace = "http://www.yworks.com/xml/graphml")]
+		public YedRealizers realizers;
+	}
+
+	public class YedRealizers
+	{
+		[XmlAttribute]
+		public int active = 0;
+		[XmlElement(ElementName = "GroupNode", Namespace = "http://www.yworks.com/xml/graphml")]
+		public YedGroupNode group;
+	}
+
+	public class YedGroupNode
+	{
+		[XmlElement(ElementName = "NodeLabel", Namespace = "http://www.yworks.com/xml/graphml")]
+		public YedGroupNodeLabel label;
+		[XmlElement(ElementName = "Geometry", Namespace = "http://www.yworks.com/xml/graphml")]
+		public YedNodeGeometry geometry;
 	}
 
 	public class YedShapeNode
@@ -557,7 +700,7 @@ namespace DerouteSharp
 	public class YedNodeLabel
 	{
 		[XmlAttribute] public string alignment = "center";
-		[XmlAttribute] public int fontSize = 5;
+		[XmlAttribute] public int fontSize = 8;
 		[XmlAttribute] public string fontStyle = "plain";
 		[XmlAttribute] public string horizontalTextPosition = "center";
 		[XmlAttribute] public string textColor = "#000000";
@@ -567,6 +710,27 @@ namespace DerouteSharp
 		[XmlAttribute] public float y = 0;
 		[XmlAttribute] public float width = 13;
 		[XmlAttribute] public float height = 18;
+		[XmlText]
+		public string text;
+	}
+
+	public class YedGroupNodeLabel
+	{
+		[XmlAttribute] public string alignment = "right";
+		[XmlAttribute] public string autoSizePolicy = "node_width";
+		[XmlAttribute] public string backgroundColor = "#EBEBEB";
+		[XmlAttribute] public float borderDistance = 0.0f;
+		[XmlAttribute] public string fontFamily = "Dialog";
+		[XmlAttribute] public int fontSize = 8;
+		[XmlAttribute] public string fontStyle = "plain";
+		[XmlAttribute] public bool hasLineColor = false;
+		[XmlAttribute] public float height = 22.37f;
+		[XmlAttribute] public string modelName = "internal";
+		[XmlAttribute] public string modelPosition = "t";
+		[XmlAttribute] public string textColor = "#000000";
+		[XmlAttribute] public bool visible = true;
+		[XmlAttribute] public float x = 0.0f;
+		[XmlAttribute] public float y = 0.0f;
 		[XmlText]
 		public string text;
 	}
