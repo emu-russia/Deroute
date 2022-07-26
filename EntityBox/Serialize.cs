@@ -38,7 +38,8 @@ namespace System.Windows.Forms
 				if (Append == false)
 					insertionNode.Children.Clear();
 
-				insertionNode.Children = (List<Entity>)ser.Deserialize(fs);
+				List<Entity> newList = (List<Entity>)ser.Deserialize(fs);
+				insertionNode.Children.AddRange(newList);
 
 				FixupParentLinksAndSelectionRecursive(insertionNode);
 
