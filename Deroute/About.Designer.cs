@@ -60,7 +60,7 @@
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(172, 48);
 			this.label1.TabIndex = 1;
-			this.label1.Text = "Deroute Tool 1.5\r\n© 2022, emu-russia";
+			this.label1.Text = "Deroute Tool 1.6\r\n© 2022, emu-russia";
 			// 
 			// label2
 			// 
@@ -106,7 +106,7 @@
 			this.label6.Size = new System.Drawing.Size(452, 26);
 			this.label6.TabIndex = 6;
 			this.label6.Text = "Everything (code, images etc) is public domain (Creative Commons Zero). Use at yo" +
-	"ur own risk)\r\nNo credits required.\r\n";
+    "ur own risk)\r\nNo credits required.\r\n";
 			// 
 			// linkLabel1
 			// 
