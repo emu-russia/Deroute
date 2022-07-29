@@ -736,7 +736,7 @@ namespace DerouteSharp
 			// This will allow to leave hierarchy without convulsions during tree repopulation.
 
 			bool firstTime = myTreeView1.Nodes.Count == 0;
-			List<Tuple<Entity, bool>> expandedList = firstTime ? new List<Tuple<Entity, bool>>() : GetTreeAsList();
+			List<Tuple<Entity, bool>> expandedList = firstTime ? new List<Tuple<Entity, bool>>() : GetTreeAsList(true);
 
 			myTreeView1.Nodes.Clear();
 
@@ -782,27 +782,49 @@ namespace DerouteSharp
 			}
 		}
 
-		private List<Tuple<Entity,bool>> GetTreeAsList()
+		private List<Tuple<Entity, bool>> GetTreeAsList(bool onlyExpanded)
 		{
 			List<Tuple<Entity, bool>> list = new List<Tuple<Entity, bool>>();
 
 			foreach (TreeNode item in myTreeView1.Nodes)
 			{
 				if (item.Tag is Entity)
-					list.Add(new Tuple<Entity, bool>(item.Tag as Entity, item.IsExpanded));
-				WalkTreeRecursive(list, item);
+				{
+					if (onlyExpanded)
+					{
+						bool expanded = item.IsExpanded;
+						if (item.Nodes.Count == 0)
+							expanded = false;
+						if (expanded)
+							list.Add(new Tuple<Entity, bool>(item.Tag as Entity, item.IsExpanded));
+					}
+					else
+						list.Add(new Tuple<Entity, bool>(item.Tag as Entity, item.IsExpanded));
+				}
+				WalkTreeRecursive(list, item, onlyExpanded);
 			}
 
 			return list;
 		}
 
-		private void WalkTreeRecursive(List<Tuple<Entity, bool>> list, TreeNode parent)
+		private void WalkTreeRecursive(List<Tuple<Entity, bool>> list, TreeNode parent, bool onlyExpanded)
 		{
 			foreach (TreeNode item in parent.Nodes)
 			{
 				if (item.Tag is Entity)
-					list.Add(new Tuple<Entity, bool>(item.Tag as Entity, item.IsExpanded));
-				WalkTreeRecursive(list, item);
+				{
+					if (onlyExpanded)
+					{
+						bool expanded = item.IsExpanded;
+						if (item.Nodes.Count == 0)
+							expanded = false;
+						if (expanded)
+							list.Add(new Tuple<Entity, bool>(item.Tag as Entity, item.IsExpanded));
+					}
+					else
+						list.Add(new Tuple<Entity, bool>(item.Tag as Entity, item.IsExpanded));
+				}
+				WalkTreeRecursive(list, item, onlyExpanded);
 			}
 		}
 
