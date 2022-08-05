@@ -81,19 +81,33 @@ namespace DerouteSharp
 
 		internal class GlobalSettings
 		{
+			[Description("Select the new added entities (from the File menu) so that you can move them around, for example.")]
 			public bool SelectEntitiesAfterAdd { get; set; }
+			[Description("Make loaded images in grayscale, to save memory.")]
 			public bool Grayscale { get; set; }
+			[Description("How many pixels will equal one lambda.")]
 			public float Lambda { get; set; }
+			[Description("Lock the scrolling of layer 0 images, so you don't accidentally mess up.")]
 			public bool LockScroll0 { get; set; }
+			[Description("Lock the scrolling of layer 1 images, so you don't accidentally mess up.")]
 			public bool LockScroll1 { get; set; }
+			[Description("Lock the scrolling of layer 2 images, so you don't accidentally mess up.")]
 			public bool LockScroll2 { get; set; }
+			[Description("Lock the zoom of layer 0 images, so you don't accidentally mess up.")]
 			public bool LockZoom0 { get; set; }
+			[Description("Lock the zoom of layer 1 images, so you don't accidentally mess up.")]
 			public bool LockZoom1 { get; set; }
+			[Description("Lock the zoom of layer 2 images, so you don't accidentally mess up.")]
 			public bool LockZoom2 { get; set; }
+			[Description("Hide the dots that show the grid in the lambda. The plan is to do a drawing on the grid, so far it is useless.")]
 			public bool HideGrid { get; set; }
+			[Description("Hide the ruler in the lambda at the bottom right. I don't remember it ever being useful.")]
 			public bool HideLambdaMetrics { get; set; }
+			[Description("The position of the text label for the cells/units.")]
 			public TextAlignment CellTextAlignment { get; set; }
+			[Description("The position of the text label for the viases.")]
 			public TextAlignment ViasTextAlignment { get; set; }
+			[Description("The position of the text label for the wires.")]
 			public TextAlignment WireTextAlignment { get; set; }
 			[Description("This setting allows for automatic traverse (Tier 1) when any wire is selected. This is similar to pressing F10 after selecting a wire.")]
 			public bool WireSelectionAutoTraverse { get; set; }
@@ -353,7 +367,7 @@ namespace DerouteSharp
 		{
 			Properties.Settings settings = Properties.Settings.Default;
 
-			/// Load global settings
+			// Load global settings
 
 			GlobalSettings global = new GlobalSettings(entityBox);
 
@@ -374,8 +388,7 @@ namespace DerouteSharp
 
 			global.Save();
 
-			/// Load color settings
-			/// 
+			// Load color settings 
 
 			ColorSettings color = new ColorSettings(entityBox);
 
@@ -410,8 +423,7 @@ namespace DerouteSharp
 
 			color.Save();
 
-			/// Load priority settings
-			/// 
+			// Load priority settings
 
 			PrioritySettings priority = new PrioritySettings(entityBox);
 
@@ -424,8 +436,7 @@ namespace DerouteSharp
 
 			priority.Save();
 
-			/// Load opacity settings
-			/// 
+			// Load opacity settings
 
 			OpacitySettings opacity = new OpacitySettings(entityBox);
 
@@ -435,8 +446,7 @@ namespace DerouteSharp
 
 			opacity.Save();
 
-			/// Load shape settings
-			/// 
+			// Load shape settings
 
 			ShapeSettings shape = new ShapeSettings(entityBox);
 
@@ -451,7 +461,7 @@ namespace DerouteSharp
 		{
 			Properties.Settings settings = Properties.Settings.Default;
 
-			/// Save global settings
+			// Save global settings
 
 			GlobalSettings global = new GlobalSettings(entityBox);
 
@@ -470,8 +480,7 @@ namespace DerouteSharp
 			settings.ViasTextAlignment = (int)global.ViasTextAlignment;
 			settings.WireTextAlignment = (int)global.WireTextAlignment;
 
-			/// Save color settings
-			/// 
+			// Save color settings
 
 			ColorSettings color = new ColorSettings(entityBox);
 
@@ -504,8 +513,7 @@ namespace DerouteSharp
 			settings.CellOverrideColor = color.CellOverrideColor;
 			settings.RegionOverrideColor = color.RegionOverrideColor;
 
-			/// Save priority settings
-			/// 
+			// Save priority settings
 
 			PrioritySettings priority = new PrioritySettings(entityBox);
 
@@ -516,8 +524,7 @@ namespace DerouteSharp
 			settings.RegionPriority = priority.RegionPriority;
 			settings.AutoPriority = priority.AutoPriority;
 
-			/// Save opacity settings
-			/// 
+			// Save opacity settings
 
 			OpacitySettings opacity = new OpacitySettings(entityBox);
 
@@ -525,8 +532,7 @@ namespace DerouteSharp
 			settings.WireOpacity = opacity.WireOpacity;
 			settings.CellOpacity = opacity.CellOpacity;
 
-			/// Save shape settings
-			/// 
+			// Save shape settings
 
 			ShapeSettings shape = new ShapeSettings(entityBox);
 

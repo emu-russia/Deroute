@@ -37,7 +37,7 @@ namespace System.Windows.Forms
 			else if ((e.KeyCode == Keys.Right ||
 						e.KeyCode == Keys.Left ||
 						e.KeyCode == Keys.Up ||
-						e.KeyCode == Keys.Down) && Mode == EntityMode.Selection)
+						e.KeyCode == Keys.Down) && Mode == EntityMode.Selection && !e.Control)
 			{
 				bool NeedUpdate = false;
 				float deltaX = 0;
@@ -115,6 +115,45 @@ namespace System.Windows.Forms
 			else if (e.KeyCode == Keys.V && e.Control)
 			{
 				Paste();
+			}
+
+			else if ((e.KeyCode == Keys.Right ||
+						e.KeyCode == Keys.Left ||
+						e.KeyCode == Keys.Up ||
+						e.KeyCode == Keys.Down) && e.Control)
+			{
+				float panDelta = 5.0f;
+
+				// With an extra Shift press to make a quadratic acceleration
+
+				if (e.Shift)
+					panDelta *= panDelta;
+
+				float deltaX = 0;
+				float deltaY = 0;
+
+				switch (e.KeyCode)
+				{
+					case Keys.Right:
+						deltaX = +panDelta;
+						deltaY = 0;
+						break;
+					case Keys.Left:
+						deltaX = -panDelta;
+						deltaY = 0;
+						break;
+					case Keys.Up:
+						deltaX = 0;
+						deltaY = -panDelta;
+						break;
+					case Keys.Down:
+						deltaX = 0;
+						deltaY = +panDelta;
+						break;
+				}
+
+				ScrollX += deltaX;
+				ScrollY += deltaY;
 			}
 
 			base.OnKeyDown(e);
