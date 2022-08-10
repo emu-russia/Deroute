@@ -161,10 +161,10 @@
 			this.splitContainer3 = new System.Windows.Forms.SplitContainer();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
-			this.myTreeView1 = new DerouteSharp.MyTreeView();
 			this.backgroundWorkerTimeSpent = new System.ComponentModel.BackgroundWorker();
 			this.backgroundWorkerML = new System.ComponentModel.BackgroundWorker();
 			this.saveFileDialog3 = new System.Windows.Forms.SaveFileDialog();
+			this.myTreeView1 = new DerouteSharp.MyTreeView();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -731,12 +731,12 @@
 			// openFileDialog2
 			// 
 			this.openFileDialog2.DefaultExt = "xml";
-			this.openFileDialog2.Filter = "XML Files|*.xml|All Files|*.*";
+			this.openFileDialog2.Filter = "XML Files|*.xml|XMLZ Files|*.xmlz|All Files|*.*";
 			// 
 			// saveFileDialog2
 			// 
 			this.saveFileDialog2.DefaultExt = "xml";
-			this.saveFileDialog2.Filter = "XML Files|*.xml|All Files|*.*";
+			this.saveFileDialog2.Filter = "XML Files|*.xml|XMLZ Files|*.xmlz|All Files|*.*";
 			// 
 			// toolStrip1
 			// 
@@ -1423,6 +1423,20 @@
 			this.tabPage4.Text = "Hierarchy";
 			this.tabPage4.UseVisualStyleBackColor = true;
 			// 
+			// backgroundWorkerTimeSpent
+			// 
+			this.backgroundWorkerTimeSpent.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerTimeSpent_DoWork);
+			// 
+			// backgroundWorkerML
+			// 
+			this.backgroundWorkerML.WorkerSupportsCancellation = true;
+			this.backgroundWorkerML.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerML_DoWork);
+			// 
+			// saveFileDialog3
+			// 
+			this.saveFileDialog3.DefaultExt = "graphml";
+			this.saveFileDialog3.Filter = "GraphML Files|*.graphml|All Files|*.*";
+			// 
 			// myTreeView1
 			// 
 			this.myTreeView1.AllowDrop = true;
@@ -1438,20 +1452,6 @@
 			this.myTreeView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragDrop);
 			this.myTreeView1.DragEnter += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragEnter);
 			this.myTreeView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.myTreeView1_KeyDown);
-			// 
-			// backgroundWorkerTimeSpent
-			// 
-			this.backgroundWorkerTimeSpent.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerTimeSpent_DoWork);
-			// 
-			// backgroundWorkerML
-			// 
-			this.backgroundWorkerML.WorkerSupportsCancellation = true;
-			this.backgroundWorkerML.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerML_DoWork);
-			// 
-			// saveFileDialog3
-			// 
-			this.saveFileDialog3.DefaultExt = "graphml";
-			this.saveFileDialog3.Filter = "GraphML Files|*.graphml|All Files|*.*";
 			// 
 			// Form1
 			// 

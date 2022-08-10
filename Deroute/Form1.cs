@@ -12,6 +12,7 @@ using System.Threading;
 using NeuralNetwork;
 using static NeuralNetwork.EntityNetwork;
 using System.IO;
+using System.IO.Compression;
 using System.Xml.Serialization;
 using System.Reflection.Emit;
 using static System.Net.Mime.MediaTypeNames;
@@ -181,16 +182,49 @@ namespace DerouteSharp
 			}
 		}
 
-		private void loadEntitiesToolStripMenuItem_Click(object sender, EventArgs e)
+		private void LoadEntitiesXml()
 		{
 			DialogResult result = openFileDialog2.ShowDialog();
 
 			if (result == DialogResult.OK)
 			{
-				Text = savedText + " - " + openFileDialog2.FileName;
+				var filename = openFileDialog2.FileName;
+				Text = savedText + " - " + filename;
 
-				entityBox1.Unserialize(openFileDialog2.FileName, true);
+				if (Path.GetExtension(filename).ToLower() == ".xmlz")
+				{
+					string temp_xml_dir = GetTemporaryDirectory();
+					ZipFile.ExtractToDirectory(filename, temp_xml_dir);
+					DirectoryInfo di = new DirectoryInfo(temp_xml_dir);
+					bool first = true;
+					foreach (FileInfo file in di.GetFiles())
+					{
+						if (first)
+						{
+							entityBox1.Unserialize(file.FullName, true);
+							first = false;
+						}
+						file.Delete();
+					}
+					Directory.Delete(temp_xml_dir);
+				}
+				else
+				{
+					entityBox1.Unserialize(filename, true);
+				}
 			}
+		}
+
+		private void loadEntitiesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadEntitiesXml();
+		}
+
+		public string GetTemporaryDirectory()
+		{
+			string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+			Directory.CreateDirectory(tempDirectory);
+			return tempDirectory;
 		}
 
 		private void SaveEntitiesXml()
@@ -199,9 +233,26 @@ namespace DerouteSharp
 
 			if (result == DialogResult.OK)
 			{
-				Text = savedText + " - " + saveFileDialog2.FileName;
+				var filename = saveFileDialog2.FileName;
+				Text = savedText + " - " + filename;
 
-				entityBox1.Serialize(saveFileDialog2.FileName);
+				if (Path.GetExtension(filename).ToLower() == ".xmlz")
+				{
+					string temp_xml_dir = GetTemporaryDirectory();
+					string temp_xml_filename = temp_xml_dir + "/" + Path.GetFileNameWithoutExtension(filename) + ".xml";
+					entityBox1.Serialize(temp_xml_filename);
+					if (File.Exists(filename))
+					{
+						File.Delete(filename);
+					}
+					ZipFile.CreateFromDirectory(temp_xml_dir, filename);
+					File.Delete(temp_xml_filename);
+					Directory.Delete(temp_xml_dir);
+				}
+				else
+				{
+					entityBox1.Serialize(filename);
+				}
 			}
 		}
 
