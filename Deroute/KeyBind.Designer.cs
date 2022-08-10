@@ -73,6 +73,9 @@
 			System.Windows.Forms.ListViewItem listViewItem15 = new System.Windows.Forms.ListViewItem(new string[] {
             "Ctrl+V",
             "Paste copied items at RMB"}, -1);
+			System.Windows.Forms.ListViewItem listViewItem16 = new System.Windows.Forms.ListViewItem(new string[] {
+            "Ctr+S",
+            "Save entities"}, -1);
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KeyBind));
 			this.listView1 = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -102,7 +105,8 @@
             listViewItem12,
             listViewItem13,
             listViewItem14,
-            listViewItem15});
+            listViewItem15,
+            listViewItem16});
 			this.listView1.Location = new System.Drawing.Point(0, 0);
 			this.listView1.Margin = new System.Windows.Forms.Padding(4);
 			this.listView1.Name = "listView1";

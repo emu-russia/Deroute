@@ -135,20 +135,20 @@ namespace System.Windows.Forms
 				switch (e.KeyCode)
 				{
 					case Keys.Right:
-						deltaX = +panDelta;
+						deltaX = -panDelta;
 						deltaY = 0;
 						break;
 					case Keys.Left:
-						deltaX = -panDelta;
+						deltaX = +panDelta;
 						deltaY = 0;
 						break;
 					case Keys.Up:
 						deltaX = 0;
-						deltaY = -panDelta;
+						deltaY = +panDelta;
 						break;
 					case Keys.Down:
 						deltaX = 0;
-						deltaY = +panDelta;
+						deltaY = -panDelta;
 						break;
 				}
 
