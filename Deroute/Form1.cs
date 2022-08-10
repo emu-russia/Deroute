@@ -69,6 +69,8 @@ namespace DerouteSharp
 #if DEBUG && (!__MonoCS__)
 			AllocConsole ();
 #endif
+
+			entityBox1.Focus();
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -191,7 +193,7 @@ namespace DerouteSharp
 			}
 		}
 
-		private void saveEntitiesToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SaveEntitiesXml()
 		{
 			DialogResult result = saveFileDialog2.ShowDialog();
 
@@ -201,6 +203,11 @@ namespace DerouteSharp
 
 				entityBox1.Serialize(saveFileDialog2.FileName);
 			}
+		}
+
+		private void saveEntitiesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveEntitiesXml();
 		}
 
 		private void saveSceneAsNetlistToolStripMenuItem_Click(object sender, EventArgs e)
@@ -488,6 +495,10 @@ namespace DerouteSharp
 			else if (e.KeyCode == Keys.A && e.Control)
 			{
 				entityBox1.SelectAll();
+			}
+			else if (e.KeyCode == Keys.S && e.Control)
+			{
+				SaveEntitiesXml();
 			}
 		}
 
