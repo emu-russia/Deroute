@@ -145,16 +145,6 @@ namespace DerouteSharp
 
 					edge.from = FindNode(nodes, from);
 					edge.to = FindNode(nodes, to);
-
-					// If one of the paired nodes is NOT of type Output, give it priority as `from`.
-
-					if (edge.from != null && edge.to != null)
-					{
-						if (edge.from.baseVias.Type == EntityType.ViasOutput && edge.to.baseVias.Type != EntityType.ViasOutput)
-						{
-							(edge.from, edge.to) = (edge.to, edge.from);
-						}
-					}
 				}
 				else
 				{
@@ -173,6 +163,16 @@ namespace DerouteSharp
 					if (edge.to == null)
 					{
 						edge.to = FindNode(nodes, endTo);
+					}
+				}
+
+				// If one of the paired nodes is NOT of type Output, give it priority as `from`.
+
+				if (edge.from != null && edge.to != null)
+				{
+					if (edge.from.baseVias.Type == EntityType.ViasOutput && edge.to.baseVias.Type != EntityType.ViasOutput)
+					{
+						(edge.from, edge.to) = (edge.to, edge.from);
 					}
 				}
 			}
