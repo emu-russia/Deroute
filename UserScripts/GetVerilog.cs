@@ -268,6 +268,19 @@ namespace GetVerilog
 
 			text += GetModuleHeaderText(top);
 
+			// Top -> Wires
+
+			foreach (var p in top.ports)
+			{
+				var wire = GetConnection(p, wires);
+
+				if (wire != null)
+				{
+					text += "\tassign " + p.Label + " = " + wire.name + ";\r\n";
+				}
+			}
+			text += "\r\n";
+
 			// Wires
 
 			text += "// Wires\r\n";
