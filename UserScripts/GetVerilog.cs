@@ -61,7 +61,7 @@ namespace GetVerilog
 
 			// Output the verilog
 
-			string text = GetVerilogText(top, instances, wires, true);
+			string text = GetVerilogText(top, instances, wires, true) + GetModulesVerilog(instances);
 			File.WriteAllText(verilog_name, text, Encoding.UTF8);
 		}
 
@@ -256,45 +256,6 @@ namespace GetVerilog
 			return ent.Type == EntityType.ViasInput || ent.Type == EntityType.ViasOutput || ent.Type == EntityType.ViasInout;
 		}
 
-		class MyPoint
-		{
-			public float X;
-			public float Y;
-
-			public MyPoint()
-			{
-				X = 0;
-				Y = 0;
-			}
-
-			public MyPoint (float x, float y)
-			{
-				X = x;
-				Y = y;
-			}
-		}
-
-		class MyRect
-		{
-			public float X;
-			public float Y;
-			public float Width;
-			public float Height;
-
-			public MyRect (float x, float y, float w, float h)
-			{
-				X = x;
-				Y = y;
-				Width = w;
-				Height = h;
-			}
-
-			public bool Contains (float px, float py)
-			{
-				return (px > X && px < (X + Width) && py > Y && py < (Y + Height));
-			}
-		}
-
 		/// <summary>
 		/// The script does not check connectivity and does not make any special checks at all.
 		/// All errors can be checked later when using the generated HDL in your favorite CAD.
@@ -305,20 +266,7 @@ namespace GetVerilog
 
 			// Top
 
-			text += "module " + top.module_name + " ( ";
-			foreach (var p in top.ports)
-			{
-				text += " " + p.Label + ",";
-			}
-			text = text.Remove(text.Length - 1);
-			text += ");\r\n";
-			text += "\r\n";
-
-			foreach (var p in top.ports)
-			{
-				text += "\t" + p.Type.ToString().Replace("Vias", "").ToLower() + " wire " + p.Label + ";\r\n";
-			}
-			text += "\r\n";
+			text += GetModuleHeaderText(top);
 
 			// Wires
 
@@ -370,6 +318,55 @@ namespace GetVerilog
 			// End
 
 			text += "endmodule // " + top.module_name;
+
+			return text;
+		}
+
+		static string GetModuleHeaderText(FutureInstance inst)
+		{
+			string text = "";
+
+			text += "module " + inst.module_name + " ( ";
+			foreach (var p in inst.ports)
+			{
+				text += " " + p.Label + ",";
+			}
+			text = text.Remove(text.Length - 1);
+			text += ");\r\n";
+			text += "\r\n";
+
+			foreach (var p in inst.ports)
+			{
+				text += "\t" + p.Type.ToString().Replace("Vias", "").ToLower() + " wire " + p.Label + ";\r\n";
+			}
+			text += "\r\n";
+
+			return text;
+		}
+
+		static string GetModulesVerilog(List<FutureInstance> instances)
+		{
+			string text = "";
+
+			Dictionary<string, FutureInstance> modules = new Dictionary<string, FutureInstance>();
+
+			foreach (var inst in instances)
+			{
+				if (modules.ContainsKey(inst.module_name))
+					continue;
+
+				modules.Add(inst.module_name, inst);
+			}
+
+			text += "\r\n\r\n";
+			text += "// Module Definitions [It is possible to wrap here on your primitives]\r\n";
+			text += "\r\n";
+
+			foreach (var kv in modules)
+			{
+				text += GetModuleHeaderText(kv.Value);
+				text += "endmodule // " + kv.Key + "\r\n\r\n";
+			}
 
 			return text;
 		}
@@ -711,6 +708,50 @@ namespace GetVerilog
 			}
 		}
 
+		#endregion "Traverse"
+
+		
+		#region "Geometry"
+
+		class MyPoint
+		{
+			public float X;
+			public float Y;
+
+			public MyPoint()
+			{
+				X = 0;
+				Y = 0;
+			}
+
+			public MyPoint (float x, float y)
+			{
+				X = x;
+				Y = y;
+			}
+		}
+
+		class MyRect
+		{
+			public float X;
+			public float Y;
+			public float Width;
+			public float Height;
+
+			public MyRect (float x, float y, float w, float h)
+			{
+				X = x;
+				Y = y;
+				Width = w;
+				Height = h;
+			}
+
+			public bool Contains (float px, float py)
+			{
+				return (px > X && px < (X + Width) && py > Y && py < (Y + Height));
+			}
+		}
+
 		static bool LineIntersectsRect(MyPoint p1, MyPoint p2, MyRect r)
 		{
 			return LineIntersectsLine(p1, p2, new MyPoint(r.X, r.Y), new MyPoint(r.X + r.Width, r.Y)) ||
@@ -794,7 +835,7 @@ namespace GetVerilog
 			return (BAx * BCy - BAy * BCx);
 		}
 
-		#endregion "Traverse"
+		#endregion "Geometry"
 
 	}
 }
