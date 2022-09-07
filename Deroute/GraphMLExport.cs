@@ -165,6 +165,16 @@ namespace DerouteSharp
 						edge.to = FindNode(nodes, endTo);
 					}
 				}
+
+				// If one of the paired nodes is NOT of type Output, give it priority as `from`.
+
+				if (edge.from != null && edge.to != null)
+				{
+					if (edge.from.baseVias.Type == EntityType.ViasOutput && edge.to.baseVias.Type != EntityType.ViasOutput)
+					{
+						(edge.from, edge.to) = (edge.to, edge.from);
+					}
+				}
 			}
 
 			// DEBUG: Output all edges for debugging.
@@ -425,13 +435,16 @@ namespace DerouteSharp
 
 				else if (entity.IsWire() && !WireExistsInFutureEdges(edgesAll, entity))
 				{
+					if (edge.segments.Contains(entity))
+						continue;
+
 					PointF pointStart = new PointF(entity.LambdaX, entity.LambdaY);
 					PointF pointEnd = new PointF(entity.LambdaEndX, entity.LambdaEndY);
 
 					dist = (float)Math.Sqrt(Math.Pow(entity.LambdaX - wire.LambdaX, 2) +
 											 Math.Pow(entity.LambdaY - wire.LambdaY, 2));
 
-					if (dist < maxDist && !edge.segments.Contains(entity) && FindNode(nodesAll, pointStart) == null)
+					if (dist < maxDist && FindNode(nodesAll, pointStart) == null)
 					{
 						TraverseWire(edgesAll, nodesAll, edge, entity, entities, tier+1, vias_intersections);
 						continue;
@@ -440,7 +453,7 @@ namespace DerouteSharp
 					dist = (float)Math.Sqrt(Math.Pow(entity.LambdaX - wire.LambdaEndX, 2) +
 											 Math.Pow(entity.LambdaY - wire.LambdaEndY, 2));
 
-					if (dist < maxDist && !edge.segments.Contains(entity) && FindNode(nodesAll, pointStart) == null)
+					if (dist < maxDist && FindNode(nodesAll, pointStart) == null)
 					{
 						TraverseWire(edgesAll, nodesAll, edge, entity, entities, tier+1, vias_intersections);
 						continue;
@@ -449,7 +462,7 @@ namespace DerouteSharp
 					dist = (float)Math.Sqrt(Math.Pow(entity.LambdaEndX - wire.LambdaEndX, 2) +
 											 Math.Pow(entity.LambdaEndY - wire.LambdaEndY, 2));
 
-					if (dist < maxDist && !edge.segments.Contains(entity) && FindNode(nodesAll, pointEnd) == null)
+					if (dist < maxDist && FindNode(nodesAll, pointEnd) == null)
 					{
 						TraverseWire(edgesAll, nodesAll, edge, entity, entities, tier+1, vias_intersections);
 						continue;
@@ -458,7 +471,7 @@ namespace DerouteSharp
 					dist = (float)Math.Sqrt(Math.Pow(entity.LambdaEndX - wire.LambdaX, 2) +
 											 Math.Pow(entity.LambdaEndY - wire.LambdaY, 2));
 
-					if (dist < maxDist && !edge.segments.Contains(entity) && FindNode(nodesAll, pointEnd) == null)
+					if (dist < maxDist && FindNode(nodesAll, pointEnd) == null)
 					{
 						TraverseWire(edgesAll, nodesAll, edge, entity, entities, tier+1, vias_intersections);
 						continue;
