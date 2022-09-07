@@ -12,6 +12,8 @@ Information about cells (their types and arrangement in rows) is taken from the 
 
 It seems that the port layout is glitchy, I need to check.
 
+Example use: `py -3 cells.py --xml PSG.xml --json cells.json --op count`
+
 ## GetVerilog.cs
 
 A script to convert XML to Verilog RTL. We get a kind of "disassembly" of the chip, with which you can work further as with the sources of HDL.
@@ -25,3 +27,5 @@ Principle of conversion:
 - Wires are obtained by combining segments by traverse. The wire name is taken by concatenating all segment names with a space, if the result is an empty string, then the wire name is generated as `w1`, `w2` and so on.
 
 The script does not check connectivity and does not make any special checks at all. All errors can be checked later when using the generated HDL in your favorite CAD.
+
+Example use: `GetVerilog.bat PSG.xmlz PSG.v`
