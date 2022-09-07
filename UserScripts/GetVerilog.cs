@@ -72,10 +72,83 @@ namespace GetVerilog
 		{
 			List<FutureWire> wires = new List<FutureWire>();
 
-			// The wire name is taken by concatenating all segment names with a space.
-			// If the result is an empty string, then the wire name is generated as `w1`, `w2` and so on.
+			int cnt = 1;
+
+			foreach (var wire in ents)
+			{
+				if (wire.IsWire() && !IsInCollectionAlready(wire, wires))
+				{
+					wire.Selected = true;
+					TraversalSelection(ents, 1);
+
+					FutureWire fw = new FutureWire();
+
+					fw.parts = GetSelected(ents);
+					ClearSelected(ents);
+					fw.name = "";
+
+					// The wire name is taken by concatenating all segment names with a underscore.
+
+					foreach (var part in fw.parts)
+					{
+						if (part.IsWire() && part.Label != "")
+						{
+							fw.name += part.Label + "_";
+						}
+					}
+
+					if (fw.name.Length != 0)
+					{
+						fw.name = fw.name.Remove(fw.name.Length - 1);
+					}
+
+					// If the result is an empty string, then the wire name is generated as `w1`, `w2` and so on.
+
+					if (fw.name == "")
+					{
+						fw.name = "w" + cnt.ToString();
+					}
+
+					wires.Add(fw);
+
+					cnt++;
+				}
+			}
 
 			return wires;
+		}
+
+		static List<Entity> GetSelected(List<Entity> ents)
+		{
+			List<Entity> res = new List<Entity>();
+
+			foreach (var ent in ents)
+			{
+				if (ent.Selected)
+				{
+					res.Add (ent);
+				}
+			}
+
+			return res;
+		}
+
+		static void ClearSelected(List<Entity> ents)
+		{
+			foreach (var ent in ents)
+			{
+				ent.Selected = false;
+			}
+		}
+
+		static bool IsInCollectionAlready(Entity wire, List<FutureWire> wires)
+		{
+			foreach (var w in wires)
+			{
+				if (w.parts.Contains(wire))
+					return true;
+			}
+			return false;
 		}
 
 		/// <summary>
@@ -183,27 +256,44 @@ namespace GetVerilog
 			return ent.Type == EntityType.ViasInput || ent.Type == EntityType.ViasOutput || ent.Type == EntityType.ViasInout;
 		}
 
+		class MyPoint
+		{
+			public float X;
+			public float Y;
+
+			public MyPoint()
+			{
+				X = 0;
+				Y = 0;
+			}
+
+			public MyPoint (float x, float y)
+			{
+				X = x;
+				Y = y;
+			}
+		}
+
 		class MyRect
 		{
-			public float x;
-			public float y;
-			public float w;
-			public float h;
+			public float X;
+			public float Y;
+			public float Width;
+			public float Height;
 
 			public MyRect (float x, float y, float w, float h)
 			{
-				this.x = x;
-				this.y = y;
-				this.w = w;
-				this.h = h;
+				X = x;
+				Y = y;
+				Width = w;
+				Height = h;
 			}
 
 			public bool Contains (float px, float py)
 			{
-				return (px > x && px < (x + w) && py > y && py < (y + h));
+				return (px > X && px < (X + Width) && py > Y && py < (Y + Height));
 			}
 		}
-
 
 		/// <summary>
 		/// The script does not check connectivity and does not make any special checks at all.
@@ -266,10 +356,10 @@ namespace GetVerilog
 						text += "." + p.Label + "()";
 					}
 
-					text += ",";
+					text += ", ";
 				}
 
-				text = text.Remove(text.Length - 1);
+				text = text.Remove(text.Length - 2);
 
 				text += " );\r\n";
 
@@ -287,6 +377,16 @@ namespace GetVerilog
 		static FutureWire GetConnection (Entity port, List<FutureWire> wires)
 		{
 			FutureWire wire = null;
+
+			foreach (FutureWire w in wires)
+			{
+				if (w.parts.Contains (port))
+				{
+					wire = w;
+					break;
+				}
+			}
+
 			return wire;
 		}
 
@@ -363,6 +463,339 @@ namespace GetVerilog
 				GetEntitiesRecursive(entity, list);
 			}
 		}
+
+
+		#region "Traverse"
+
+		const float traverseLambdaDelta = 0.7F;      // Lambdas
+
+		static bool IsViasInWire(Entity vias, Entity wire)
+		{
+			float delta = traverseLambdaDelta;
+
+			MyPoint start = new MyPoint(wire.LambdaX, wire.LambdaY);
+			MyPoint end = new MyPoint(wire.LambdaEndX, wire.LambdaEndY);
+
+			MyRect rect = new MyRect(
+				vias.LambdaX - delta, vias.LambdaY - delta,
+				2 * delta, 2 * delta);
+
+			return LineIntersectsRect(start, end, rect);
+		}
+
+		static void SelectTraverse(Entity source,
+									  List<Entity> ents,
+									  int Tier,
+									  int TierMax,
+									  int Depth)
+		{
+			MyPoint[] rect1 = new MyPoint[4];
+			MyPoint[] rect2 = new MyPoint[4];
+			MyPoint restrictedStart = new MyPoint(0, 0);
+			MyPoint restrictedEnd = new MyPoint(0, 0);
+
+			if (Tier >= TierMax)
+				return;
+
+			//
+			// Wire joint Vias/Wire
+			//
+
+			if (source.IsWire())
+			{
+				float maxDist = traverseLambdaDelta;
+				float dist;
+				List<Entity> viases = new List<Entity>();
+
+				//
+				// Get not selected entities in delta range for Start point
+				//
+				// Get not selected entities in delta range for End point
+				//
+
+				float dx = Math.Abs(source.LambdaEndX - source.LambdaX);
+				float dy = Math.Abs(source.LambdaEndY - source.LambdaY);
+				bool Vert = dx < dy;
+
+				foreach (Entity entity in ents)
+				{
+					if (source.TraverseBlackList != null && entity.TraverseBlackList != null)
+					{
+						if (source.TraverseBlackList.Contains(entity.Type) || entity.TraverseBlackList.Contains(source.Type))
+							continue;
+					}
+
+					if (entity.Selected == false)
+					{
+						//
+						// Wire -> Vias
+						// 
+
+						if (entity.IsVias())
+						{
+							if (IsViasInWire(entity, source))
+								viases.Add(entity);
+						}
+
+						//
+						// Wire -> Wire
+						//
+
+						else if (entity.IsWire())
+						{
+							MyPoint pointStart = new MyPoint(entity.LambdaX, entity.LambdaY);
+							MyPoint pointEnd = new MyPoint(entity.LambdaEndX, entity.LambdaEndY);
+
+							dist = (float)Math.Sqrt(Math.Pow(entity.LambdaX - source.LambdaX, 2) +
+													 Math.Pow(entity.LambdaY - source.LambdaY, 2));
+
+							if (dist < maxDist)
+							{
+								entity.Selected = true;
+								SelectTraverse(entity, ents, Tier, TierMax, Depth + 1);
+							}
+
+							dist = (float)Math.Sqrt(Math.Pow(entity.LambdaX - source.LambdaEndX, 2) +
+													 Math.Pow(entity.LambdaY - source.LambdaEndY, 2));
+
+							if (dist < maxDist && entity.Selected == false)
+							{
+								entity.Selected = true;
+								SelectTraverse(entity, ents, Tier, TierMax, Depth + 1);
+							}
+
+							dist = (float)Math.Sqrt(Math.Pow(entity.LambdaEndX - source.LambdaEndX, 2) +
+													 Math.Pow(entity.LambdaEndY - source.LambdaEndY, 2));
+
+							if (dist < maxDist && entity.Selected == false)
+							{
+								entity.Selected = true;
+								SelectTraverse(entity, ents, Tier, TierMax, Depth + 1);
+							}
+
+							dist = (float)Math.Sqrt(Math.Pow(entity.LambdaEndX - source.LambdaX, 2) +
+													 Math.Pow(entity.LambdaEndY - source.LambdaY, 2));
+
+							if (dist < maxDist && entity.Selected == false)
+							{
+								entity.Selected = true;
+								SelectTraverse(entity, ents, Tier, TierMax, Depth + 1);
+							}
+
+						}
+					}
+				}           // foreach
+
+
+				//
+				// Process viases
+				//
+
+				foreach (Entity entity in viases)
+				{
+					entity.Selected = true;
+					SelectTraverse(entity, ents, Tier, TierMax, Depth + 1);
+				}
+
+			}
+
+			//
+			// Vias joint Cell/Wire
+			//
+
+			else if (source.IsVias())
+			{
+				MyPoint point = new MyPoint(source.LambdaX, source.LambdaY);
+				MyPoint[] rect = new MyPoint[4];
+				List<Entity> wires = new List<Entity>();
+				List<Entity> cells = new List<Entity>();
+
+				rect[0] = new MyPoint();
+				rect[1] = new MyPoint();
+				rect[2] = new MyPoint();
+				rect[3] = new MyPoint();
+
+				//
+				// Collect all wires/cells by vias intersections
+				//
+
+				foreach (Entity entity in ents)
+				{
+					if (source.TraverseBlackList != null && entity.TraverseBlackList != null)
+					{
+						if (source.TraverseBlackList.Contains(entity.Type) || entity.TraverseBlackList.Contains(source.Type))
+							continue;
+					}
+
+					if (entity.Selected == false)
+					{
+						//
+						// Vias -> Wire
+						//
+
+						if (entity.IsWire())
+						{
+							if (IsViasInWire(source, entity))
+								wires.Add(entity);
+						}
+
+						//
+						// Vias -> Cell
+						//
+
+						else if (entity.IsCell())
+						{
+							rect[0].X = entity.LambdaX;
+							rect[0].Y = entity.LambdaY;
+
+							rect[1].X = entity.LambdaX;
+							rect[1].Y = entity.LambdaY + entity.LambdaHeight;
+
+							rect[2].X = entity.LambdaX + entity.LambdaWidth;
+							rect[2].Y = entity.LambdaY + entity.LambdaHeight;
+
+							rect[3].X = entity.LambdaX + entity.LambdaWidth;
+							rect[3].Y = entity.LambdaY;
+
+							if (PointInPoly(rect, point))
+								cells.Add(entity);
+						}
+					}
+				}
+
+				//
+				// Process
+				//
+
+				foreach (Entity entity in wires)
+				{
+					entity.Selected = true;
+					SelectTraverse(entity, ents, Tier, TierMax, Depth + 1);
+
+					//
+					// Only single child
+					//
+
+					break;
+				}
+
+				foreach (Entity entity in cells)
+				{
+					entity.Selected = true;
+					SelectTraverse(entity, ents, Tier + 1, TierMax, Depth + 1);
+
+					//
+					// Only single child
+					//
+
+					break;
+				}
+
+			}
+		}
+
+		static void TraversalSelection(List<Entity> ents, int TierMax)
+		{
+			List<Entity> selectedEnts = new List<Entity>();
+
+			foreach (Entity entity in ents)
+			{
+				if ((entity.IsCell() || entity.IsVias() || entity.IsWire())
+					 && entity.Selected)
+					selectedEnts.Add(entity);
+			}
+
+			foreach (Entity entity in selectedEnts)
+			{
+				SelectTraverse(entity, ents, 0, TierMax, 0);
+			}
+		}
+
+		static bool LineIntersectsRect(MyPoint p1, MyPoint p2, MyRect r)
+		{
+			return LineIntersectsLine(p1, p2, new MyPoint(r.X, r.Y), new MyPoint(r.X + r.Width, r.Y)) ||
+				   LineIntersectsLine(p1, p2, new MyPoint(r.X + r.Width, r.Y), new MyPoint(r.X + r.Width, r.Y + r.Height)) ||
+				   LineIntersectsLine(p1, p2, new MyPoint(r.X + r.Width, r.Y + r.Height), new MyPoint(r.X, r.Y + r.Height)) ||
+				   LineIntersectsLine(p1, p2, new MyPoint(r.X, r.Y + r.Height), new MyPoint(r.X, r.Y)) ||
+				   (r.Contains(p1.X, p1.Y) && r.Contains(p2.X, p2.Y));
+		}
+
+		static bool LineIntersectsLine(MyPoint l1p1, MyPoint l1p2, MyPoint l2p1, MyPoint l2p2)
+		{
+			float q = (l1p1.Y - l2p1.Y) * (l2p2.X - l2p1.X) - (l1p1.X - l2p1.X) * (l2p2.Y - l2p1.Y);
+			float d = (l1p2.X - l1p1.X) * (l2p2.Y - l2p1.Y) - (l1p2.Y - l1p1.Y) * (l2p2.X - l2p1.X);
+
+			if (d == 0)
+			{
+				return false;
+			}
+
+			float r = q / d;
+
+			q = (l1p1.Y - l2p1.Y) * (l1p2.X - l1p1.X) - (l1p1.X - l2p1.X) * (l1p2.Y - l1p1.Y);
+			float s = q / d;
+
+			if (r < 0 || r > 1 || s < 0 || s > 1)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		static bool PointInPoly(MyPoint[] poly, MyPoint point)
+		{
+			int max_point = poly.Length - 1;
+			float total_angle = GetAngle(
+				poly[max_point].X, poly[max_point].Y,
+				point.X, point.Y,
+				poly[0].X, poly[0].Y);
+
+			for (int i = 0; i < max_point; i++)
+			{
+				total_angle += GetAngle(
+					poly[i].X, poly[i].Y,
+					point.X, point.Y,
+					poly[i + 1].X, poly[i + 1].Y);
+			}
+
+			return (Math.Abs(total_angle) > 0.000001);
+		}
+
+		static float GetAngle(float Ax, float Ay,
+			float Bx, float By, float Cx, float Cy)
+		{
+			float dot_product = DotProduct(Ax, Ay, Bx, By, Cx, Cy);
+
+			float cross_product = CrossProductLength(Ax, Ay, Bx, By, Cx, Cy);
+
+			return (float)Math.Atan2(cross_product, dot_product);
+		}
+
+		static float DotProduct(float Ax, float Ay,
+			float Bx, float By, float Cx, float Cy)
+		{
+			float BAx = Ax - Bx;
+			float BAy = Ay - By;
+			float BCx = Cx - Bx;
+			float BCy = Cy - By;
+
+			return (BAx * BCx + BAy * BCy);
+		}
+
+		static float CrossProductLength(float Ax, float Ay,
+			float Bx, float By, float Cx, float Cy)
+		{
+			float BAx = Ax - Bx;
+			float BAy = Ay - By;
+			float BCx = Cx - Bx;
+			float BCy = Cy - By;
+
+			return (BAx * BCy - BAy * BCx);
+		}
+
+		#endregion "Traverse"
+
 	}
 }
 
