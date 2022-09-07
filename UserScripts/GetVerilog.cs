@@ -57,11 +57,11 @@ namespace GetVerilog
 
 			// Get a list of module instances
 
-			instances = GetInstances(ents);
+			instances = GetInstances(ents, top.module_name.ToLower() + "_");
 
 			// Output the verilog
 
-			string text = GetVerilogText(top, instances, wires);
+			string text = GetVerilogText(top, instances, wires, true);
 			File.WriteAllText(verilog_name, text, Encoding.UTF8);
 		}
 
@@ -81,7 +81,7 @@ namespace GetVerilog
 		/// <summary>
 		/// All cells (entities of `Cell` type) and custom blocks (entities of `Unit` type) become module instances.
 		/// </summary>
-		static List<FutureInstance> GetInstances (List<Entity> ents)
+		static List<FutureInstance> GetInstances (List<Entity> ents, string common_prefix)
 		{
 			List<FutureInstance> instances = new List<FutureInstance>();
 
@@ -107,7 +107,7 @@ namespace GetVerilog
 					var pair = label.Split(' ');
 
 					inst.cell = ent;
-					inst.module_name = pair[0];
+					inst.module_name = common_prefix + pair[0];
 					inst.inst_name = pair.Length == 1 ? "g" + cnt.ToString() : pair[1];
 					inst.ports = GetPorts(ent, ents);
 
@@ -209,7 +209,7 @@ namespace GetVerilog
 		/// The script does not check connectivity and does not make any special checks at all.
 		/// All errors can be checked later when using the generated HDL in your favorite CAD.
 		/// </summary>
-		static string GetVerilogText (FutureInstance top, List<FutureInstance> instances, List<FutureWire> wires)
+		static string GetVerilogText (FutureInstance top, List<FutureInstance> instances, List<FutureWire> wires, bool compact)
 		{
 			string text = "";
 
@@ -254,7 +254,8 @@ namespace GetVerilog
 				{
 					var wire = GetConnection(p, wires);
 
-					text += "\r\n\t\t";
+					if (!compact)
+						text += "\r\n\t\t";
 
 					if (wire != null)
 					{
@@ -270,7 +271,10 @@ namespace GetVerilog
 
 				text = text.Remove(text.Length - 1);
 
-				text += " );\r\n\r\n";
+				text += " );\r\n";
+
+				if (!compact)
+					text += "\r\n";
 			}
 
 			// End
