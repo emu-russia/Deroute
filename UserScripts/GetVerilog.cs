@@ -323,15 +323,13 @@ namespace GetVerilog
 
 					if (wire != null)
 					{
-						text += "." + p.Label + "(" + wire.name + ")";
+						text += "." + p.Label + "(" + wire.name + "), ";
 					}
 					else
 					{
 						//text += "." + p.Label + "()";
 						Console.WriteLine("WARNING: Cell {0}:{1} port {2} not connected.", inst.module_name, inst.inst_name, p.Label);
 					}
-
-					text += ", ";
 				}
 
 				text = text.Remove(text.Length - 2);
