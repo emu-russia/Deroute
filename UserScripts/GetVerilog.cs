@@ -62,7 +62,7 @@ namespace GetVerilog
 			// Output the verilog
 
 			string text = GetVerilogText(top, instances, wires, true) + GetModulesVerilog(instances);
-			File.WriteAllText(verilog_name, text, Encoding.UTF8);
+			File.WriteAllText(verilog_name, text, Encoding.ASCII);
 		}
 
 		/// <summary>
@@ -267,6 +267,19 @@ namespace GetVerilog
 			// Top
 
 			text += GetModuleHeaderText(top);
+
+			// Top -> Wires
+
+			foreach (var p in top.ports)
+			{
+				var wire = GetConnection(p, wires);
+
+				if (wire != null)
+				{
+					text += "\tassign " + p.Label + " = " + wire.name + ";\r\n";
+				}
+			}
+			text += "\r\n";
 
 			// Wires
 
