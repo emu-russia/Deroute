@@ -62,7 +62,7 @@ namespace GetVerilog
 			// Output the verilog
 
 			string text = GetVerilogText(top, instances, wires, true) + GetModulesVerilog(instances);
-			File.WriteAllText(verilog_name, text, Encoding.UTF8);
+			File.WriteAllText(verilog_name, text, Encoding.ASCII);
 		}
 
 		/// <summary>
