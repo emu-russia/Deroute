@@ -276,7 +276,14 @@ namespace GetVerilog
 
 				if (wire != null)
 				{
-					text += "\tassign " + p.Label + " = " + wire.name + ";\r\n";
+					if (p.Type == EntityType.ViasInput)
+					{
+						text += "\tassign " + wire.name + " = " + p.Label + ";\r\n";
+					}
+					else
+					{
+						text += "\tassign " + p.Label + " = " + wire.name + ";\r\n";
+					}
 				}
 			}
 			text += "\r\n";
@@ -303,6 +310,12 @@ namespace GetVerilog
 
 				foreach (var p in inst.ports)
 				{
+					if (p.Label == "")
+					{
+						Console.WriteLine("ERROR: Cell {0}:{1} has unnamed port!", inst.module_name, inst.inst_name);
+						continue;
+					}
+
 					var wire = GetConnection(p, wires);
 
 					if (!compact)
@@ -314,7 +327,8 @@ namespace GetVerilog
 					}
 					else
 					{
-						text += "." + p.Label + "()";
+						//text += "." + p.Label + "()";
+						Console.WriteLine("WARNING: Cell {0}:{1} port {2} not connected.", inst.module_name, inst.inst_name, p.Label);
 					}
 
 					text += ", ";
