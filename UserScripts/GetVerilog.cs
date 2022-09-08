@@ -323,7 +323,9 @@ namespace GetVerilog
 
 					if (wire != null)
 					{
-						text += "." + p.Label + "(" + wire.name + "), ";
+						var const_wire = IsConstantScalar(wire);
+
+						text += "." + p.Label + "(" + (const_wire != null ? const_wire : wire.name) + "), ";
 					}
 					else
 					{
@@ -410,6 +412,23 @@ namespace GetVerilog
 			}
 
 			return wire;
+		}
+
+		static string? IsConstantScalar (FutureWire wire)
+		{
+			foreach (var ent in wire.parts)
+			{
+				if (ent.Type == EntityType.ViasPower)
+				{
+					return "1b'1";
+				}
+
+				if (ent.Type == EntityType.ViasGround)
+				{
+					return "1b'0";
+				}
+			}
+			return null;
 		}
 
 		static List<Entity> LoadEntitiesXml(string filename)
