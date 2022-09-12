@@ -476,6 +476,8 @@ namespace System.Windows.Forms
 		private int _BeaconPriority;
 		private int _RegionPriority;
 		private bool _AutoPriority;
+		private string _viasGroundText;
+		private string _viasPowerText;
 
 		private void DefaultEntityAppearance()
 		{
@@ -491,8 +493,8 @@ namespace System.Windows.Forms
 			_ViasInoutColor = Color.Gold;
 			_ViasConnectColor = Color.Black;
 			_ViasFloatingColor = Color.Gray;
-			_ViasPowerColor = Color.Black;
-			_ViasGroundColor = Color.Black;
+			_ViasPowerColor = Color.Tomato;
+			_ViasGroundColor = Color.Lime;
 
 			_WireInterconnectColor = Color.Blue;
 			_WirePowerColor = Color.Red;
@@ -530,6 +532,9 @@ namespace System.Windows.Forms
 			_CellPriority = 1;
 			_RegionPriority = 0;
 			_AutoPriority = true;
+
+			_viasGroundText = "1b'0";
+			_viasPowerText = "1b'1";
 		}
 
 		[Category("Entity Appearance")]
@@ -872,6 +877,20 @@ namespace System.Windows.Forms
 				_RegionPriority = value;
 				Invalidate();
 			}
+		}
+
+		[Category("Entity Appearance")]
+		public string ViasGroundText
+		{
+			get { return _viasGroundText; }
+			set { _viasGroundText = value; }
+		}
+
+		[Category("Entity Appearance")]
+		public string ViasPowerText
+		{
+			get { return _viasPowerText; }
+			set { _viasPowerText = value; }
 		}
 
 	}

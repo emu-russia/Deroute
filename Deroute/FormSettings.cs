@@ -112,6 +112,11 @@ namespace DerouteSharp
 			[Description("This setting allows for automatic traverse (Tier 1) when any wire is selected. This is similar to pressing F10 after selecting a wire.")]
 			public bool WireSelectionAutoTraverse { get; set; }
 
+			[Description("Text that is automatically inserted into the Label property of the ViasGround entity being added.")]
+			public string ViasGroundText { get; set; }
+			[Description("Text that is automatically inserted into the Label property of the ViasPower entity being added.")]
+			public string ViasPowerText { get; set; }
+
 			private EntityBox savedEntityBox;
 
 			public GlobalSettings(EntityBox entityBox)
@@ -133,6 +138,8 @@ namespace DerouteSharp
 				ViasTextAlignment = entityBox.ViasTextAlignment;
 				WireTextAlignment = entityBox.WireTextAlignment;
 				WireSelectionAutoTraverse = entityBox.WireSelectionAutoTraverse;
+				ViasGroundText = entityBox.ViasGroundText;
+				ViasPowerText = entityBox.ViasPowerText;
 			}
 
 			public void Save()
@@ -152,6 +159,8 @@ namespace DerouteSharp
 				savedEntityBox.ViasTextAlignment = ViasTextAlignment;
 				savedEntityBox.WireTextAlignment = WireTextAlignment;
 				savedEntityBox.WireSelectionAutoTraverse = WireSelectionAutoTraverse;
+				savedEntityBox.ViasGroundText = ViasGroundText;
+				savedEntityBox.ViasPowerText = ViasPowerText;
 			}
 		}
 
@@ -385,6 +394,8 @@ namespace DerouteSharp
 			global.CellTextAlignment = (TextAlignment)settings.CellTextAlignment;
 			global.ViasTextAlignment = (TextAlignment)settings.ViasTextAlignment;
 			global.WireTextAlignment = (TextAlignment)settings.WireTextAlignment;
+			global.ViasGroundText = settings.ViasGroundText;
+			global.ViasPowerText = settings.ViasPowerText;
 
 			global.Save();
 
@@ -479,6 +490,8 @@ namespace DerouteSharp
 			settings.CellTextAlignment = (int)global.CellTextAlignment;
 			settings.ViasTextAlignment = (int)global.ViasTextAlignment;
 			settings.WireTextAlignment = (int)global.WireTextAlignment;
+			settings.ViasGroundText = global.ViasGroundText;
+			settings.ViasPowerText = global.ViasPowerText;
 
 			// Save color settings
 

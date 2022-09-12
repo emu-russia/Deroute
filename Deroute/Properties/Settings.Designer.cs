@@ -12,7 +12,7 @@ namespace DerouteSharp.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.2.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.1.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -61,7 +61,7 @@ namespace DerouteSharp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool LockScroll0 {
             get {
                 return ((bool)(this["LockScroll0"]));
@@ -73,7 +73,7 @@ namespace DerouteSharp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool LockScroll1 {
             get {
                 return ((bool)(this["LockScroll1"]));
@@ -85,7 +85,7 @@ namespace DerouteSharp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool LockScroll2 {
             get {
                 return ((bool)(this["LockScroll2"]));
@@ -97,7 +97,7 @@ namespace DerouteSharp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool LockZoom0 {
             get {
                 return ((bool)(this["LockZoom0"]));
@@ -109,7 +109,7 @@ namespace DerouteSharp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool LockZoom1 {
             get {
                 return ((bool)(this["LockZoom1"]));
@@ -121,7 +121,7 @@ namespace DerouteSharp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool LockZoom2 {
             get {
                 return ((bool)(this["LockZoom2"]));
@@ -229,7 +229,7 @@ namespace DerouteSharp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Green")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Gold")]
         public global::System.Drawing.Color ViasInoutColor {
             get {
                 return ((global::System.Drawing.Color)(this["ViasInoutColor"]));
@@ -265,7 +265,7 @@ namespace DerouteSharp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Black")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Tomato")]
         public global::System.Drawing.Color ViasPowerColor {
             get {
                 return ((global::System.Drawing.Color)(this["ViasPowerColor"]));
@@ -277,7 +277,7 @@ namespace DerouteSharp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Black")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Lime")]
         public global::System.Drawing.Color ViasGroundColor {
             get {
                 return ((global::System.Drawing.Color)(this["ViasGroundColor"]));
@@ -668,6 +668,30 @@ namespace DerouteSharp.Properties {
             }
             set {
                 this["ViasShape"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1b\'0")]
+        public string ViasGroundText {
+            get {
+                return ((string)(this["ViasGroundText"]));
+            }
+            set {
+                this["ViasGroundText"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1b\'1")]
+        public string ViasPowerText {
+            get {
+                return ((string)(this["ViasPowerText"]));
+            }
+            set {
+                this["ViasPowerText"] = value;
             }
         }
     }
