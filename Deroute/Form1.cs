@@ -53,6 +53,7 @@ namespace DerouteSharp
 			entityBox1.OnEntityLabelEdit += EntityLabelChanged;
 			entityBox1.OnFrameDone += entityBox1_OnFrameDone;
 			entityBox1.OnDestinationNodeChanged += EntityBox1_OnDestinationNodeChanged;
+			entityBox1.OnModuleChanged += EntityBox1_OnModuleChanged;
 
 			entityBox1.BeaconImage = Properties.Resources.beacon_entity;
 
@@ -121,18 +122,18 @@ namespace DerouteSharp
 			toolStripStatusLabel8.Text = entityBox.GetWireCount().ToString();
 			toolStripStatusLabel10.Text = entityBox.GetCellCount().ToString();
 
-			//
 			// Update beacon list
-			//
 
 			if ( listView1.Items.Count != entityBox1.GetBeaconCount() )
 			{
 				RebuildBeaconList();
 			}
 
-			//
+			// Update module list
+
+			RepopulateModulesList();
+
 			// Update tree
-			//
 
 			PopulateTree();
 		}
@@ -1499,6 +1500,7 @@ namespace DerouteSharp
 		{
 			entityBox1.AddLayer();
 		}
+
 
 	}       // Form1
 

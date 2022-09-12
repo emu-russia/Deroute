@@ -122,6 +122,7 @@ namespace System.Windows.Forms
 		public event EntityBoxEntityEventHandler OnEntityScroll = null;
 		public event EntityBoxEntityEventHandler OnDestinationNodeChanged = null;
 		public event EntityBoxFrameDoneHandler OnFrameDone = null;
+		public event EntityBoxEntityEventHandler OnModuleChanged = null;
 
 		public EntityBox()
 		{
@@ -239,6 +240,18 @@ namespace System.Windows.Forms
 			return Count;
 		}
 
+		public List<Entity> GetCells()
+		{
+			List<Entity> _entities = GetEntities();
+
+			List<Entity> cells = new List<Entity>();
+			foreach (Entity entity in _entities)
+			{
+				if (entity.IsCell())
+					cells.Add(entity);
+			}
+			return cells;
+		}
 
 		public int GetBeaconCount ()
 		{
@@ -293,6 +306,11 @@ namespace System.Windows.Forms
 				OnEntityLabelEdit(this, entity, EventArgs.Empty);
 		}
 
+		public void ModuleEdited(Entity entity)
+		{
+			if (OnModuleChanged != null)
+				OnModuleChanged(this, entity, EventArgs.Empty);
+		}
 
 		//
 		// Lambda Transformation

@@ -77,6 +77,7 @@ public class Entity
 	public List<PointF> SavedPathPoints = null;
 	private int _WidthOverride;         // vias / wire
 	private List<EntityType> _traverseBlackList = null;
+	private string _moduleName = null;
 
 	[XmlIgnore]
 	public long SelectTimeStamp;
@@ -388,4 +389,20 @@ public class Entity
 		}
 	}
 
+	[Category("Entity Properties")]
+	[Description("To assign a shared Verilog module to multiple cells/units, specify the module name here. All modules are displayed on the `Modules` tab")]
+	public string Module
+	{
+		get { return _moduleName; }
+		set
+		{
+			_moduleName = value;
+
+			if (parentBox != null)
+			{
+				parentBox.ModuleEdited(this);
+				parentBox.Invalidate();
+			}
+		}
+	}
 }
