@@ -16,9 +16,7 @@ namespace System.Windows.Forms
 	public partial class EntityBox : Control
 	{
 
-		//
 		// Drawing
-		//
 
 		private void DrawLambdaScale(Graphics gr)
 		{
@@ -152,9 +150,7 @@ namespace System.Windows.Forms
 
 			switch (entity.Type)
 			{
-				//
 				// Vias
-				//
 
 				case EntityType.ViasConnect:
 				case EntityType.ViasFloating:
@@ -233,9 +229,7 @@ namespace System.Windows.Forms
 										   2 * radius, 2 * radius);
 					}
 
-					//
-					// Label
-					//
+					// Vias Label
 
 					if (entity.Label != null && entity.Label.Length > 0 && Zoom > 50)
 					{
@@ -301,9 +295,7 @@ namespace System.Windows.Forms
 
 					break;
 
-				//
 				// Wires
-				//
 
 				case EntityType.WireGround:
 				case EntityType.WirePower:
@@ -353,9 +345,7 @@ namespace System.Windows.Forms
 								 startX, startY,
 								 endX, endY);
 
-					//
-					// Label
-					//
+					// Wire Label
 
 					if (entity.Label != null && entity.Label.Length > 0 && Zoom > 50)
 					{
@@ -421,9 +411,7 @@ namespace System.Windows.Forms
 
 					break;
 
-				//
 				// Cells and Units
-				//
 
 				case EntityType.CellNot:
 				case EntityType.CellBuffer:
@@ -489,9 +477,7 @@ namespace System.Windows.Forms
 					gr.FillRectangle(new SolidBrush(cellColor), topLeft.X, topLeft.Y,
 									   rectSize.X, rectSize.Y);
 
-					//
-					// Label
-					//
+					// Cells and Units Label
 
 					if (entity.Label != null && entity.Label.Length > 0 && Zoom > 50)
 					{
@@ -553,9 +539,7 @@ namespace System.Windows.Forms
 
 					break;
 
-				//
 				// Beacon
-				//
 
 				case EntityType.Beacon:
 
@@ -600,9 +584,7 @@ namespace System.Windows.Forms
 					//Rectangle rect = new Rectangle(beaconOrigin.X, beaconOrigin.Y, 1, 1);
 					//gr.DrawRectangle(Pens.White, rect);
 
-					//
-					// Label
-					//
+					// Beacon Label
 
 					if (entity.Label != null && entity.Label.Length > 0)
 					{
@@ -623,9 +605,7 @@ namespace System.Windows.Forms
 
 					break;
 
-				//
 				// Region
-				//
 
 				case EntityType.Region:
 
@@ -661,9 +641,7 @@ namespace System.Windows.Forms
 
 					gr.FillPath(brush, gp);
 
-					//
-					// Label
-					//
+					// Region Label
 
 					if (entity.Label != null && entity.Label.Length > 0)
 					{
@@ -785,9 +763,7 @@ namespace System.Windows.Forms
 				_zoom = 100;
 			}
 
-			//
 			// Background
-			//
 
 			Stamp1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
@@ -799,9 +775,7 @@ namespace System.Windows.Forms
 			if (DrawStats)
 				Console.WriteLine("Background: " + (Stamp2 - Stamp1).ToString() + " ms");
 
-			//
 			// Image Layers
-			//
 
 			Stamp1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
@@ -821,9 +795,7 @@ namespace System.Windows.Forms
 			if (DrawStats)
 				Console.WriteLine("Image Layers: " + (Stamp2 - Stamp1).ToString() + " ms");
 
-			//
 			// Grid
-			//
 
 			Stamp1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
@@ -834,9 +806,7 @@ namespace System.Windows.Forms
 			if (DrawStats)
 				Console.WriteLine("Grid: " + (Stamp2 - Stamp1).ToString() + " ms");
 
-			//
 			// Entities
-			//
 
 			if (Lambda > 0.0F)
 			{
@@ -854,9 +824,7 @@ namespace System.Windows.Forms
 				if (DrawStats)
 					Console.WriteLine("Entities: " + (Stamp2 - Stamp1).ToString() + " ms");
 
-				//
 				// Wire drawing animation
-				//
 
 				if (WholeScene == false && DrawingBegin && (Mode == EntityMode.WireGround ||
 					   Mode == EntityMode.WireInterconnect || Mode == EntityMode.WirePower))
@@ -877,9 +845,7 @@ namespace System.Windows.Forms
 					DrawEntity(virtualEntity, gr);
 				}
 
-				//
 				// Cell drawing animation
-				//
 
 				if (WholeScene == false && DrawingBegin && (
 						Mode == EntityMode.CellNot ||
@@ -945,30 +911,22 @@ namespace System.Windows.Forms
 					DrawEntity(virtualEntity, gr);
 				}
 
-				//
 				// Lambda Scale
-				//
 
 				if (WholeScene == false)
 					DrawLambdaScale(gr);
 
-				//
 				// Origin
-				//
 
 				DrawOrigin(gr);
 
-				//
 				// RMB
-				//
 
 				if (WholeScene == false)
 					DrawRightMouseCross(gr);
 			}
 
-			//
 			// Select box animation
-			//
 
 			if (SelectionBegin && WholeScene == false)
 			{
@@ -1036,7 +994,6 @@ namespace System.Windows.Forms
 			Invalidate();
 			base.OnSizeChanged(e);
 		}
-
 
 	}
 }

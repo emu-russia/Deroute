@@ -285,6 +285,7 @@ public class Entity
 
 	private bool visible = true;
 	[Category("Entity Properties")]
+	[XmlIgnore]
 	public bool Visible
 	{
 		get { return visible; }
@@ -356,6 +357,7 @@ public class Entity
 	}
 
 	[Category("Entity Properties")]
+	[XmlIgnore]
 	public float WireLengthLambda
 	{
 		get { return WireLength(); }
@@ -371,6 +373,7 @@ public class Entity
 	}
 
 	[Category("Entity Properties")]
+	[XmlIgnore]
 	public float WireTangent
 	{
 		get { return Tangent(); }

@@ -96,6 +96,16 @@ namespace System.Windows.Forms
 			item.SetParentControl(this);
 			item.parent = insertionNode;
 
+			if (Type == EntityType.ViasGround)
+			{
+				item.Label = ViasGroundText;
+			}
+
+			if (Type == EntityType.ViasPower)
+			{
+				item.Label = ViasPowerText;
+			}
+
 			while (DrawInProgress) ;
 
 			insertionNode.Children.Add(item);

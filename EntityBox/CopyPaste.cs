@@ -103,9 +103,7 @@ namespace System.Windows.Forms
 				item.SetParentControl(this);
 				item.parent = insertionNode;
 
-				//
 				// Select pasted items, so we can move it around
-				//
 
 				SelectEntity(item);
 

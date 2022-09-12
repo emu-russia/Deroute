@@ -12,22 +12,22 @@
       <Value Profile="(Default)">5</Value>
     </Setting>
     <Setting Name="LockScroll0" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="LockScroll1" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="LockScroll2" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="LockZoom0" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="LockZoom1" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="LockZoom2" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="HideGrid" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -54,7 +54,7 @@
       <Value Profile="(Default)">Red</Value>
     </Setting>
     <Setting Name="ViasInoutColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">Green</Value>
+      <Value Profile="(Default)">Gold</Value>
     </Setting>
     <Setting Name="ViasConnectColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">Black</Value>
@@ -63,10 +63,10 @@
       <Value Profile="(Default)">Gray</Value>
     </Setting>
     <Setting Name="ViasPowerColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">Black</Value>
+      <Value Profile="(Default)">Tomato</Value>
     </Setting>
     <Setting Name="ViasGroundColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">Black</Value>
+      <Value Profile="(Default)">Lime</Value>
     </Setting>
     <Setting Name="WireInterconnectColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">Blue</Value>
@@ -163,6 +163,12 @@
     </Setting>
     <Setting Name="ViasShape" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="ViasGroundText" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1b'0</Value>
+    </Setting>
+    <Setting Name="ViasPowerText" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1b'1</Value>
     </Setting>
   </Settings>
 </SettingsFile>
