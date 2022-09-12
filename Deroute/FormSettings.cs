@@ -541,6 +541,5 @@ namespace DerouteSharp
 			settings.Save();
 		}
 
-
 	}
 }

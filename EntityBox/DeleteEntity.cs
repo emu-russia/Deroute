@@ -118,9 +118,7 @@ namespace System.Windows.Forms
 
 		private void DeleteGarbage()
 		{
-			//
 			// Wipe small wires (< 1 lambda)
-			//
 
 			RemoveSmallWires(1.0F);
 		}

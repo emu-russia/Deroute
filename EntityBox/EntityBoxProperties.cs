@@ -488,7 +488,7 @@ namespace System.Windows.Forms
 
 			_ViasInputColor = Color.Green;
 			_ViasOutputColor = Color.Red;
-			_ViasInoutColor = Color.Yellow;
+			_ViasInoutColor = Color.Gold;
 			_ViasConnectColor = Color.Black;
 			_ViasFloatingColor = Color.Gray;
 			_ViasPowerColor = Color.Black;

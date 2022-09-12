@@ -16,7 +16,6 @@ namespace System.Windows.Forms
 	public partial class EntityBox : Control
 	{
 
-
 		public void Serialize(string FileName)
 		{
 			XmlSerializer ser = new XmlSerializer(typeof(List<Entity>));

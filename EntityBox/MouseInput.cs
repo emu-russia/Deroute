@@ -172,9 +172,7 @@ namespace System.Windows.Forms
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			//
 			// Scrolling
-			//
 
 			if (e.Button == MouseButtons.Right && ScrollingBegin == false && DrawingBegin == false)
 			{
@@ -188,9 +186,7 @@ namespace System.Windows.Forms
 				ScrollingBegin = true;
 			}
 
-			//
 			// Drawing
-			//
 
 			if (e.Button == MouseButtons.Left && Mode != EntityMode.Selection &&
 				 Mode != EntityMode.ImageLayer0 && Mode != EntityMode.ImageLayer1 && Mode != EntityMode.ImageLayer2 &&
@@ -226,9 +222,7 @@ namespace System.Windows.Forms
 				}
 			}
 
-			//
 			// Dragging / selection
-			//
 
 			if (e.Button == MouseButtons.Left && Mode == EntityMode.Selection
 				 && DraggingBegin == false && SelectionBegin == false)
@@ -294,23 +288,17 @@ namespace System.Windows.Forms
 				Invalidate();
 			}
 
-			//
 			// Select entity
-			//
 
 			if (e.Button == MouseButtons.Left && Mode == EntityMode.Selection)
 			{
-				//
 				// Catch entities overlapping selection box
-				//
 
 				bool CatchSomething = false;
 
 				if (SelectionBegin)
 				{
-					//
 					// Selection box area
-					//
 
 					PointF selectionStart = ScreenToLambda(SelectStartMouseX, SelectStartMouseY);
 					PointF selectionEnd = ScreenToLambda(e.X, e.Y);
@@ -353,9 +341,7 @@ namespace System.Windows.Forms
 													  selectionSize.X,
 													  selectionSize.Y);
 
-					//
 					// Estimate area. Doesn't count selection below 4 lambda square
-					//
 
 					float square = selectionSize.X * selectionSize.Y;
 
@@ -448,9 +434,7 @@ namespace System.Windows.Forms
 				}
 			}
 
-			//
 			// Add vias
-			//
 
 			if (e.Button == MouseButtons.Left &&
 				 (Mode == EntityMode.ViasConnect || Mode == EntityMode.ViasFloating || Mode == EntityMode.ViasGround ||
@@ -462,9 +446,7 @@ namespace System.Windows.Forms
 				DrawingBegin = false;
 			}
 
-			//
 			// Add beacon
-			//
 
 			if (e.Button == MouseButtons.Left &&
 				Mode == EntityMode.Beacon && DrawingBegin)
@@ -474,9 +456,7 @@ namespace System.Windows.Forms
 				DrawingBegin = false;
 			}
 
-			//
 			// Add wire
-			//
 
 			if (e.Button == MouseButtons.Left && (Mode == EntityMode.WireGround ||
 				  Mode == EntityMode.WireInterconnect || Mode == EntityMode.WirePower) && DrawingBegin)
@@ -486,9 +466,7 @@ namespace System.Windows.Forms
 				DrawingBegin = false;
 			}
 
-			//
 			// Add cell
-			//
 
 			if (e.Button == MouseButtons.Left && (
 					Mode == EntityMode.CellNot ||
@@ -510,15 +488,11 @@ namespace System.Windows.Forms
 				DrawingBegin = false;
 			}
 
-			//
 			// End Drag
-			//
 
 			if (e.Button == MouseButtons.Left && DraggingBegin)
 			{
-				//
 				// Fix move jitter
-				//
 
 				if (draggingDist < 2 * Lambda)
 				{
@@ -539,9 +513,7 @@ namespace System.Windows.Forms
 				DraggingBegin = false;
 			}
 
-			//
 			// Clear selection box
-			//
 
 			if (SelectionBegin)
 			{
@@ -554,9 +526,7 @@ namespace System.Windows.Forms
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			//
 			// Scroll animation
-			//
 
 			Point screenCoord = new Point();
 
@@ -609,9 +579,7 @@ namespace System.Windows.Forms
 				Invalidate();
 			}
 
-			//
 			// Wire drawing animation
-			//
 
 			if (DrawingBegin && (Mode == EntityMode.WireGround ||
 				   Mode == EntityMode.WireInterconnect || Mode == EntityMode.WirePower))
@@ -621,9 +589,7 @@ namespace System.Windows.Forms
 				Invalidate();
 			}
 
-			//
 			// Cell drawing animation
-			//
 
 			if (DrawingBegin && (
 					Mode == EntityMode.CellNot ||
@@ -644,9 +610,7 @@ namespace System.Windows.Forms
 				Invalidate();
 			}
 
-			//
 			// Drag animation
-			//
 
 			if (DraggingBegin && selected.Count > 0)
 			{
@@ -701,9 +665,7 @@ namespace System.Windows.Forms
 				Invalidate();
 			}
 
-			//
 			// Selection box animation
-			//
 
 			if (SelectionBegin)
 			{
@@ -776,7 +738,6 @@ namespace System.Windows.Forms
 
 			base.OnMouseWheel(e);
 		}
-
 
 	}
 }
