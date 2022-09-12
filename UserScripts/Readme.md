@@ -29,4 +29,8 @@ Principle of conversion:
 
 The script does not check connectivity and does not make any special checks at all. All errors can be checked later when using the generated HDL in your favorite CAD.
 
-Example use: `GetVerilog.bat PSG.xmlz PSG.v`
+Example use: `GetVerilog.bat PSG.xmlz PSG.v psg_`
+
+- First argument: The name of the source XML
+- Second argument: The name of the Verilog to be generated
+- Third argument: Common prefix for module names. If not specified, the XML name with an underscore will be taken.

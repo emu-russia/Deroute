@@ -57,7 +57,8 @@ namespace GetVerilog
 
 			// Get a list of module instances
 
-			instances = GetInstances(ents, top.module_name.ToLower() + "_");
+			string mod_prefix = args.Length <= 3 ? args[2] : top.module_name.ToLower() + "_";
+			instances = GetInstances(ents, mod_prefix);
 
 			// Output the verilog
 
@@ -896,5 +897,8 @@ public class EntityBox
 	{}
 
 	public void LabelEdited(Entity entity)
+	{}
+
+	public void ModuleEdited(Entity entity)
 	{}
 }
