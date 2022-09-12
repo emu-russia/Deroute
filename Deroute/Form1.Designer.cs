@@ -161,10 +161,13 @@
 			this.splitContainer3 = new System.Windows.Forms.SplitContainer();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.myTreeView1 = new DerouteSharp.MyTreeView();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.listViewModules = new System.Windows.Forms.ListView();
+			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.backgroundWorkerTimeSpent = new System.ComponentModel.BackgroundWorker();
 			this.backgroundWorkerML = new System.ComponentModel.BackgroundWorker();
 			this.saveFileDialog3 = new System.Windows.Forms.SaveFileDialog();
-			this.myTreeView1 = new DerouteSharp.MyTreeView();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -185,6 +188,7 @@
 			this.splitContainer3.SuspendLayout();
 			this.tabControl2.SuspendLayout();
 			this.tabPage4.SuspendLayout();
+			this.tabPage2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -1405,6 +1409,7 @@
 			// tabControl2
 			// 
 			this.tabControl2.Controls.Add(this.tabPage4);
+			this.tabControl2.Controls.Add(this.tabPage2);
 			this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabControl2.Location = new System.Drawing.Point(0, 0);
 			this.tabControl2.Name = "tabControl2";
@@ -1423,20 +1428,6 @@
 			this.tabPage4.Text = "Hierarchy";
 			this.tabPage4.UseVisualStyleBackColor = true;
 			// 
-			// backgroundWorkerTimeSpent
-			// 
-			this.backgroundWorkerTimeSpent.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerTimeSpent_DoWork);
-			// 
-			// backgroundWorkerML
-			// 
-			this.backgroundWorkerML.WorkerSupportsCancellation = true;
-			this.backgroundWorkerML.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerML_DoWork);
-			// 
-			// saveFileDialog3
-			// 
-			this.saveFileDialog3.DefaultExt = "graphml";
-			this.saveFileDialog3.Filter = "GraphML Files|*.graphml|All Files|*.*";
-			// 
 			// myTreeView1
 			// 
 			this.myTreeView1.AllowDrop = true;
@@ -1452,6 +1443,51 @@
 			this.myTreeView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragDrop);
 			this.myTreeView1.DragEnter += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragEnter);
 			this.myTreeView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.myTreeView1_KeyDown);
+			// 
+			// tabPage2
+			// 
+			this.tabPage2.Controls.Add(this.listViewModules);
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Size = new System.Drawing.Size(211, 555);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "Modules";
+			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
+			// listViewModules
+			// 
+			this.listViewModules.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader3});
+			this.listViewModules.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.listViewModules.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.listViewModules.HideSelection = false;
+			this.listViewModules.Location = new System.Drawing.Point(0, 0);
+			this.listViewModules.Name = "listViewModules";
+			this.listViewModules.Size = new System.Drawing.Size(211, 555);
+			this.listViewModules.TabIndex = 0;
+			this.listViewModules.UseCompatibleStateImageBehavior = false;
+			this.listViewModules.View = System.Windows.Forms.View.Details;
+			this.listViewModules.VisibleChanged += new System.EventHandler(this.listViewModules_VisibleChanged);
+			this.listViewModules.DoubleClick += new System.EventHandler(this.listViewModules_DoubleClick);
+			// 
+			// columnHeader3
+			// 
+			this.columnHeader3.Text = "Module name";
+			this.columnHeader3.Width = 160;
+			// 
+			// backgroundWorkerTimeSpent
+			// 
+			this.backgroundWorkerTimeSpent.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerTimeSpent_DoWork);
+			// 
+			// backgroundWorkerML
+			// 
+			this.backgroundWorkerML.WorkerSupportsCancellation = true;
+			this.backgroundWorkerML.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerML_DoWork);
+			// 
+			// saveFileDialog3
+			// 
+			this.saveFileDialog3.DefaultExt = "graphml";
+			this.saveFileDialog3.Filter = "GraphML Files|*.graphml|All Files|*.*";
 			// 
 			// Form1
 			// 
@@ -1491,6 +1527,7 @@
 			this.splitContainer3.ResumeLayout(false);
 			this.tabControl2.ResumeLayout(false);
 			this.tabPage4.ResumeLayout(false);
+			this.tabPage2.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1633,6 +1670,9 @@
 		private System.Windows.Forms.SaveFileDialog saveFileDialog3;
 		private System.Windows.Forms.ToolStripMenuItem addViasAtTheWireEndsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem addLayerToolStripMenuItem;
+		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.ListView listViewModules;
+		private System.Windows.Forms.ColumnHeader columnHeader3;
 	}
 }
 
