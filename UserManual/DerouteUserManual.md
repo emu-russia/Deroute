@@ -103,4 +103,14 @@ XXX: The dialog currently does not write readiness percentage and does not close
 
 The above flaws do not prevent you from training the model, so your trained model can still be used later, after the above flaws are fixed.
 
+### Drawing Wires with Shift
+
+In ViasConnect mode, you can draw wires by holding down Shift. In this case a wire segment (WireInterconnect) will be drawn instead of ViasConnect.
+
+### Bulk renaming of entities
+
+Tools -> Bulk Rename. Everything is straightforward here.
+
+![bulk_rename.png](imgstore/bulk_rename.png)
+
 Translated with DeepL.com

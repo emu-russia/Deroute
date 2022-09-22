@@ -1279,6 +1279,12 @@ namespace DerouteSharp
 			entityBox1.Invalidate();
 		}
 
+		private void bulkRenameToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			FormBulkRename form = new FormBulkRename(entityBox1);
+			form.ShowDialog();
+		}
+
 		#endregion
 
 
@@ -1500,7 +1506,6 @@ namespace DerouteSharp
 		{
 			entityBox1.AddLayer();
 		}
-
 
 	}       // Form1
 
