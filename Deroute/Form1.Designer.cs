@@ -168,6 +168,7 @@
 			this.backgroundWorkerTimeSpent = new System.ComponentModel.BackgroundWorker();
 			this.backgroundWorkerML = new System.ComponentModel.BackgroundWorker();
 			this.saveFileDialog3 = new System.Windows.Forms.SaveFileDialog();
+			this.bulkRenameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -412,7 +413,8 @@
             this.removeSmallWiresToolStripMenuItem,
             this.removeNotOrthogonalWiresToolStripMenuItem,
             this.entityLocatorToolStripMenuItem,
-            this.addViasAtTheWireEndsToolStripMenuItem});
+            this.addViasAtTheWireEndsToolStripMenuItem,
+            this.bulkRenameToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
 			this.toolsToolStripMenuItem.Text = "Tools";
@@ -576,12 +578,14 @@
 			this.entityBox1.ViasConnectColor = System.Drawing.Color.Black;
 			this.entityBox1.ViasFloatingColor = System.Drawing.Color.Gray;
 			this.entityBox1.ViasGroundColor = System.Drawing.Color.Black;
+			this.entityBox1.ViasGroundText = "1b\'0";
 			this.entityBox1.ViasInoutColor = System.Drawing.Color.Yellow;
 			this.entityBox1.ViasInputColor = System.Drawing.Color.Green;
 			this.entityBox1.ViasOpacity = 255;
 			this.entityBox1.ViasOutputColor = System.Drawing.Color.Red;
 			this.entityBox1.ViasOverrideColor = System.Drawing.Color.Black;
 			this.entityBox1.ViasPowerColor = System.Drawing.Color.Black;
+			this.entityBox1.ViasPowerText = "1b\'1";
 			this.entityBox1.ViasPriority = 3;
 			this.entityBox1.ViasShape = ViasShape.Round;
 			this.entityBox1.ViasTextAlignment = TextAlignment.Top;
@@ -1489,6 +1493,13 @@
 			this.saveFileDialog3.DefaultExt = "graphml";
 			this.saveFileDialog3.Filter = "GraphML Files|*.graphml|All Files|*.*";
 			// 
+			// bulkRenameToolStripMenuItem
+			// 
+			this.bulkRenameToolStripMenuItem.Name = "bulkRenameToolStripMenuItem";
+			this.bulkRenameToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+			this.bulkRenameToolStripMenuItem.Text = "Bulk Rename";
+			this.bulkRenameToolStripMenuItem.Click += new System.EventHandler(this.bulkRenameToolStripMenuItem_Click);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1673,6 +1684,7 @@
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.ListView listViewModules;
 		private System.Windows.Forms.ColumnHeader columnHeader3;
+		private System.Windows.Forms.ToolStripMenuItem bulkRenameToolStripMenuItem;
 	}
 }
 

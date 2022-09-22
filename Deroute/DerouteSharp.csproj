@@ -84,6 +84,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormBulkRename.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBulkRename.Designer.cs">
+      <DependentUpon>FormBulkRename.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormCreateMLModel.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -153,6 +159,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormBulkRename.resx">
+      <DependentUpon>FormBulkRename.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormCreateMLModel.resx">
       <DependentUpon>FormCreateMLModel.cs</DependentUpon>

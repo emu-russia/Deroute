@@ -15,6 +15,8 @@ namespace System.Windows.Forms
 {
 	public partial class EntityBox : Control
 	{
+		PointF? LastVia;         // The last vias when drawing with Shift
+
 		public Point GetLastRightMouseButton()
 		{
 			return LastRMB;
@@ -441,7 +443,25 @@ namespace System.Windows.Forms
 				  Mode == EntityMode.ViasInout || Mode == EntityMode.ViasInput || Mode == EntityMode.ViasOutput ||
 				  Mode == EntityMode.ViasPower) && DrawingBegin)
 			{
-				AddVias((EntityType)Mode, e.X, e.Y, Color.Black);
+				if (Control.ModifierKeys == Keys.Shift)
+				{
+					if (LastVia == null)
+					{
+						var via = AddVias((EntityType)Mode, e.X, e.Y, Color.Black);
+						LastVia = new PointF(via.LambdaX, via.LambdaY);
+					}
+					else
+					{
+						Point start = LambdaToScreen(((PointF)LastVia).X, ((PointF)LastVia).Y);
+						AddWire(EntityType.WireInterconnect, start.X, start.Y, e.X, e.Y);
+						LastVia = ScreenToLambda(e.X, e.Y);
+					}
+				}
+				else
+				{
+					var via = AddVias((EntityType)Mode, e.X, e.Y, Color.Black);
+					LastVia = new PointF(via.LambdaX, via.LambdaY);
+				}
 
 				DrawingBegin = false;
 			}
