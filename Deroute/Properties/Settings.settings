@@ -165,10 +165,10 @@
       <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="ViasGroundText" Type="System.String" Scope="User">
-      <Value Profile="(Default)">1b'0</Value>
+      <Value Profile="(Default)">1'b0</Value>
     </Setting>
     <Setting Name="ViasPowerText" Type="System.String" Scope="User">
-      <Value Profile="(Default)">1b'1</Value>
+      <Value Profile="(Default)">1'b1</Value>
     </Setting>
   </Settings>
 </SettingsFile>
