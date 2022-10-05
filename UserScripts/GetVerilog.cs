@@ -421,12 +421,12 @@ namespace GetVerilog
 			{
 				if (ent.Type == EntityType.ViasPower)
 				{
-					return "1b'1";
+					return "1'b1";
 				}
 
 				if (ent.Type == EntityType.ViasGround)
 				{
-					return "1b'0";
+					return "1'b0";
 				}
 			}
 			return null;

@@ -533,8 +533,8 @@ namespace System.Windows.Forms
 			_RegionPriority = 0;
 			_AutoPriority = true;
 
-			_viasGroundText = "1b'0";
-			_viasPowerText = "1b'1";
+			_viasGroundText = "1'b0";
+			_viasPowerText = "1'b1";
 		}
 
 		[Category("Entity Appearance")]
