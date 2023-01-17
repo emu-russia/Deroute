@@ -132,7 +132,7 @@
     <Compile Include="FormTrainMLModel.Designer.cs">
       <DependentUpon>FormTrainMLModel.cs</DependentUpon>
     </Compile>
-    <Compile Include="GraphMLExport.cs" />
+    <Compile Include="GetVerilog.cs" />
     <Compile Include="KeyBind.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -268,9 +268,10 @@ namespace DerouteSharp
 
 			if (result == DialogResult.OK)
 			{
-				string text = GraphMLExport.ExportEntitiesNetlist(entityBox1.GetEntities(), entityBox1.ViasBaseSize);
-
-				File.WriteAllText(saveFileDialog3.FileName, text);
+				string verilog_name = saveFileDialog3.FileName;
+				string text = GetVerilog.EntitiesToVerilogSource(entityBox1, Path.GetFileNameWithoutExtension(verilog_name));
+				File.WriteAllText(verilog_name, text, Encoding.ASCII);
+				MessageBox.Show("Verilog successfully exported to file: " + verilog_name, "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 		}
 
