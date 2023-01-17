@@ -9,25 +9,20 @@ XXX: Данная инструкция пока включает не все р�
 
 ## Загрузка и сохранение данных
 
-### Сохранить сущности как Netlist
+### Экспорт в Verilog
 
-Есть возможность выгрузить сущности в формате GraphML. Выгружается только базовая информация - вершины и ребра графа, чтобы формат GraphML был максимально совместимым и его можно было использовать в сторонних приложениях.
+A script to convert XML to Verilog RTL. We get a kind of "disassembly" of the chip, with which you can work further as with the sources of HDL.
 
-Особенности сохранения сущностей как Netlist:
-- Все виасы (Vias) сохраняются как вершины графа. Если присутствует 2 или более виасов с одинаковым именем, то такие виасы считаются как одна вершина. Это сделано с целью "совмещения" сущностей с разных слоев микросхемы или PCB, там где они 
-расходятся между фотографиями слоев;
-- Провода (Wire) трактуются как ориентированные ребра графа. При этом несколько сегментов проводов объединяются в одно ребро графа. Правила совмещения сегментов аналогичны правилам траверса, используемых в Deroute. Имя ребра при этом получается
-конкатенацией имен всех проводов, входящих в это ребро;
-- Если часть виасов находятся "внутри" стандартной ячейки или юнита, то данная стандартная ячейка/юнит рассматривается как вершина графа, и соединения ребрами проводятся с этой ячейкой/юнитом, вместо набора виасов. При этом к старому имени провода добавляется
-имя виаса, который теперь трактуется как вход/выход стандартной ячейки/юнита.
+Principle of conversion:
+- All cells (entities of `Cell` type) and custom blocks (entities of `Unit` type) become module instances. The direct definition of the cell/block logic is at the user's choice.
+- All input/output/input vias within a cell/block become ports and wire connections are assigned by name (`.port_name(wire_xxx)`).
+- If the port has no name, an error is output. All cell/block ports must have names.
+- The instance name is taken from the `Label` property of the cell/block. The first word is the module name, the second word (if any) is the instance name. If there is no name, then a name of the form `g1`, `g2` and so on is generated. So it would be better to have a cell name too, to understand what kind of cell it is in the HDL listing.
+- The ports for the top module are all input/output/inout vias NOT of cells. All ordinary vias become open-end wires and go into the HDL as is.
+- Wires are obtained by combining segments by traverse. The wire name is taken by concatenating all segment names with a underscore (`_`), if the result is an empty string, then the wire name is generated as `w1`, `w2` and so on.
+- If among all wire entities is ViasPower / ViasGround - then instead of wire connect to `1'b1` / `1'b0` constants
 
-Для работы с GraphML рекомендуется программа yEd (https://www.yworks.com/products/yed). Она позволяет красиво уложить граф в схему.
-
-Примеры сущностей выгруженных как Netlist:
-
-![картинка1]()
-![картинка2]()
-![картинка3]()
+The script does not check connectivity and does not make any special checks at all. All errors can be checked later when using the generated HDL in your favorite CAD.
 
 ## Локатор сущностей
 
