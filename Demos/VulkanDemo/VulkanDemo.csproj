@@ -6,6 +6,11 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+	<AutoSetSType>true</AutoSetSType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Vulkan" Version="0.5.1" />
+  </ItemGroup>
 
 </Project>
