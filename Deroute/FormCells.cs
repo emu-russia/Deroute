@@ -13,10 +13,12 @@ namespace DerouteSharp
 	public partial class FormCells : Form
 	{
 		private bool Saved;
+		private List<CellSupport.Cell> cells_db = null;
 
-		public FormCells(float source_lambda)
+		public FormCells(float source_lambda, List<CellSupport.Cell> cells)
 		{
 			InitializeComponent();
+			cells_db = cells;
 			entityBox1.Lambda = source_lambda;
 		}
 

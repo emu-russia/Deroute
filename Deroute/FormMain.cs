@@ -34,6 +34,7 @@ namespace DerouteSharp
 		private TimeSpentStats timeStats = new TimeSpentStats();
 		private Random rnd = new Random(DateTime.Now.Millisecond);
 		private FormCells cells_editor = null;
+		private List<CellSupport.Cell> cells_db = new List<CellSupport.Cell>();
 
 		public FormMain()
 		{
@@ -167,7 +168,7 @@ namespace DerouteSharp
 				}
 				else
 				{
-					cells_editor = new FormCells(entityBox1.Lambda);
+					cells_editor = new FormCells(entityBox1.Lambda, cells_db);
 					cells_editor.Show();
 				}
 
@@ -1491,6 +1492,7 @@ namespace DerouteSharp
 			if (openFileDialog2.ShowDialog() == DialogResult.OK)
 			{
 				string filename = openFileDialog2.FileName;
+				cells_db = CellSupport.DeserializeFromFile(filename);
 			}
 		}
 
@@ -1499,6 +1501,7 @@ namespace DerouteSharp
 			if (saveFileDialog2.ShowDialog() == DialogResult.OK)
 			{
 				string filename = saveFileDialog2.FileName;
+				CellSupport.SerializeToFile(cells_db, filename);
 			}
 		}
 
@@ -1510,7 +1513,7 @@ namespace DerouteSharp
 			}
 			else
 			{
-				cells_editor = new FormCells(entityBox1.Lambda);
+				cells_editor = new FormCells(entityBox1.Lambda, cells_db);
 				cells_editor.Show();
 			}
 		}
