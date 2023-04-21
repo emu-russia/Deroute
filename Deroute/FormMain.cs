@@ -518,13 +518,20 @@ namespace DerouteSharp
 			{
 				SaveEntitiesXml();
 			}
+			else if (e.KeyCode == Keys.R)
+			{
+				Console.WriteLine("rot");
+			}
+			else if (e.KeyCode == Keys.F)
+			{
+				Console.WriteLine("flip");
+			}
 		}
 
 		private void toolStripButton4_Click(object sender, EventArgs e)
 		{
 			entityBox1.DrawWireBetweenSelectedViases();
 		}
-
 
 		private void listView1_DoubleClick(object sender, EventArgs e)
 		{
