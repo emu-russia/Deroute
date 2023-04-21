@@ -74,32 +74,29 @@ namespace System.Windows.Forms
 			_zoom = 100;
 
 			//
-			// Space occupied by Image layers
+			// Space occupied by Image layer
 			//
 
-			for (int n = 2; n >= 0; n--)
+			if (_imageOrig != null && HideImage == false)
 			{
-				if (_imageOrig[n] != null && HideImage == false)
-				{
-					Point offset = LambdaToScreen(_imageScroll[n].X, _imageScroll[n].Y);
+				Point offset = LambdaToScreen(_imageScroll.X, _imageScroll.Y);
 
-					if (offset.X < originOut.X)
-						originOut.X = offset.X;
+				if (offset.X < originOut.X)
+					originOut.X = offset.X;
 
-					if (offset.Y < originOut.Y)
-						originOut.Y = offset.Y;
+				if (offset.Y < originOut.Y)
+					originOut.Y = offset.Y;
 
-					float imgZf = (float)_imageZoom[n] / 100F;
+				float imgZf = (float)_imageZoom / 100F;
 
-					int rightSide = (int)((float)_imageOrig[n].Width * imgZf) + offset.X;
-					int bottomSide = (int)((float)_imageOrig[n].Height * imgZf) + offset.Y;
+				int rightSide = (int)((float)_imageOrig.Width * imgZf) + offset.X;
+				int bottomSide = (int)((float)_imageOrig.Height * imgZf) + offset.Y;
 
-					if (rightSide > point.X)
-						point.X = rightSide;
+				if (rightSide > point.X)
+					point.X = rightSide;
 
-					if (bottomSide > point.Y)
-						point.Y = bottomSide;
-				}
+				if (bottomSide > point.Y)
+					point.Y = bottomSide;
 			}
 
 			//
@@ -365,15 +362,9 @@ namespace System.Windows.Forms
 		{
 			switch (drawMode)
 			{
-				case EntityMode.ImageLayer0:
+				case EntityMode.ImageLayer:
 				default:
-					Image0 = image;
-					break;
-				case EntityMode.ImageLayer1:
-					Image1 = image;
-					break;
-				case EntityMode.ImageLayer2:
-					Image2 = image;
+					Image = image;
 					break;
 			}
 		}
@@ -382,22 +373,10 @@ namespace System.Windows.Forms
 		{
 			switch (drawMode)
 			{
-				case EntityMode.ImageLayer0:
+				case EntityMode.ImageLayer:
 				default:
-					_imageOrig[0].Dispose();
-					_imageOrig[0] = null;
-					GC.Collect();
-					Invalidate();
-					break;
-				case EntityMode.ImageLayer1:
-					_imageOrig[1].Dispose();
-					_imageOrig[1] = null;
-					GC.Collect();
-					Invalidate();
-					break;
-				case EntityMode.ImageLayer2:
-					_imageOrig[2].Dispose();
-					_imageOrig[2] = null;
+					_imageOrig.Dispose();
+					_imageOrig = null;
 					GC.Collect();
 					Invalidate();
 					break;

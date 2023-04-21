@@ -466,19 +466,7 @@ namespace DerouteSharp
 
 		private void image0ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			entityBox1.Mode = EntityMode.ImageLayer0;
-			SelectionButtonHighlight();
-		}
-
-		private void image1ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			entityBox1.Mode = EntityMode.ImageLayer1;
-			SelectionButtonHighlight();
-		}
-
-		private void image2ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			entityBox1.Mode = EntityMode.ImageLayer2;
+			entityBox1.Mode = EntityMode.ImageLayer;
 			SelectionButtonHighlight();
 		}
 
@@ -561,17 +549,9 @@ namespace DerouteSharp
 
 			switch (entityBox1.Mode)
 			{
-				case EntityMode.ImageLayer0:
+				case EntityMode.ImageLayer:
 				default:
-					entityBox1.ScrollImage0 = zero;
-					entityBox1.Invalidate();
-					break;
-				case EntityMode.ImageLayer1:
-					entityBox1.ScrollImage1 = zero;
-					entityBox1.Invalidate();
-					break;
-				case EntityMode.ImageLayer2:
-					entityBox1.ScrollImage2 = zero;
+					entityBox1.ScrollImage = zero;
 					entityBox1.Invalidate();
 					break;
 			}
@@ -1369,13 +1349,13 @@ namespace DerouteSharp
 				return;
 			}
 
-			if (entityBox1.Image0 == null)
+			if (entityBox1.Image == null)
 			{
 				MessageBox.Show("Load the original image into Image Layer0.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 				return;
 			}
 
-			FormTrainMLModel form = new FormTrainMLModel(nn, entityBox1.Image0);
+			FormTrainMLModel form = new FormTrainMLModel(nn, entityBox1.Image);
 			form.ShowDialog();
 		}
 
@@ -1387,13 +1367,13 @@ namespace DerouteSharp
 				return;
 			}
 
-			if (entityBox1.Image0 == null)
+			if (entityBox1.Image == null)
 			{
 				MessageBox.Show("Load the original image into Image Layer0.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 				return;
 			}
 
-			ML_sourceBitmap = (Bitmap)entityBox1.Image0;
+			ML_sourceBitmap = (Bitmap)entityBox1.Image;
 			windowsPos = new Point(0, 0);
 
 			backgroundWorkerML.RunWorkerAsync();

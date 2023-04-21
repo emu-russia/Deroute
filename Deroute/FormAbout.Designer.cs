@@ -156,25 +156,17 @@
 			this.entityBox1.HideRegions = false;
 			this.entityBox1.HideVias = false;
 			this.entityBox1.HideWires = false;
-			this.entityBox1.ImageOpacity0 = 100;
-			this.entityBox1.ImageOpacity1 = 100;
-			this.entityBox1.ImageOpacity2 = 100;
+			this.entityBox1.ImageOpacity = 100;
 			this.entityBox1.Lambda = 5F;
 			this.entityBox1.Location = new System.Drawing.Point(12, 12);
-			this.entityBox1.LockScroll0 = false;
-			this.entityBox1.LockScroll1 = false;
-			this.entityBox1.LockScroll2 = false;
-			this.entityBox1.LockZoom0 = false;
-			this.entityBox1.LockZoom1 = false;
-			this.entityBox1.LockZoom2 = false;
+			this.entityBox1.LockScroll = false;
+			this.entityBox1.LockZoom = false;
 			this.entityBox1.Mode = System.Windows.Forms.EntityMode.Selection;
 			this.entityBox1.Name = "entityBox1";
 			this.entityBox1.RegionOpacity = 128;
 			this.entityBox1.RegionOverrideColor = System.Drawing.Color.Black;
 			this.entityBox1.RegionPriority = 0;
-			this.entityBox1.ScrollImage0 = ((System.Drawing.PointF)(resources.GetObject("entityBox1.ScrollImage0")));
-			this.entityBox1.ScrollImage1 = ((System.Drawing.PointF)(resources.GetObject("entityBox1.ScrollImage1")));
-			this.entityBox1.ScrollImage2 = ((System.Drawing.PointF)(resources.GetObject("entityBox1.ScrollImage2")));
+			this.entityBox1.ScrollImage = ((System.Drawing.PointF)(resources.GetObject("entityBox1.ScrollImage0")));
 			this.entityBox1.ScrollX = 0F;
 			this.entityBox1.ScrollY = 0F;
 			this.entityBox1.SelectEntitiesAfterAdd = true;
@@ -211,9 +203,7 @@
 			this.entityBox1.WireSelectionAutoTraverse = false;
 			this.entityBox1.WireTextAlignment = TextAlignment.TopLeft;
 			this.entityBox1.Zoom = 100;
-			this.entityBox1.ZoomImage0 = 100;
-			this.entityBox1.ZoomImage1 = 100;
-			this.entityBox1.ZoomImage2 = 100;
+			this.entityBox1.ZoomImage = 100;
 			this.entityBox1.OnEntityAdd += new System.Windows.Forms.EntityBoxEntityEventHandler(this.entityBox1_OnEntityAdd);
 			// 
 			// backgroundWorker1

@@ -88,18 +88,10 @@ namespace DerouteSharp
 			[Description("How many pixels will equal one lambda.")]
 			public float Lambda { get; set; }
 			[Description("Lock the scrolling of layer 0 images, so you don't accidentally mess up.")]
-			public bool LockScroll0 { get; set; }
+			public bool LockScroll { get; set; }
 			[Description("Lock the scrolling of layer 1 images, so you don't accidentally mess up.")]
-			public bool LockScroll1 { get; set; }
-			[Description("Lock the scrolling of layer 2 images, so you don't accidentally mess up.")]
-			public bool LockScroll2 { get; set; }
-			[Description("Lock the zoom of layer 0 images, so you don't accidentally mess up.")]
-			public bool LockZoom0 { get; set; }
+			public bool LockZoom { get; set; }
 			[Description("Lock the zoom of layer 1 images, so you don't accidentally mess up.")]
-			public bool LockZoom1 { get; set; }
-			[Description("Lock the zoom of layer 2 images, so you don't accidentally mess up.")]
-			public bool LockZoom2 { get; set; }
-			[Description("Hide the dots that show the grid in the lambda. The plan is to do a drawing on the grid, so far it is useless.")]
 			public bool HideGrid { get; set; }
 			[Description("Hide the ruler in the lambda at the bottom right. I don't remember it ever being useful.")]
 			public bool HideLambdaMetrics { get; set; }
@@ -126,12 +118,8 @@ namespace DerouteSharp
 				SelectEntitiesAfterAdd = entityBox.SelectEntitiesAfterAdd;
 				Grayscale = entityBox.Grayscale;
 				Lambda = entityBox.Lambda;
-				LockScroll0 = entityBox.LockScroll0;
-				LockScroll1 = entityBox.LockScroll1;
-				LockScroll2 = entityBox.LockScroll2;
-				LockZoom0 = entityBox.LockZoom0;
-				LockZoom1 = entityBox.LockZoom1;
-				LockZoom2 = entityBox.LockZoom2;
+				LockScroll = entityBox.LockScroll;
+				LockZoom = entityBox.LockZoom;
 				HideGrid = entityBox.HideGrid;
 				HideLambdaMetrics = entityBox.HideLambdaMetrics;
 				CellTextAlignment = entityBox.CellTextAlignment;
@@ -147,12 +135,8 @@ namespace DerouteSharp
 				savedEntityBox.SelectEntitiesAfterAdd = SelectEntitiesAfterAdd;
 				savedEntityBox.Grayscale = Grayscale;
 				savedEntityBox.Lambda = Lambda;
-				savedEntityBox.LockScroll0 = LockScroll0;
-				savedEntityBox.LockScroll1 = LockScroll1;
-				savedEntityBox.LockScroll2 = LockScroll2;
-				savedEntityBox.LockZoom0 = LockZoom0;
-				savedEntityBox.LockZoom1 = LockZoom1;
-				savedEntityBox.LockZoom2 = LockZoom2;
+				savedEntityBox.LockScroll = LockScroll;
+				savedEntityBox.LockZoom = LockZoom;
 				savedEntityBox.HideGrid = HideGrid;
 				savedEntityBox.HideLambdaMetrics = HideLambdaMetrics;
 				savedEntityBox.CellTextAlignment = CellTextAlignment;
@@ -383,12 +367,8 @@ namespace DerouteSharp
 			global.SelectEntitiesAfterAdd = settings.SelectEntitiesAfterAdd;
 			global.Grayscale = settings.Grayscale;
 			global.Lambda = settings.Lambda;
-			global.LockScroll0 = settings.LockScroll0;
-			global.LockScroll1 = settings.LockScroll1;
-			global.LockScroll2 = settings.LockScroll2;
-			global.LockZoom0 = settings.LockZoom0;
-			global.LockZoom1 = settings.LockZoom1;
-			global.LockZoom2 = settings.LockZoom2;
+			global.LockScroll = settings.LockScroll;
+			global.LockZoom = settings.LockZoom;
 			global.HideGrid = settings.HideGrid;
 			global.HideLambdaMetrics = settings.HideLambdaMetrics;
 			global.CellTextAlignment = (TextAlignment)settings.CellTextAlignment;
@@ -479,12 +459,8 @@ namespace DerouteSharp
 			settings.SelectEntitiesAfterAdd = global.SelectEntitiesAfterAdd;
 			settings.Grayscale = global.Grayscale;
 			settings.Lambda = global.Lambda;
-			settings.LockScroll0 = global.LockScroll0;
-			settings.LockScroll1 = global.LockScroll1;
-			settings.LockScroll2 = global.LockScroll2;
-			settings.LockZoom0 = global.LockZoom0;
-			settings.LockZoom1 = global.LockZoom1;
-			settings.LockZoom2 = global.LockZoom2;
+			settings.LockScroll = global.LockScroll;
+			settings.LockZoom = global.LockZoom;
 			settings.HideGrid = global.HideGrid;
 			settings.HideLambdaMetrics = global.HideLambdaMetrics;
 			settings.CellTextAlignment = (int)global.CellTextAlignment;

@@ -89,8 +89,6 @@
 			this.toolStripDropDownButton4 = new System.Windows.Forms.ToolStripDropDownButton();
 			this.sceneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.image0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.image1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.image2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.viasPowerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -212,10 +210,10 @@
             this.loadImageToolStripMenuItem,
             this.unloadImageToolStripMenuItem,
             this.saveSceneAsImageToolStripMenuItem,
-            this.saveSceneAsNetlistToolStripMenuItem,
             this.toolStripSeparator1,
             this.loadEntitiesToolStripMenuItem,
             this.saveEntitiesToolStripMenuItem,
+            this.saveSceneAsNetlistToolStripMenuItem,
             this.toolStripSeparator4,
             this.settingsToolStripMenuItem,
             this.toolStripSeparator5,
@@ -551,25 +549,17 @@
 			this.entityBox1.HideRegions = false;
 			this.entityBox1.HideVias = false;
 			this.entityBox1.HideWires = false;
-			this.entityBox1.ImageOpacity0 = 100;
-			this.entityBox1.ImageOpacity1 = 100;
-			this.entityBox1.ImageOpacity2 = 100;
+			this.entityBox1.ImageOpacity = 100;
 			this.entityBox1.Lambda = 5F;
 			this.entityBox1.Location = new System.Drawing.Point(0, 0);
-			this.entityBox1.LockScroll0 = true;
-			this.entityBox1.LockScroll1 = true;
-			this.entityBox1.LockScroll2 = true;
-			this.entityBox1.LockZoom0 = true;
-			this.entityBox1.LockZoom1 = true;
-			this.entityBox1.LockZoom2 = true;
+			this.entityBox1.LockScroll = true;
+			this.entityBox1.LockZoom = true;
 			this.entityBox1.Mode = System.Windows.Forms.EntityMode.Selection;
 			this.entityBox1.Name = "entityBox1";
 			this.entityBox1.RegionOpacity = 128;
 			this.entityBox1.RegionOverrideColor = System.Drawing.Color.Black;
 			this.entityBox1.RegionPriority = 0;
-			this.entityBox1.ScrollImage0 = ((System.Drawing.PointF)(resources.GetObject("entityBox1.ScrollImage0")));
-			this.entityBox1.ScrollImage1 = ((System.Drawing.PointF)(resources.GetObject("entityBox1.ScrollImage1")));
-			this.entityBox1.ScrollImage2 = ((System.Drawing.PointF)(resources.GetObject("entityBox1.ScrollImage2")));
+			this.entityBox1.ScrollImage = ((System.Drawing.PointF)(resources.GetObject("entityBox1.ScrollImage")));
 			this.entityBox1.ScrollX = 0F;
 			this.entityBox1.ScrollY = 0F;
 			this.entityBox1.SelectEntitiesAfterAdd = true;
@@ -606,9 +596,7 @@
 			this.entityBox1.WireSelectionAutoTraverse = false;
 			this.entityBox1.WireTextAlignment = TextAlignment.TopLeft;
 			this.entityBox1.Zoom = 100;
-			this.entityBox1.ZoomImage0 = 100;
-			this.entityBox1.ZoomImage1 = 100;
-			this.entityBox1.ZoomImage2 = 100;
+			this.entityBox1.ZoomImage = 100;
 			this.entityBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.entityBox1_MouseClick);
 			// 
 			// button3
@@ -784,9 +772,7 @@
 			// 
 			this.toolStripDropDownButton4.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.sceneToolStripMenuItem,
-            this.image0ToolStripMenuItem,
-            this.image1ToolStripMenuItem,
-            this.image2ToolStripMenuItem});
+            this.image0ToolStripMenuItem});
 			this.toolStripDropDownButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton4.Image")));
 			this.toolStripDropDownButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripDropDownButton4.Name = "toolStripDropDownButton4";
@@ -797,30 +783,16 @@
 			// sceneToolStripMenuItem
 			// 
 			this.sceneToolStripMenuItem.Name = "sceneToolStripMenuItem";
-			this.sceneToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+			this.sceneToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
 			this.sceneToolStripMenuItem.Text = "Scene (F1)";
 			this.sceneToolStripMenuItem.Click += new System.EventHandler(this.sceneToolStripMenuItem_Click);
 			// 
 			// image0ToolStripMenuItem
 			// 
 			this.image0ToolStripMenuItem.Name = "image0ToolStripMenuItem";
-			this.image0ToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-			this.image0ToolStripMenuItem.Text = "Image 0 (Topmost)";
+			this.image0ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.image0ToolStripMenuItem.Text = "Image Layer";
 			this.image0ToolStripMenuItem.Click += new System.EventHandler(this.image0ToolStripMenuItem_Click);
-			// 
-			// image1ToolStripMenuItem
-			// 
-			this.image1ToolStripMenuItem.Name = "image1ToolStripMenuItem";
-			this.image1ToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-			this.image1ToolStripMenuItem.Text = "Image 1";
-			this.image1ToolStripMenuItem.Click += new System.EventHandler(this.image1ToolStripMenuItem_Click);
-			// 
-			// image2ToolStripMenuItem
-			// 
-			this.image2ToolStripMenuItem.Name = "image2ToolStripMenuItem";
-			this.image2ToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-			this.image2ToolStripMenuItem.Text = "Image 2";
-			this.image2ToolStripMenuItem.Click += new System.EventHandler(this.image2ToolStripMenuItem_Click);
 			// 
 			// toolStripDropDownButton1
 			// 
@@ -1500,7 +1472,7 @@
 			this.saveFileDialog3.DefaultExt = "v";
 			this.saveFileDialog3.Filter = "Verilog Files|*.v|All Files|*.*";
 			// 
-			// Form1
+			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -1511,7 +1483,7 @@
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
-			this.Name = "Form1";
+			this.Name = "FormMain";
 			this.Text = "Deroute";
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
@@ -1599,8 +1571,6 @@
 		private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton4;
 		private System.Windows.Forms.ToolStripMenuItem sceneToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem image0ToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem image1ToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem image2ToolStripMenuItem;
 		private System.Windows.Forms.Button button3;
 		private System.Windows.Forms.Button button2;
 		private System.Windows.Forms.Button button1;

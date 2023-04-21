@@ -52,65 +52,20 @@ namespace System.Windows.Forms
 
 		[Category("Appearance"), DefaultValue(null)]
 		[Browsable(false)]
-		public Image Image0
+		public Image Image
 		{
-			get { return _imageOrig[0]; }
+			get { return _imageOrig; }
 			set
 			{
-				if (_imageOrig[0] != value)
+				if (_imageOrig != value)
 				{
-					if (_imageOrig[0] != null)
+					if (_imageOrig != null)
 					{
-						_imageOrig[0].Dispose();
+						_imageOrig.Dispose();
 						GC.Collect();
 					}
 
-					_imageOrig[0] = ToGrayscale(value);
-
-					ScrollingBegin = false;
-					Invalidate();
-				}
-			}
-		}
-
-		[Category("Appearance"), DefaultValue(null)]
-		[Browsable(false)]
-		public Image Image1
-		{
-			get { return _imageOrig[1]; }
-			set
-			{
-				if (_imageOrig[1] != value)
-				{
-					if (_imageOrig[1] != null)
-					{
-						_imageOrig[1].Dispose();
-					}
-
-					_imageOrig[1] = ToGrayscale(value);
-
-					ScrollingBegin = false;
-					Invalidate();
-				}
-			}
-		}
-
-		[Category("Appearance"), DefaultValue(null)]
-		[Browsable(false)]
-		public Image Image2
-		{
-			get { return _imageOrig[2]; }
-			set
-			{
-				if (_imageOrig[2] != value)
-				{
-					if (_imageOrig[2] != null)
-					{
-						_imageOrig[2].Dispose();
-						GC.Collect();
-					}
-
-					_imageOrig[2] = ToGrayscale(value);
+					_imageOrig = ToGrayscale(value);
 
 					ScrollingBegin = false;
 					Invalidate();
@@ -119,34 +74,12 @@ namespace System.Windows.Forms
 		}
 
 		[Category("Appearance")]
-		public int ImageOpacity0
+		public int ImageOpacity
 		{
-			get { return _imageOpacity[0]; }
+			get { return _imageOpacity; }
 			set
 			{
-				_imageOpacity[0] = Math.Max(0, Math.Min(100, value));
-				Invalidate();
-			}
-		}
-
-		[Category("Appearance")]
-		public int ImageOpacity1
-		{
-			get { return _imageOpacity[1]; }
-			set
-			{
-				_imageOpacity[1] = Math.Max(0, Math.Min(100, value));
-				Invalidate();
-			}
-		}
-
-		[Category("Appearance")]
-		public int ImageOpacity2
-		{
-			get { return _imageOpacity[2]; }
-			set
-			{
-				_imageOpacity[2] = Math.Max(0, Math.Min(100, value));
+				_imageOpacity = Math.Max(0, Math.Min(100, value));
 				Invalidate();
 			}
 		}
@@ -192,35 +125,17 @@ namespace System.Windows.Forms
 				drawMode = value;
 
 				if (drawMode == EntityMode.Selection ||
-					drawMode == EntityMode.ImageLayer0 ||
-					drawMode == EntityMode.ImageLayer1 ||
-					drawMode == EntityMode.ImageLayer2)
+					drawMode == EntityMode.ImageLayer )
 					DrawingBegin = false;
 			}
 		}
 
 		[Category("Appearance")]
 		[TypeConverter(typeof(PointFConverter))]
-		public PointF ScrollImage0
+		public PointF ScrollImage
 		{
-			get { return _imageScroll[0]; }
-			set { _imageScroll[0] = value; Invalidate(); }
-		}
-
-		[Category("Appearance")]
-		[TypeConverter(typeof(PointFConverter))]
-		public PointF ScrollImage1
-		{
-			get { return _imageScroll[1]; }
-			set { _imageScroll[1] = value; Invalidate(); }
-		}
-
-		[Category("Appearance")]
-		[TypeConverter(typeof(PointFConverter))]
-		public PointF ScrollImage2
-		{
-			get { return _imageScroll[2]; }
-			set { _imageScroll[2] = value; Invalidate(); }
+			get { return _imageScroll; }
+			set { _imageScroll = value; Invalidate(); }
 		}
 
 		[Category("Appearance")]
@@ -334,51 +249,23 @@ namespace System.Windows.Forms
 		}
 
 		[Category("Appearance")]
-		public bool LockScroll0
+		public bool LockScroll
 		{
-			get { return lockScroll[0]; }
-			set { lockScroll[0] = value; }
+			get { return lockScroll; }
+			set { lockScroll = value; }
 		}
 
 		[Category("Appearance")]
-		public bool LockScroll1
+		public bool LockZoom
 		{
-			get { return lockScroll[1]; }
-			set { lockScroll[1] = value; }
+			get { return lockZoom; }
+			set { lockZoom = value; }
 		}
 
 		[Category("Appearance")]
-		public bool LockScroll2
+		public int ZoomImage
 		{
-			get { return lockScroll[2]; }
-			set { lockScroll[2] = value; }
-		}
-
-		[Category("Appearance")]
-		public bool LockZoom0
-		{
-			get { return lockZoom[0]; }
-			set { lockZoom[0] = value; }
-		}
-
-		[Category("Appearance")]
-		public bool LockZoom1
-		{
-			get { return lockZoom[1]; }
-			set { lockZoom[1] = value; }
-		}
-
-		[Category("Appearance")]
-		public bool LockZoom2
-		{
-			get { return lockZoom[2]; }
-			set { lockZoom[2] = value; }
-		}
-
-		[Category("Appearance")]
-		public int ZoomImage0
-		{
-			get { return _imageZoom[0]; }
+			get { return _imageZoom; }
 			set
 			{
 				if (value < 30)
@@ -387,43 +274,7 @@ namespace System.Windows.Forms
 				if (value > 400)
 					value = 400;
 
-				_imageZoom[0] = value;
-				Invalidate();
-			}
-		}
-
-		[Category("Appearance")]
-		public int ZoomImage1
-		{
-			get { return _imageZoom[1]; }
-			set
-			{
-				if (value < 30)
-					value = 30;
-
-				if (value > 400)
-					value = 400;
-
-				_imageZoom[1] = value;
-				Invalidate();
-			}
-		}
-
-		[Category("Appearance")]
-		public int ZoomImage2
-		{
-			get { return _imageZoom[2]; }
-			set
-			{
-				if (value < 30)
-					value = 30;
-
-				if (value > 400)
-					value = 400;
-
-				_imageZoom[2] = value;
-
-				float zf = (float)_imageZoom[2] / 100F;
+				_imageZoom = value;
 				Invalidate();
 			}
 		}

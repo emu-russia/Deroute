@@ -684,22 +684,22 @@ namespace System.Windows.Forms
 			}
 		}
 
-		private void DrawImage(Graphics gr, int n)
+		private void DrawImage(Graphics gr)
 		{
 			float zf = (float)Zoom / 100F;
 
-			if (_imageOrig[n] != null && hideImage == false)
+			if (_imageOrig != null && hideImage == false)
 			{
-				Point imageOffset = LambdaToScreen(_imageScroll[n].X, _imageScroll[n].Y);
-				float imageWidth = (float)_imageOrig[n].Width;
-				float imageHeight = (float)_imageOrig[n].Height;
+				Point imageOffset = LambdaToScreen(_imageScroll.X, _imageScroll.Y);
+				float imageWidth = (float)_imageOrig.Width;
+				float imageHeight = (float)_imageOrig.Height;
 				float sx = imageOffset.X;
 				float sy = imageOffset.Y;
 
-				float imgZf = (float)_imageZoom[n] / 100F;
+				float imgZf = (float)_imageZoom / 100F;
 
 				ColorMatrix colorMatrix = new ColorMatrix();
-				colorMatrix.Matrix33 = _imageOpacity[n] / 100F;
+				colorMatrix.Matrix33 = _imageOpacity / 100F;
 
 				ImageAttributes imageAtt = new ImageAttributes();
 				imageAtt.SetColorMatrix(
@@ -709,7 +709,7 @@ namespace System.Windows.Forms
 
 				if (EnableOpacity == false)
 				{
-					gr.DrawImage(_imageOrig[n],
+					gr.DrawImage(_imageOrig,
 								  sx, sy,
 								  imageWidth * zf / imgZf,
 								  imageHeight * zf / imgZf);
@@ -718,7 +718,7 @@ namespace System.Windows.Forms
 				{
 					gr.InterpolationMode = InterpolationMode.HighQualityBilinear;
 
-					gr.DrawImage(_imageOrig[n],
+					gr.DrawImage(_imageOrig,
 						new Rectangle(
 							(int)sx, (int)sy,
 							(int)(imageWidth * zf), (int)(imageHeight * zf)),
@@ -779,16 +779,9 @@ namespace System.Windows.Forms
 
 			Stamp1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-			for (int n = 2; n >= 0; n--)
+			if (!(ImageOpacity == 0 && EnableOpacity))
 			{
-				if (n == 0 && ImageOpacity0 == 0 && EnableOpacity)
-					continue;
-				if (n == 1 && ImageOpacity1 == 0 && EnableOpacity)
-					continue;
-				if (n == 2 && ImageOpacity2 == 0 && EnableOpacity)
-					continue;
-
-				DrawImage(gr, n);
+				DrawImage(gr);
 			}
 
 			Stamp2 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;

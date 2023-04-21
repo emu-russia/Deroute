@@ -26,10 +26,7 @@ namespace System.Windows.Forms
 	public enum EntityMode
 	{
 		Selection = 0,
-
-		ImageLayer0,        // Topmost
-		ImageLayer1,
-		ImageLayer2,
+		ImageLayer,
 
 		ViasInput = 0x80,
 		ViasOutput,
@@ -62,12 +59,12 @@ namespace System.Windows.Forms
 		private Entity insertionNode;            // Destination for add/paste operations (root by default)
 
 		private Image beaconImage = null;
-		private Image[] _imageOrig = new Image[3];
+		private Image _imageOrig = null;
 		private float _lambda;
-		private int[] _imageZoom = new int[3];
+		private int _imageZoom;
 		private int _zoom;
-		private PointF[] _imageScroll = new PointF[3];
-		private PointF[] _savedImageScroll = new PointF[3];
+		private PointF _imageScroll = new PointF();
+		private PointF _savedImageScroll = new PointF();
 		private float _ScrollX;
 		private float _ScrollY;
 		private float SavedScrollX;
@@ -96,11 +93,11 @@ namespace System.Windows.Forms
 		private List<Entity> selected;
 		private float draggingDist;
 		private Color selectionBoxColor;
-		private int[] _imageOpacity = new int[3];
+		private int _imageOpacity;
 		private BufferedGraphics gfx = null;
 		private BufferedGraphicsContext context;
-		private bool[] lockScroll = new bool[3];
-		private bool[] lockZoom = new bool[3];
+		private bool lockScroll;
+		private bool lockZoom;
 		private bool selectEntitiesAfterAdd;
 		private bool wireSelectionAutoTraverse;
 		private long UnserializeLastStamp = 0;
@@ -136,8 +133,8 @@ namespace System.Windows.Forms
 
 			Lambda = 5.0F;
 			Zoom = 100;
-			_imageZoom[0] = _imageZoom[1] = _imageZoom[2] = 100;
-			_imageOpacity[0] = _imageOpacity[1] = _imageOpacity[2] = 100;
+			_imageZoom = 100;
+			_imageOpacity = 100;
 			hideImage = false;
 			hideVias = false;
 			hideWires = false;
