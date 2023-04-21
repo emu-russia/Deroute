@@ -315,50 +315,50 @@
 			// loadLibraryToolStripMenuItem
 			// 
 			this.loadLibraryToolStripMenuItem.Name = "loadLibraryToolStripMenuItem";
-			this.loadLibraryToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+			this.loadLibraryToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.loadLibraryToolStripMenuItem.Text = "Load Library";
 			this.loadLibraryToolStripMenuItem.Click += new System.EventHandler(this.loadLibraryToolStripMenuItem_Click);
 			// 
 			// saveLibraryToolStripMenuItem
 			// 
 			this.saveLibraryToolStripMenuItem.Name = "saveLibraryToolStripMenuItem";
-			this.saveLibraryToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+			this.saveLibraryToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.saveLibraryToolStripMenuItem.Text = "Save Library";
 			this.saveLibraryToolStripMenuItem.Click += new System.EventHandler(this.saveLibraryToolStripMenuItem_Click);
 			// 
 			// manageCellsToolStripMenuItem
 			// 
 			this.manageCellsToolStripMenuItem.Name = "manageCellsToolStripMenuItem";
-			this.manageCellsToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+			this.manageCellsToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.manageCellsToolStripMenuItem.Text = "Manage Cells";
 			this.manageCellsToolStripMenuItem.Click += new System.EventHandler(this.manageCellsToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator7
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(202, 6);
+			this.toolStripSeparator7.Size = new System.Drawing.Size(214, 6);
 			// 
 			// addCellFromSelectionToolStripMenuItem
 			// 
 			this.addCellFromSelectionToolStripMenuItem.Name = "addCellFromSelectionToolStripMenuItem";
-			this.addCellFromSelectionToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
-			this.addCellFromSelectionToolStripMenuItem.Text = "Add cell from selection...";
+			this.addCellFromSelectionToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.addCellFromSelectionToolStripMenuItem.Text = "Create cell from selection...";
 			this.addCellFromSelectionToolStripMenuItem.Click += new System.EventHandler(this.addCellFromSelectionToolStripMenuItem_Click);
 			// 
 			// rotateCellToolStripMenuItem
 			// 
 			this.rotateCellToolStripMenuItem.Name = "rotateCellToolStripMenuItem";
 			this.rotateCellToolStripMenuItem.ShortcutKeyDisplayString = "R";
-			this.rotateCellToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
-			this.rotateCellToolStripMenuItem.Text = "Rotate cell";
+			this.rotateCellToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.rotateCellToolStripMenuItem.Text = "Rotate selected cells";
 			this.rotateCellToolStripMenuItem.Click += new System.EventHandler(this.rotateCellToolStripMenuItem_Click);
 			// 
 			// flipCellToolStripMenuItem
 			// 
 			this.flipCellToolStripMenuItem.Name = "flipCellToolStripMenuItem";
 			this.flipCellToolStripMenuItem.ShortcutKeyDisplayString = "F";
-			this.flipCellToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
-			this.flipCellToolStripMenuItem.Text = "Flip cell";
+			this.flipCellToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.flipCellToolStripMenuItem.Text = "Flip selected cells";
 			this.flipCellToolStripMenuItem.Click += new System.EventHandler(this.flipCellToolStripMenuItem_Click);
 			// 
 			// editToolStripMenuItem

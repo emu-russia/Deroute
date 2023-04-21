@@ -1,4 +1,4 @@
-// Триангуляция Делоне
+// Delaunay triangulation
 
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Drawing;
 
 
 
-class Delaunay
+public class Delaunay
 {
     private List<Vertex> points;
 

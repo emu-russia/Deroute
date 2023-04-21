@@ -14,6 +14,7 @@ namespace System.Windows.Forms
 	public delegate void EntityBoxEventHandler(object sender, EventArgs e);
 	public delegate void EntityBoxEntityEventHandler(object sender, Entity entity, EventArgs e);
 	public delegate void EntityBoxFrameDoneHandler(object sender, long ms_time, EventArgs e);
+	public delegate void EntityBoxPlaneGeometryHandler(object sender, PointF orig, PointF size, EventArgs e);
 
 	public enum EntitySelection
 	{
@@ -114,6 +115,7 @@ namespace System.Windows.Forms
 		public event EntityBoxEntityEventHandler OnDestinationNodeChanged = null;
 		public event EntityBoxFrameDoneHandler OnFrameDone = null;
 		public event EntityBoxEntityEventHandler OnModuleChanged = null;
+		public event EntityBoxPlaneGeometryHandler OnSelectionBox = null;
 
 		public EntityBox()
 		{

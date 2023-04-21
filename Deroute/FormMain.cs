@@ -33,6 +33,7 @@ namespace DerouteSharp
 		private string savedText;
 		private TimeSpentStats timeStats = new TimeSpentStats();
 		private Random rnd = new Random(DateTime.Now.Millisecond);
+		private FormCells cells_editor = null;
 
 		public FormMain()
 		{
@@ -54,6 +55,7 @@ namespace DerouteSharp
 			entityBox1.OnFrameDone += entityBox1_OnFrameDone;
 			entityBox1.OnDestinationNodeChanged += EntityBox1_OnDestinationNodeChanged;
 			entityBox1.OnModuleChanged += EntityBox1_OnModuleChanged;
+			entityBox1.OnSelectionBox += EntityBox1_OnSelectionBox;
 
 			entityBox1.BeaconImage = Properties.Resources.beacon_entity;
 
@@ -153,7 +155,31 @@ namespace DerouteSharp
 			}
 		}
 
-		#endregion
+		private void EntityBox1_OnSelectionBox(object sender, PointF orig, PointF sizef, EventArgs e)
+		{
+			if (addCellFromSelectionToolStripMenuItem.Checked)
+			{
+				addCellFromSelectionToolStripMenuItem.Checked = false;
+
+				if (cells_editor != null)
+				{
+					cells_editor.Focus();
+				}
+				else
+				{
+					cells_editor = new FormCells();
+					cells_editor.Show();
+				}
+
+				Point point = entityBox1.LambdaToImage(orig.X, orig.Y);
+				Point size_p = entityBox1.LambdaToImage(sizef.X, sizef.Y);
+				Size size = new Size(size_p.X, size_p.Y);
+
+				cells_editor.CreateCell(entityBox1.Image, point, size);
+			}
+		}
+
+		#endregion "Event Handlers"
 
 
 		#region "Load / Save"
@@ -520,11 +546,11 @@ namespace DerouteSharp
 			}
 			else if (e.KeyCode == Keys.R)
 			{
-				Console.WriteLine("rot");
+				CellSupport.RotateCell(entityBox1);
 			}
 			else if (e.KeyCode == Keys.F)
 			{
-				Console.WriteLine("flip");
+				CellSupport.FlipCell(entityBox1);
 			}
 		}
 
@@ -1458,33 +1484,53 @@ namespace DerouteSharp
 
 		private void loadLibraryToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+			if (openFileDialog2.ShowDialog() == DialogResult.OK)
+			{
+				string filename = openFileDialog2.FileName;
+			}
 		}
 
 		private void saveLibraryToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+			if (saveFileDialog2.ShowDialog() == DialogResult.OK)
+			{
+				string filename = saveFileDialog2.FileName;
+			}
 		}
 
 		private void manageCellsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			FormCells cells = new FormCells();
-			cells.Show();
+			if (cells_editor != null)
+			{
+				cells_editor.Focus();
+			}
+			else
+			{
+				cells_editor = new FormCells();
+				cells_editor.Show();
+			}
 		}
 
 		private void addCellFromSelectionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+			if (addCellFromSelectionToolStripMenuItem.Checked)
+			{
+				addCellFromSelectionToolStripMenuItem.Checked = false;
+			}
+			else
+			{
+				addCellFromSelectionToolStripMenuItem.Checked = true;
+			}
 		}
 
 		private void rotateCellToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+			CellSupport.RotateCell(entityBox1);
 		}
 
 		private void flipCellToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+			CellSupport.FlipCell(entityBox1);
 		}
 
 		#endregion "Cells"

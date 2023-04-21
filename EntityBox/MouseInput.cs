@@ -533,6 +533,12 @@ namespace System.Windows.Forms
 
 			if (SelectionBegin)
 			{
+				if (OnSelectionBox != null)
+				{
+					PointF selectionStart = ScreenToLambda(SelectStartMouseX, SelectStartMouseY);
+					PointF selectionEnd = ScreenToLambda(e.X, e.Y);
+					OnSelectionBox(this, selectionStart, selectionEnd, EventArgs.Empty);
+				}
 				SelectionBegin = false;
 				Invalidate();
 			}
