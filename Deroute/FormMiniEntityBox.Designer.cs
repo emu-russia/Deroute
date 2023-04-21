@@ -64,14 +64,11 @@ namespace DerouteSharp
 			this.entityBox1.ImageOpacity = 100;
 			this.entityBox1.Lambda = 5F;
 			this.entityBox1.Location = new System.Drawing.Point(0, 0);
-			this.entityBox1.LockScroll = false;
-			this.entityBox1.LockZoom = false;
 			this.entityBox1.Mode = System.Windows.Forms.EntityMode.Selection;
 			this.entityBox1.Name = "entityBox1";
 			this.entityBox1.RegionOpacity = 128;
 			this.entityBox1.RegionOverrideColor = System.Drawing.Color.Black;
 			this.entityBox1.RegionPriority = 0;
-			this.entityBox1.ScrollImage = ((System.Drawing.PointF)(resources.GetObject("entityBox1.ScrollImage0")));
 			this.entityBox1.ScrollX = 0F;
 			this.entityBox1.ScrollY = 0F;
 			this.entityBox1.SelectEntitiesAfterAdd = true;
@@ -105,7 +102,6 @@ namespace DerouteSharp
 			this.entityBox1.WirePriority = 2;
 			this.entityBox1.WireTextAlignment = TextAlignment.TopLeft;
 			this.entityBox1.Zoom = 100;
-			this.entityBox1.ZoomImage = 100;
 			// 
 			// FormMiniEntityBox
 			// 

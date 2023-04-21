@@ -182,14 +182,12 @@ namespace System.Windows.Forms
 				SavedMouseY = e.Y;
 				SavedScrollX = _ScrollX;
 				SavedScrollY = _ScrollY;
-				_savedImageScroll = _imageScroll;
 				ScrollingBegin = true;
 			}
 
 			// Drawing
 
 			if (e.Button == MouseButtons.Left && Mode != EntityMode.Selection &&
-				 Mode != EntityMode.ImageLayer &&
 				 DrawingBegin == false && ScrollingBegin == false)
 			{
 				Entity entity;
@@ -562,16 +560,6 @@ namespace System.Windows.Forms
 						ScrollX = lambdaCoord.X;
 						ScrollY = lambdaCoord.Y;
 						break;
-
-					case EntityMode.ImageLayer:
-						if (LockScroll == false)
-						{
-							screenCoord = LambdaToScreen(_savedImageScroll.X, _savedImageScroll.Y);
-
-							_imageScroll = ScreenToLambda( screenCoord.X + e.X - SavedMouseX,
-														   screenCoord.Y + e.Y - SavedMouseY);
-						}
-						break;
 				}
 
 				Invalidate();
@@ -707,14 +695,6 @@ namespace System.Windows.Forms
 
 					Invalidate();
 
-					break;
-
-				case EntityMode.ImageLayer:
-					if (LockZoom == false)
-					{
-						ZoomImage += delta;
-						Invalidate();
-					}
 					break;
 			}
 

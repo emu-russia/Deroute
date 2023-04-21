@@ -690,13 +690,13 @@ namespace System.Windows.Forms
 
 			if (_imageOrig != null && hideImage == false)
 			{
-				Point imageOffset = LambdaToScreen(_imageScroll.X, _imageScroll.Y);
+				Point imageOffset = LambdaToScreen(0, 0);
 				float imageWidth = (float)_imageOrig.Width;
 				float imageHeight = (float)_imageOrig.Height;
 				float sx = imageOffset.X;
 				float sy = imageOffset.Y;
 
-				float imgZf = (float)_imageZoom / 100F;
+				float imgZf = 1.0f;
 
 				ColorMatrix colorMatrix = new ColorMatrix();
 				colorMatrix.Matrix33 = _imageOpacity / 100F;

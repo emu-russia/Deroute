@@ -26,7 +26,6 @@ namespace System.Windows.Forms
 	public enum EntityMode
 	{
 		Selection = 0,
-		ImageLayer,
 
 		ViasInput = 0x80,
 		ViasOutput,
@@ -61,10 +60,7 @@ namespace System.Windows.Forms
 		private Image beaconImage = null;
 		private Image _imageOrig = null;
 		private float _lambda;
-		private int _imageZoom;
 		private int _zoom;
-		private PointF _imageScroll = new PointF();
-		private PointF _savedImageScroll = new PointF();
 		private float _ScrollX;
 		private float _ScrollY;
 		private float SavedScrollX;
@@ -96,8 +92,6 @@ namespace System.Windows.Forms
 		private int _imageOpacity;
 		private BufferedGraphics gfx = null;
 		private BufferedGraphicsContext context;
-		private bool lockScroll;
-		private bool lockZoom;
 		private bool selectEntitiesAfterAdd;
 		private bool wireSelectionAutoTraverse;
 		private long UnserializeLastStamp = 0;
@@ -133,7 +127,6 @@ namespace System.Windows.Forms
 
 			Lambda = 5.0F;
 			Zoom = 100;
-			_imageZoom = 100;
 			_imageOpacity = 100;
 			hideImage = false;
 			hideVias = false;

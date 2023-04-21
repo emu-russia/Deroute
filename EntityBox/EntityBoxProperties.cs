@@ -124,18 +124,9 @@ namespace System.Windows.Forms
 			{
 				drawMode = value;
 
-				if (drawMode == EntityMode.Selection ||
-					drawMode == EntityMode.ImageLayer )
+				if (drawMode == EntityMode.Selection)
 					DrawingBegin = false;
 			}
-		}
-
-		[Category("Appearance")]
-		[TypeConverter(typeof(PointFConverter))]
-		public PointF ScrollImage
-		{
-			get { return _imageScroll; }
-			set { _imageScroll = value; Invalidate(); }
 		}
 
 		[Category("Appearance")]
@@ -247,38 +238,6 @@ namespace System.Windows.Forms
 			get { return selectionBoxColor; }
 			set { selectionBoxColor = value; Invalidate(); }
 		}
-
-		[Category("Appearance")]
-		public bool LockScroll
-		{
-			get { return lockScroll; }
-			set { lockScroll = value; }
-		}
-
-		[Category("Appearance")]
-		public bool LockZoom
-		{
-			get { return lockZoom; }
-			set { lockZoom = value; }
-		}
-
-		[Category("Appearance")]
-		public int ZoomImage
-		{
-			get { return _imageZoom; }
-			set
-			{
-				if (value < 30)
-					value = 30;
-
-				if (value > 400)
-					value = 400;
-
-				_imageZoom = value;
-				Invalidate();
-			}
-		}
-
 
 		//
 		// Entity properties

@@ -283,7 +283,6 @@ namespace DerouteSharp
 
 		private void SelectionButtonHighlight()
 		{
-			toolStripDropDownButton4.BackColor = SystemColors.ActiveCaption;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
@@ -292,7 +291,6 @@ namespace DerouteSharp
 
 		private void ViasButtonHighlight()
 		{
-			toolStripDropDownButton4.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.ActiveCaption;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
@@ -301,7 +299,6 @@ namespace DerouteSharp
 
 		private void WiresButtonHighlight()
 		{
-			toolStripDropDownButton4.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.ActiveCaption;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
@@ -310,7 +307,6 @@ namespace DerouteSharp
 
 		private void CellsButtonHighlight()
 		{
-			toolStripDropDownButton4.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.ActiveCaption;
@@ -319,7 +315,6 @@ namespace DerouteSharp
 
 		private void BeaconButtonHighlight()
 		{
-			toolStripDropDownButton4.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
@@ -458,24 +453,6 @@ namespace DerouteSharp
 			CellsButtonHighlight();
 		}
 
-		private void sceneToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			entityBox1.Mode = EntityMode.Selection;
-			SelectionButtonHighlight();
-		}
-
-		private void image0ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			entityBox1.Mode = EntityMode.ImageLayer;
-			SelectionButtonHighlight();
-		}
-
-		private void button1_Click(object sender, EventArgs e)
-		{
-			entityBox1.Mode = EntityMode.Selection;
-			SelectionButtonHighlight();
-		}
-
 		private void button2_Click(object sender, EventArgs e)
 		{
 			entityBox1.Mode = EntityMode.ViasConnect;
@@ -500,7 +477,7 @@ namespace DerouteSharp
 
 		private void Form1_KeyUp(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.F1 )
+			if (e.KeyCode == Keys.F1 || e.KeyCode == Keys.Escape)
 			{
 				entityBox1.Mode = EntityMode.Selection;
 				SelectionButtonHighlight();
@@ -541,25 +518,6 @@ namespace DerouteSharp
 			{
 				SaveEntitiesXml();
 			}
-		}
-
-		private void SetLayerOrigin()
-		{
-			PointF zero = new PointF(0, 0);
-
-			switch (entityBox1.Mode)
-			{
-				case EntityMode.ImageLayer:
-				default:
-					entityBox1.ScrollImage = zero;
-					entityBox1.Invalidate();
-					break;
-			}
-		}
-
-		private void setLayerScrollToOriginToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SetLayerOrigin();
 		}
 
 		private void toolStripButton4_Click(object sender, EventArgs e)

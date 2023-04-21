@@ -79,7 +79,7 @@ namespace System.Windows.Forms
 
 			if (_imageOrig != null && HideImage == false)
 			{
-				Point offset = LambdaToScreen(_imageScroll.X, _imageScroll.Y);
+				Point offset = LambdaToScreen(0, 0);
 
 				if (offset.X < originOut.X)
 					originOut.X = offset.X;
@@ -87,7 +87,7 @@ namespace System.Windows.Forms
 				if (offset.Y < originOut.Y)
 					originOut.Y = offset.Y;
 
-				float imgZf = (float)_imageZoom / 100F;
+				float imgZf = 1.0f;
 
 				int rightSide = (int)((float)_imageOrig.Width * imgZf) + offset.X;
 				int bottomSide = (int)((float)_imageOrig.Height * imgZf) + offset.Y;
@@ -360,27 +360,15 @@ namespace System.Windows.Forms
 
 		public void LoadImage(Image image)
 		{
-			switch (drawMode)
-			{
-				case EntityMode.ImageLayer:
-				default:
-					Image = image;
-					break;
-			}
+			Image = image;
 		}
 
 		public void UnloadImage()
 		{
-			switch (drawMode)
-			{
-				case EntityMode.ImageLayer:
-				default:
-					_imageOrig.Dispose();
-					_imageOrig = null;
-					GC.Collect();
-					Invalidate();
-					break;
-			}
+			_imageOrig.Dispose();
+			_imageOrig = null;
+			GC.Collect();
+			Invalidate();
 		}
 
 

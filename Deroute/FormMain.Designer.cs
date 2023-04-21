@@ -35,10 +35,10 @@
 			this.loadImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.unloadImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveSceneAsImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveSceneAsNetlistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.loadEntitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveEntitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveSceneAsNetlistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -48,7 +48,6 @@
 			this.pasteCtrlVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.deleteAllEntitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.setLayerScrollToOriginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.lambdaTransformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.selectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,7 +72,6 @@
 			this.button3 = new System.Windows.Forms.Button();
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.button2 = new System.Windows.Forms.Button();
-			this.button1 = new System.Windows.Forms.Button();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.propertyGrid2 = new System.Windows.Forms.PropertyGrid();
@@ -86,9 +84,6 @@
 			this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
 			this.saveFileDialog2 = new System.Windows.Forms.SaveFileDialog();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-			this.toolStripDropDownButton4 = new System.Windows.Forms.ToolStripDropDownButton();
-			this.sceneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.image0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.viasPowerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -243,13 +238,6 @@
 			this.saveSceneAsImageToolStripMenuItem.Text = "Save scene as Image...";
 			this.saveSceneAsImageToolStripMenuItem.Click += new System.EventHandler(this.saveSceneAsImageToolStripMenuItem_Click);
 			// 
-			// saveSceneAsNetlistToolStripMenuItem
-			// 
-			this.saveSceneAsNetlistToolStripMenuItem.Name = "saveSceneAsNetlistToolStripMenuItem";
-			this.saveSceneAsNetlistToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-			this.saveSceneAsNetlistToolStripMenuItem.Text = "Export to Verilog...";
-			this.saveSceneAsNetlistToolStripMenuItem.Click += new System.EventHandler(this.saveSceneAsNetlistToolStripMenuItem_Click);
-			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -269,6 +257,13 @@
 			this.saveEntitiesToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
 			this.saveEntitiesToolStripMenuItem.Text = "Save entities...";
 			this.saveEntitiesToolStripMenuItem.Click += new System.EventHandler(this.saveEntitiesToolStripMenuItem_Click);
+			// 
+			// saveSceneAsNetlistToolStripMenuItem
+			// 
+			this.saveSceneAsNetlistToolStripMenuItem.Name = "saveSceneAsNetlistToolStripMenuItem";
+			this.saveSceneAsNetlistToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.saveSceneAsNetlistToolStripMenuItem.Text = "Export to Verilog...";
+			this.saveSceneAsNetlistToolStripMenuItem.Click += new System.EventHandler(this.saveSceneAsNetlistToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator4
 			// 
@@ -301,7 +296,6 @@
             this.pasteCtrlVToolStripMenuItem,
             this.toolStripSeparator9,
             this.deleteAllEntitiesToolStripMenuItem,
-            this.setLayerScrollToOriginToolStripMenuItem,
             this.lambdaTransformToolStripMenuItem,
             this.addLayerToolStripMenuItem});
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
@@ -312,7 +306,7 @@
 			// 
 			this.copyCtrlCToolStripMenuItem.Name = "copyCtrlCToolStripMenuItem";
 			this.copyCtrlCToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
-			this.copyCtrlCToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+			this.copyCtrlCToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
 			this.copyCtrlCToolStripMenuItem.Text = "Copy";
 			this.copyCtrlCToolStripMenuItem.Click += new System.EventHandler(this.copyCtrlCToolStripMenuItem_Click);
 			// 
@@ -320,41 +314,34 @@
 			// 
 			this.pasteCtrlVToolStripMenuItem.Name = "pasteCtrlVToolStripMenuItem";
 			this.pasteCtrlVToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+V";
-			this.pasteCtrlVToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+			this.pasteCtrlVToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
 			this.pasteCtrlVToolStripMenuItem.Text = "Paste";
 			this.pasteCtrlVToolStripMenuItem.Click += new System.EventHandler(this.pasteCtrlVToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(230, 6);
+			this.toolStripSeparator9.Size = new System.Drawing.Size(217, 6);
 			// 
 			// deleteAllEntitiesToolStripMenuItem
 			// 
 			this.deleteAllEntitiesToolStripMenuItem.Name = "deleteAllEntitiesToolStripMenuItem";
-			this.deleteAllEntitiesToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+			this.deleteAllEntitiesToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
 			this.deleteAllEntitiesToolStripMenuItem.Text = "Delete all entities (DANGER)";
 			this.deleteAllEntitiesToolStripMenuItem.Click += new System.EventHandler(this.deleteAllEntitiesToolStripMenuItem_Click);
-			// 
-			// setLayerScrollToOriginToolStripMenuItem
-			// 
-			this.setLayerScrollToOriginToolStripMenuItem.Name = "setLayerScrollToOriginToolStripMenuItem";
-			this.setLayerScrollToOriginToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
-			this.setLayerScrollToOriginToolStripMenuItem.Text = "Set image layer scroll to origin";
-			this.setLayerScrollToOriginToolStripMenuItem.Click += new System.EventHandler(this.setLayerScrollToOriginToolStripMenuItem_Click);
 			// 
 			// lambdaTransformToolStripMenuItem
 			// 
 			this.lambdaTransformToolStripMenuItem.Name = "lambdaTransformToolStripMenuItem";
 			this.lambdaTransformToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+T";
-			this.lambdaTransformToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+			this.lambdaTransformToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
 			this.lambdaTransformToolStripMenuItem.Text = "Lambda Transform";
 			this.lambdaTransformToolStripMenuItem.Click += new System.EventHandler(this.lambdaTransformToolStripMenuItem_Click);
 			// 
 			// addLayerToolStripMenuItem
 			// 
 			this.addLayerToolStripMenuItem.Name = "addLayerToolStripMenuItem";
-			this.addLayerToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+			this.addLayerToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
 			this.addLayerToolStripMenuItem.Text = "Add Layer";
 			this.addLayerToolStripMenuItem.Click += new System.EventHandler(this.addLayerToolStripMenuItem_Click);
 			// 
@@ -373,34 +360,34 @@
 			// selectAllViasesToolStripMenuItem
 			// 
 			this.selectAllViasesToolStripMenuItem.Name = "selectAllViasesToolStripMenuItem";
-			this.selectAllViasesToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.selectAllViasesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.selectAllViasesToolStripMenuItem.Text = "Select all viases";
 			this.selectAllViasesToolStripMenuItem.Click += new System.EventHandler(this.selectAllViasesToolStripMenuItem_Click);
 			// 
 			// selectAllWiresToolStripMenuItem
 			// 
 			this.selectAllWiresToolStripMenuItem.Name = "selectAllWiresToolStripMenuItem";
-			this.selectAllWiresToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.selectAllWiresToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.selectAllWiresToolStripMenuItem.Text = "Select all wires";
 			this.selectAllWiresToolStripMenuItem.Click += new System.EventHandler(this.selectAllWiresToolStripMenuItem_Click);
 			// 
 			// selectAllCellsToolStripMenuItem
 			// 
 			this.selectAllCellsToolStripMenuItem.Name = "selectAllCellsToolStripMenuItem";
-			this.selectAllCellsToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.selectAllCellsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.selectAllCellsToolStripMenuItem.Text = "Select all cells";
 			this.selectAllCellsToolStripMenuItem.Click += new System.EventHandler(this.selectAllCellsToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator10
 			// 
 			this.toolStripSeparator10.Name = "toolStripSeparator10";
-			this.toolStripSeparator10.Size = new System.Drawing.Size(159, 6);
+			this.toolStripSeparator10.Size = new System.Drawing.Size(177, 6);
 			// 
 			// selectAllToolStripMenuItem
 			// 
 			this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
 			this.selectAllToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
-			this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.selectAllToolStripMenuItem.Text = "Select all";
 			this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.selectAllToolStripMenuItem_Click);
 			// 
@@ -516,7 +503,6 @@
 			// 
 			this.splitContainer2.Panel2.Controls.Add(this.button3);
 			this.splitContainer2.Panel2.Controls.Add(this.button2);
-			this.splitContainer2.Panel2.Controls.Add(this.button1);
 			this.splitContainer2.Size = new System.Drawing.Size(699, 581);
 			this.splitContainer2.SplitterDistance = 515;
 			this.splitContainer2.TabIndex = 0;
@@ -552,14 +538,11 @@
 			this.entityBox1.ImageOpacity = 100;
 			this.entityBox1.Lambda = 5F;
 			this.entityBox1.Location = new System.Drawing.Point(0, 0);
-			this.entityBox1.LockScroll = true;
-			this.entityBox1.LockZoom = true;
 			this.entityBox1.Mode = System.Windows.Forms.EntityMode.Selection;
 			this.entityBox1.Name = "entityBox1";
 			this.entityBox1.RegionOpacity = 128;
 			this.entityBox1.RegionOverrideColor = System.Drawing.Color.Black;
 			this.entityBox1.RegionPriority = 0;
-			this.entityBox1.ScrollImage = ((System.Drawing.PointF)(resources.GetObject("entityBox1.ScrollImage")));
 			this.entityBox1.ScrollX = 0F;
 			this.entityBox1.ScrollY = 0F;
 			this.entityBox1.SelectEntitiesAfterAdd = true;
@@ -596,7 +579,6 @@
 			this.entityBox1.WireSelectionAutoTraverse = false;
 			this.entityBox1.WireTextAlignment = TextAlignment.TopLeft;
 			this.entityBox1.Zoom = 100;
-			this.entityBox1.ZoomImage = 100;
 			this.entityBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.entityBox1_MouseClick);
 			// 
 			// button3
@@ -604,7 +586,7 @@
 			this.button3.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.button3.ImageIndex = 5;
 			this.button3.ImageList = this.imageList1;
-			this.button3.Location = new System.Drawing.Point(223, 7);
+			this.button3.Location = new System.Drawing.Point(113, 4);
 			this.button3.Name = "button3";
 			this.button3.Size = new System.Drawing.Size(104, 30);
 			this.button3.TabIndex = 2;
@@ -629,7 +611,7 @@
 			this.button2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.button2.ImageIndex = 1;
 			this.button2.ImageList = this.imageList1;
-			this.button2.Location = new System.Drawing.Point(113, 7);
+			this.button2.Location = new System.Drawing.Point(3, 4);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(104, 30);
 			this.button2.TabIndex = 1;
@@ -637,20 +619,6 @@
 			this.button2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.button2.UseVisualStyleBackColor = true;
 			this.button2.Click += new System.EventHandler(this.button2_Click);
-			// 
-			// button1
-			// 
-			this.button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.button1.ImageIndex = 4;
-			this.button1.ImageList = this.imageList1;
-			this.button1.Location = new System.Drawing.Point(3, 7);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(104, 30);
-			this.button1.TabIndex = 0;
-			this.button1.Text = "Scene (F1)";
-			this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
 			// 
 			// tabControl1
 			// 
@@ -745,7 +713,6 @@
 			// 
 			this.toolStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripDropDownButton4,
             this.toolStripDropDownButton1,
             this.toolStripDropDownButton2,
             this.toolStripDropDownButton3,
@@ -767,32 +734,6 @@
 			this.toolStrip1.Size = new System.Drawing.Size(1218, 39);
 			this.toolStrip1.TabIndex = 2;
 			this.toolStrip1.Text = "toolStrip1";
-			// 
-			// toolStripDropDownButton4
-			// 
-			this.toolStripDropDownButton4.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.sceneToolStripMenuItem,
-            this.image0ToolStripMenuItem});
-			this.toolStripDropDownButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton4.Image")));
-			this.toolStripDropDownButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripDropDownButton4.Name = "toolStripDropDownButton4";
-			this.toolStripDropDownButton4.Size = new System.Drawing.Size(131, 36);
-			this.toolStripDropDownButton4.Text = "Layer Selection";
-			this.toolStripDropDownButton4.ToolTipText = "Layer Selection";
-			// 
-			// sceneToolStripMenuItem
-			// 
-			this.sceneToolStripMenuItem.Name = "sceneToolStripMenuItem";
-			this.sceneToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-			this.sceneToolStripMenuItem.Text = "Scene (F1)";
-			this.sceneToolStripMenuItem.Click += new System.EventHandler(this.sceneToolStripMenuItem_Click);
-			// 
-			// image0ToolStripMenuItem
-			// 
-			this.image0ToolStripMenuItem.Name = "image0ToolStripMenuItem";
-			this.image0ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-			this.image0ToolStripMenuItem.Text = "Image Layer";
-			this.image0ToolStripMenuItem.Click += new System.EventHandler(this.image0ToolStripMenuItem_Click);
 			// 
 			// toolStripDropDownButton1
 			// 
@@ -1568,13 +1509,8 @@
 		private System.Windows.Forms.ToolStripMenuItem unitCustomToolStripMenuItem;
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-		private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton4;
-		private System.Windows.Forms.ToolStripMenuItem sceneToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem image0ToolStripMenuItem;
 		private System.Windows.Forms.Button button3;
 		private System.Windows.Forms.Button button2;
-		private System.Windows.Forms.Button button1;
-		private System.Windows.Forms.ToolStripMenuItem setLayerScrollToOriginToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;

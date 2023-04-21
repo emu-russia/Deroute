@@ -88,10 +88,6 @@ namespace DerouteSharp
 			[Description("How many pixels will equal one lambda.")]
 			public float Lambda { get; set; }
 			[Description("Lock the scrolling of layer 0 images, so you don't accidentally mess up.")]
-			public bool LockScroll { get; set; }
-			[Description("Lock the scrolling of layer 1 images, so you don't accidentally mess up.")]
-			public bool LockZoom { get; set; }
-			[Description("Lock the zoom of layer 1 images, so you don't accidentally mess up.")]
 			public bool HideGrid { get; set; }
 			[Description("Hide the ruler in the lambda at the bottom right. I don't remember it ever being useful.")]
 			public bool HideLambdaMetrics { get; set; }
@@ -118,8 +114,6 @@ namespace DerouteSharp
 				SelectEntitiesAfterAdd = entityBox.SelectEntitiesAfterAdd;
 				Grayscale = entityBox.Grayscale;
 				Lambda = entityBox.Lambda;
-				LockScroll = entityBox.LockScroll;
-				LockZoom = entityBox.LockZoom;
 				HideGrid = entityBox.HideGrid;
 				HideLambdaMetrics = entityBox.HideLambdaMetrics;
 				CellTextAlignment = entityBox.CellTextAlignment;
@@ -135,8 +129,6 @@ namespace DerouteSharp
 				savedEntityBox.SelectEntitiesAfterAdd = SelectEntitiesAfterAdd;
 				savedEntityBox.Grayscale = Grayscale;
 				savedEntityBox.Lambda = Lambda;
-				savedEntityBox.LockScroll = LockScroll;
-				savedEntityBox.LockZoom = LockZoom;
 				savedEntityBox.HideGrid = HideGrid;
 				savedEntityBox.HideLambdaMetrics = HideLambdaMetrics;
 				savedEntityBox.CellTextAlignment = CellTextAlignment;
@@ -367,8 +359,6 @@ namespace DerouteSharp
 			global.SelectEntitiesAfterAdd = settings.SelectEntitiesAfterAdd;
 			global.Grayscale = settings.Grayscale;
 			global.Lambda = settings.Lambda;
-			global.LockScroll = settings.LockScroll;
-			global.LockZoom = settings.LockZoom;
 			global.HideGrid = settings.HideGrid;
 			global.HideLambdaMetrics = settings.HideLambdaMetrics;
 			global.CellTextAlignment = (TextAlignment)settings.CellTextAlignment;
@@ -459,8 +449,6 @@ namespace DerouteSharp
 			settings.SelectEntitiesAfterAdd = global.SelectEntitiesAfterAdd;
 			settings.Grayscale = global.Grayscale;
 			settings.Lambda = global.Lambda;
-			settings.LockScroll = global.LockScroll;
-			settings.LockZoom = global.LockZoom;
 			settings.HideGrid = global.HideGrid;
 			settings.HideLambdaMetrics = global.HideLambdaMetrics;
 			settings.CellTextAlignment = (int)global.CellTextAlignment;
