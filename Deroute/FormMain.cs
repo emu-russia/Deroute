@@ -1453,6 +1453,42 @@ namespace DerouteSharp
 			entityBox1.AddLayer();
 		}
 
+
+		#region "Cells"
+
+		private void loadLibraryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void saveLibraryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void manageCellsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			FormCells cells = new FormCells();
+			cells.Show();
+		}
+
+		private void addCellFromSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void rotateCellToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void flipCellToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		#endregion "Cells"
+
 	}       // Form1
 
 

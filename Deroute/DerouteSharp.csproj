@@ -79,6 +79,12 @@
     </Compile>
     <Compile Include="Delaunay.cs" />
     <Compile Include="EntityAligner.cs" />
+    <Compile Include="FormCells.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCells.Designer.cs">
+      <DependentUpon>FormCells.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -158,6 +164,9 @@
     </Compile>
     <EmbeddedResource Include="FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCells.resx">
+      <DependentUpon>FormCells.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
