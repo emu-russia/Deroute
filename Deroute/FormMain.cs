@@ -167,7 +167,7 @@ namespace DerouteSharp
 				}
 				else
 				{
-					cells_editor = new FormCells();
+					cells_editor = new FormCells(entityBox1.Lambda);
 					cells_editor.Show();
 				}
 
@@ -175,7 +175,11 @@ namespace DerouteSharp
 				Point size_p = entityBox1.LambdaToImage(sizef.X, sizef.Y);
 				Size size = new Size(size_p.X, size_p.Y);
 
-				cells_editor.CreateCell(entityBox1.Image, point, size);
+				Bitmap sourceBitmap = new Bitmap(entityBox1.Image);
+				Rectangle cloneRect = new Rectangle(point.X, point.Y, size.Width, size.Height);
+				Bitmap cloneBitmap = sourceBitmap.Clone(cloneRect, sourceBitmap.PixelFormat);
+
+				cells_editor.CreateCell(cloneBitmap, point, size);
 			}
 		}
 
@@ -1506,7 +1510,7 @@ namespace DerouteSharp
 			}
 			else
 			{
-				cells_editor = new FormCells();
+				cells_editor = new FormCells(entityBox1.Lambda);
 				cells_editor.Show();
 			}
 		}

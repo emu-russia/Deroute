@@ -12,18 +12,22 @@ namespace DerouteSharp
 {
 	public partial class FormCells : Form
 	{
-		private bool Saved = true;
+		private bool Saved;
 
-		public FormCells()
+		public FormCells(float source_lambda)
 		{
 			InitializeComponent();
+			entityBox1.Lambda = source_lambda;
 		}
 
 		private void FormCells_Load(object sender, EventArgs e)
 		{
-			button1.Enabled = !Saved;
+			entityBox1.AssociateSelectionPropertyGrid(propertyGrid1);
 			entityBox1.OnEntityAdd += EntityBox1_OnEntityAdd;
 			entityBox1.OnEntityRemove += EntityBox1_OnEntityRemove;
+			LoadDatabase();
+			Saved = true;
+			button1.Enabled = !Saved;
 		}
 
 		private void EntityBox1_OnEntityRemove(object sender, Entity entity, EventArgs e)
@@ -38,10 +42,37 @@ namespace DerouteSharp
 			button1.Enabled = !Saved;
 		}
 
-		public void CreateCell (Image source_image, Point point, Size size)
+
+		#region "CRUD"
+
+		public void CreateCell(Bitmap source_image, Point point, Size size)
+		{
+			if (source_image == null)
+				return;
+
+			entityBox1.Image = source_image;
+			entityBox1.Invalidate();
+
+			entityBox1.Mode = EntityMode.Selection;
+		}
+
+		private void LoadDatabase()
 		{
 
 		}
+
+		private void SaveDatabase()
+		{
+
+		}
+
+		private void DeleteCell (string name)
+		{
+
+		}
+
+		#endregion "CRUD"
+
 
 		#region "Mode Selection"
 
@@ -232,6 +263,7 @@ namespace DerouteSharp
 
 		private void button1_Click(object sender, EventArgs e)
 		{
+			SaveDatabase();
 			Saved = true;
 			button1.Enabled = !Saved;
 		}

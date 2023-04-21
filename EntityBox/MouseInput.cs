@@ -537,7 +537,11 @@ namespace System.Windows.Forms
 				{
 					PointF selectionStart = ScreenToLambda(SelectStartMouseX, SelectStartMouseY);
 					PointF selectionEnd = ScreenToLambda(e.X, e.Y);
-					OnSelectionBox(this, selectionStart, selectionEnd, EventArgs.Empty);
+					float lx = Math.Min(selectionStart.X, selectionEnd.X);
+					float ly = Math.Min(selectionStart.Y, selectionEnd.Y);
+					float w = Math.Abs (selectionEnd.X - selectionStart.X);
+					float h = Math.Abs(selectionEnd.Y - selectionStart.Y);
+					OnSelectionBox(this, new PointF(lx, ly), new PointF(w, h), EventArgs.Empty);
 				}
 				SelectionBegin = false;
 				Invalidate();
