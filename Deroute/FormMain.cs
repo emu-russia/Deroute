@@ -23,7 +23,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace DerouteSharp
 {
-	public partial class Form1 : Form
+	public partial class FormMain : Form
 	{
 #if !__MonoCS__
 		[DllImport("kernel32")]
@@ -34,7 +34,7 @@ namespace DerouteSharp
 		private TimeSpentStats timeStats = new TimeSpentStats();
 		private Random rnd = new Random(DateTime.Now.Millisecond);
 
-		public Form1()
+		public FormMain()
 		{
 			InitializeComponent();
 		}
@@ -82,7 +82,7 @@ namespace DerouteSharp
 
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			About aboutDialog = new About();
+			FormAbout aboutDialog = new FormAbout();
 			aboutDialog.ShowDialog();
 		}
 
