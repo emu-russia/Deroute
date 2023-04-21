@@ -53,19 +53,19 @@ public class CellSupport
 		/// Cell name
 		/// </summary>
 		[XmlElement("Name")]
-		public string Name { get; set; }
+		public string Name { get; set; } = "";
 
 		/// <summary>
 		/// For the simulator
 		/// </summary>
 		[XmlElement("ScriptSource")]
-		public string ScriptSource { get; set; }
+		public string ScriptSource { get; set; } = "";
 
 		// https://stackoverflow.com/questions/1907077/serialize-a-bitmap-in-c-net-to-xml
 		// `I would do something like:`
 
 		[XmlIgnore]
-		public Bitmap cell_image { get; set; }
+		public Bitmap cell_image { get; set; } = null;
 
 		/// <summary>
 		/// Topology image (bitmap)
@@ -101,7 +101,7 @@ public class CellSupport
 
 		// me too :=P
 
-
+		public List<Entity> entities { get; set; } = new List<Entity>();
 	}
 
 }

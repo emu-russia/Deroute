@@ -33,6 +33,8 @@ namespace DerouteSharp
 			}
 		}
 
+		public string StrValue;
+
 		public FormEnterValue(string tip)
 		{
 			InitializeComponent();
@@ -57,6 +59,7 @@ namespace DerouteSharp
 
 		private void button1_Click(object sender, EventArgs e)
 		{
+			StrValue = textBox1.Text;
 			_value = Strtoul(textBox1.Text);
 			DialogResult = DialogResult.OK;
 			Close();

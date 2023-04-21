@@ -13,7 +13,8 @@ namespace DerouteSharp
 	public partial class FormCells : Form
 	{
 		private bool Saved;
-		private List<CellSupport.Cell> cells_db = null;
+		private List<CellSupport.Cell> cells_db = new List<CellSupport.Cell>();
+		private CellSupport.Cell new_cell = new CellSupport.Cell();
 
 		public FormCells(float source_lambda, List<CellSupport.Cell> cells)
 		{
@@ -27,7 +28,7 @@ namespace DerouteSharp
 			entityBox1.AssociateSelectionPropertyGrid(propertyGrid1);
 			entityBox1.OnEntityAdd += EntityBox1_OnEntityAdd;
 			entityBox1.OnEntityRemove += EntityBox1_OnEntityRemove;
-			LoadDatabase();
+			DatabaseToControls();
 			Saved = true;
 			button1.Enabled = !Saved;
 		}
@@ -56,21 +57,48 @@ namespace DerouteSharp
 			entityBox1.Invalidate();
 
 			entityBox1.Mode = EntityMode.Selection;
+
+			new_cell.cell_image = source_image;
+
+			FormEnterValue enter_value = new FormEnterValue("Enter cell name");
+			enter_value.FormClosed += Enter_value_FormClosed;
+			enter_value.ShowDialog();
 		}
 
-		private void LoadDatabase()
+		private void Enter_value_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			FormEnterValue enter_value = (FormEnterValue)sender;
+			new_cell.Name = enter_value.StrValue;
+			cells_db.Add(new_cell);
+		}
+
+		private void DatabaseToControls()
 		{
 
 		}
 
-		private void SaveDatabase()
+		private void EntitiesToCell()
 		{
 
 		}
 
 		private void DeleteCell (string name)
 		{
+			CellSupport.Cell cell_to_remove = null;
 
+			foreach (var cell in cells_db)
+			{
+				if (cell.Name == name)
+				{
+					cell_to_remove = cell;
+					break;
+				}
+			}
+
+			if (cell_to_remove != null)
+			{
+				cells_db.Remove(cell_to_remove);
+			}
 		}
 
 		#endregion "CRUD"
@@ -265,7 +293,7 @@ namespace DerouteSharp
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			SaveDatabase();
+			EntitiesToCell();
 			Saved = true;
 			button1.Enabled = !Saved;
 		}
