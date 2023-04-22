@@ -182,16 +182,12 @@ namespace System.Windows.Forms
 				SavedMouseY = e.Y;
 				SavedScrollX = _ScrollX;
 				SavedScrollY = _ScrollY;
-				_savedImageScroll[0] = _imageScroll[0];
-				_savedImageScroll[1] = _imageScroll[1];
-				_savedImageScroll[2] = _imageScroll[2];
 				ScrollingBegin = true;
 			}
 
 			// Drawing
 
 			if (e.Button == MouseButtons.Left && Mode != EntityMode.Selection &&
-				 Mode != EntityMode.ImageLayer0 && Mode != EntityMode.ImageLayer1 && Mode != EntityMode.ImageLayer2 &&
 				 DrawingBegin == false && ScrollingBegin == false)
 			{
 				Entity entity;
@@ -537,6 +533,16 @@ namespace System.Windows.Forms
 
 			if (SelectionBegin)
 			{
+				if (OnSelectionBox != null)
+				{
+					PointF selectionStart = ScreenToLambda(SelectStartMouseX, SelectStartMouseY);
+					PointF selectionEnd = ScreenToLambda(e.X, e.Y);
+					float lx = Math.Min(selectionStart.X, selectionEnd.X);
+					float ly = Math.Min(selectionStart.Y, selectionEnd.Y);
+					float w = Math.Abs (selectionEnd.X - selectionStart.X);
+					float h = Math.Abs(selectionEnd.Y - selectionStart.Y);
+					OnSelectionBox(this, new PointF(lx, ly), new PointF(w, h), EventArgs.Empty);
+				}
 				SelectionBegin = false;
 				Invalidate();
 			}
@@ -563,36 +569,6 @@ namespace System.Windows.Forms
 
 						ScrollX = lambdaCoord.X;
 						ScrollY = lambdaCoord.Y;
-						break;
-
-					case EntityMode.ImageLayer0:
-						if (LockScroll0 == false)
-						{
-							screenCoord = LambdaToScreen(_savedImageScroll[0].X, _savedImageScroll[0].Y);
-
-							_imageScroll[0] = ScreenToLambda(screenCoord.X + e.X - SavedMouseX,
-															  screenCoord.Y + e.Y - SavedMouseY);
-						}
-						break;
-
-					case EntityMode.ImageLayer1:
-						if (LockScroll1 == false)
-						{
-							screenCoord = LambdaToScreen(_savedImageScroll[1].X, _savedImageScroll[1].Y);
-
-							_imageScroll[1] = ScreenToLambda(screenCoord.X + e.X - SavedMouseX,
-															  screenCoord.Y + e.Y - SavedMouseY);
-						}
-						break;
-
-					case EntityMode.ImageLayer2:
-						if (LockScroll2 == false)
-						{
-							screenCoord = LambdaToScreen(_savedImageScroll[2].X, _savedImageScroll[2].Y);
-
-							_imageScroll[2] = ScreenToLambda(screenCoord.X + e.X - SavedMouseX,
-															  screenCoord.Y + e.Y - SavedMouseY);
-						}
 						break;
 				}
 
@@ -729,30 +705,6 @@ namespace System.Windows.Forms
 
 					Invalidate();
 
-					break;
-
-				case EntityMode.ImageLayer0:
-					if (LockZoom0 == false)
-					{
-						ZoomImage0 += delta;
-						Invalidate();
-					}
-					break;
-
-				case EntityMode.ImageLayer1:
-					if (LockZoom1 == false)
-					{
-						ZoomImage1 += delta;
-						Invalidate();
-					}
-					break;
-
-				case EntityMode.ImageLayer2:
-					if (LockZoom2 == false)
-					{
-						ZoomImage2 += delta;
-						Invalidate();
-					}
 					break;
 			}
 

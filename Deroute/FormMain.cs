@@ -23,7 +23,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace DerouteSharp
 {
-	public partial class Form1 : Form
+	public partial class FormMain : Form
 	{
 #if !__MonoCS__
 		[DllImport("kernel32")]
@@ -33,8 +33,10 @@ namespace DerouteSharp
 		private string savedText;
 		private TimeSpentStats timeStats = new TimeSpentStats();
 		private Random rnd = new Random(DateTime.Now.Millisecond);
+		private FormCells cells_editor = null;
+		private List<CellSupport.Cell> cells_db = new List<CellSupport.Cell>();
 
-		public Form1()
+		public FormMain()
 		{
 			InitializeComponent();
 		}
@@ -54,6 +56,7 @@ namespace DerouteSharp
 			entityBox1.OnFrameDone += entityBox1_OnFrameDone;
 			entityBox1.OnDestinationNodeChanged += EntityBox1_OnDestinationNodeChanged;
 			entityBox1.OnModuleChanged += EntityBox1_OnModuleChanged;
+			entityBox1.OnSelectionBox += EntityBox1_OnSelectionBox;
 
 			entityBox1.BeaconImage = Properties.Resources.beacon_entity;
 
@@ -82,7 +85,7 @@ namespace DerouteSharp
 
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			About aboutDialog = new About();
+			FormAbout aboutDialog = new FormAbout();
 			aboutDialog.ShowDialog();
 		}
 
@@ -153,7 +156,46 @@ namespace DerouteSharp
 			}
 		}
 
-		#endregion
+		private void EntityBox1_OnSelectionBox(object sender, PointF orig, PointF sizef, EventArgs e)
+		{
+			if (addCellFromSelectionToolStripMenuItem.Checked)
+			{
+				addCellFromSelectionToolStripMenuItem.Checked = false;
+
+				if (cells_editor != null)
+				{
+					cells_editor.Focus();
+				}
+				else
+				{
+					cells_editor = new FormCells(entityBox1.Lambda, cells_db);
+					cells_editor.FormClosed += Cells_editor_FormClosed;
+					cells_editor.Show();
+				}
+
+				Point point = entityBox1.LambdaToImage(orig.X, orig.Y);
+				Point size_p = entityBox1.LambdaToImage(sizef.X, sizef.Y);
+				Size size = new Size(size_p.X, size_p.Y);
+
+				Bitmap sourceBitmap = new Bitmap(entityBox1.Image);
+				Rectangle cloneRect = new Rectangle(point.X, point.Y, size.Width, size.Height);
+				Bitmap cloneBitmap = sourceBitmap.Clone(cloneRect, sourceBitmap.PixelFormat);
+
+				cells_editor.CreateCell(cloneBitmap, point, size);
+			}
+		}
+
+		private void Cells_editor_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			FormCells form = (FormCells)sender;
+			if (form.Modifed)
+			{
+				cells_db = form.GetCollection();
+			}
+			cells_editor = null;
+		}
+
+		#endregion "Event Handlers"
 
 
 		#region "Load / Save"
@@ -283,7 +325,6 @@ namespace DerouteSharp
 
 		private void SelectionButtonHighlight()
 		{
-			toolStripDropDownButton4.BackColor = SystemColors.ActiveCaption;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
@@ -292,7 +333,6 @@ namespace DerouteSharp
 
 		private void ViasButtonHighlight()
 		{
-			toolStripDropDownButton4.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.ActiveCaption;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
@@ -301,7 +341,6 @@ namespace DerouteSharp
 
 		private void WiresButtonHighlight()
 		{
-			toolStripDropDownButton4.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.ActiveCaption;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
@@ -310,7 +349,6 @@ namespace DerouteSharp
 
 		private void CellsButtonHighlight()
 		{
-			toolStripDropDownButton4.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.ActiveCaption;
@@ -319,7 +357,6 @@ namespace DerouteSharp
 
 		private void BeaconButtonHighlight()
 		{
-			toolStripDropDownButton4.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
@@ -458,36 +495,6 @@ namespace DerouteSharp
 			CellsButtonHighlight();
 		}
 
-		private void sceneToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			entityBox1.Mode = EntityMode.Selection;
-			SelectionButtonHighlight();
-		}
-
-		private void image0ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			entityBox1.Mode = EntityMode.ImageLayer0;
-			SelectionButtonHighlight();
-		}
-
-		private void image1ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			entityBox1.Mode = EntityMode.ImageLayer1;
-			SelectionButtonHighlight();
-		}
-
-		private void image2ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			entityBox1.Mode = EntityMode.ImageLayer2;
-			SelectionButtonHighlight();
-		}
-
-		private void button1_Click(object sender, EventArgs e)
-		{
-			entityBox1.Mode = EntityMode.Selection;
-			SelectionButtonHighlight();
-		}
-
 		private void button2_Click(object sender, EventArgs e)
 		{
 			entityBox1.Mode = EntityMode.ViasConnect;
@@ -512,7 +519,7 @@ namespace DerouteSharp
 
 		private void Form1_KeyUp(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.F1 )
+			if (e.KeyCode == Keys.F1 || e.KeyCode == Keys.Escape)
 			{
 				entityBox1.Mode = EntityMode.Selection;
 				SelectionButtonHighlight();
@@ -553,40 +560,20 @@ namespace DerouteSharp
 			{
 				SaveEntitiesXml();
 			}
-		}
-
-		private void SetLayerOrigin()
-		{
-			PointF zero = new PointF(0, 0);
-
-			switch (entityBox1.Mode)
+			else if (e.KeyCode == Keys.R)
 			{
-				case EntityMode.ImageLayer0:
-				default:
-					entityBox1.ScrollImage0 = zero;
-					entityBox1.Invalidate();
-					break;
-				case EntityMode.ImageLayer1:
-					entityBox1.ScrollImage1 = zero;
-					entityBox1.Invalidate();
-					break;
-				case EntityMode.ImageLayer2:
-					entityBox1.ScrollImage2 = zero;
-					entityBox1.Invalidate();
-					break;
+				CellSupport.RotateCell(entityBox1);
 			}
-		}
-
-		private void setLayerScrollToOriginToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SetLayerOrigin();
+			else if (e.KeyCode == Keys.F)
+			{
+				CellSupport.FlipCell(entityBox1);
+			}
 		}
 
 		private void toolStripButton4_Click(object sender, EventArgs e)
 		{
 			entityBox1.DrawWireBetweenSelectedViases();
 		}
-
 
 		private void listView1_DoubleClick(object sender, EventArgs e)
 		{
@@ -1369,13 +1356,13 @@ namespace DerouteSharp
 				return;
 			}
 
-			if (entityBox1.Image0 == null)
+			if (entityBox1.Image == null)
 			{
 				MessageBox.Show("Load the original image into Image Layer0.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 				return;
 			}
 
-			FormTrainMLModel form = new FormTrainMLModel(nn, entityBox1.Image0);
+			FormTrainMLModel form = new FormTrainMLModel(nn, entityBox1.Image);
 			form.ShowDialog();
 		}
 
@@ -1387,13 +1374,13 @@ namespace DerouteSharp
 				return;
 			}
 
-			if (entityBox1.Image0 == null)
+			if (entityBox1.Image == null)
 			{
 				MessageBox.Show("Load the original image into Image Layer0.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 				return;
 			}
 
-			ML_sourceBitmap = (Bitmap)entityBox1.Image0;
+			ML_sourceBitmap = (Bitmap)entityBox1.Image;
 			windowsPos = new Point(0, 0);
 
 			backgroundWorkerML.RunWorkerAsync();
@@ -1507,6 +1494,65 @@ namespace DerouteSharp
 		{
 			entityBox1.AddLayer();
 		}
+
+
+		#region "Cells"
+
+		private void loadLibraryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (openFileDialog2.ShowDialog() == DialogResult.OK)
+			{
+				string filename = openFileDialog2.FileName;
+				cells_db = CellSupport.DeserializeFromFile(filename);
+			}
+		}
+
+		private void saveLibraryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (saveFileDialog2.ShowDialog() == DialogResult.OK)
+			{
+				string filename = saveFileDialog2.FileName;
+				CellSupport.SerializeToFile(cells_db, filename);
+			}
+		}
+
+		private void manageCellsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (cells_editor != null)
+			{
+				cells_editor.Focus();
+			}
+			else
+			{
+				cells_editor = new FormCells(entityBox1.Lambda, cells_db);
+				cells_editor.FormClosed += Cells_editor_FormClosed;
+				cells_editor.Show();
+			}
+		}
+
+		private void addCellFromSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (addCellFromSelectionToolStripMenuItem.Checked)
+			{
+				addCellFromSelectionToolStripMenuItem.Checked = false;
+			}
+			else
+			{
+				addCellFromSelectionToolStripMenuItem.Checked = true;
+			}
+		}
+
+		private void rotateCellToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			CellSupport.RotateCell(entityBox1);
+		}
+
+		private void flipCellToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			CellSupport.FlipCell(entityBox1);
+		}
+
+		#endregion "Cells"
 
 	}       // Form1
 

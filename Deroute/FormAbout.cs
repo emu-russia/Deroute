@@ -11,14 +11,14 @@ using System.Windows.Forms;
 
 namespace DerouteSharp
 {
-	public partial class About : Form
+	public partial class FormAbout : Form
 	{
 		private int stepCurrent = 0;
 		private const int stepsAmount = 25;
 		private const int msPerStep = 20;
 		private bool Spawning;
 
-		public About()
+		public FormAbout()
 		{
 			InitializeComponent();
 

@@ -1,4 +1,4 @@
-// Немного геометрии
+// A bit of geometry
 
 using System;
 using System.Drawing;
