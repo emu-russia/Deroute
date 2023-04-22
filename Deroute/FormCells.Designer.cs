@@ -28,18 +28,17 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.ListViewItem listViewItem19 = new System.Windows.Forms.ListViewItem("sdfsdf");
-			System.Windows.Forms.ListViewItem listViewItem20 = new System.Windows.Forms.ListViewItem("sdfsdf");
-			System.Windows.Forms.ListViewItem listViewItem21 = new System.Windows.Forms.ListViewItem("sdfsdfsd");
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("sdfsdf");
+			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("sdfsdf");
+			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("sdfsdfsd");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormCells));
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-			this.button1 = new System.Windows.Forms.Button();
-			this.splitContainer3 = new System.Windows.Forms.SplitContainer();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
 			this.listView1 = new System.Windows.Forms.ListView();
+			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+			this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
 			this.splitContainer4 = new System.Windows.Forms.SplitContainer();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
@@ -69,10 +68,13 @@
 			this.unitMemoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.unitCustomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.entityBox1 = new System.Windows.Forms.EntityBox();
+			this.button1 = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
+			this.tabControl1.SuspendLayout();
+			this.tabPage1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
 			this.splitContainer2.Panel1.SuspendLayout();
 			this.splitContainer2.Panel2.SuspendLayout();
@@ -81,8 +83,6 @@
 			this.splitContainer3.Panel1.SuspendLayout();
 			this.splitContainer3.Panel2.SuspendLayout();
 			this.splitContainer3.SuspendLayout();
-			this.tabControl1.SuspendLayout();
-			this.tabPage1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
 			this.splitContainer4.Panel1.SuspendLayout();
 			this.splitContainer4.Panel2.SuspendLayout();
@@ -108,54 +108,6 @@
 			this.splitContainer1.SplitterDistance = 332;
 			this.splitContainer1.TabIndex = 0;
 			// 
-			// splitContainer2
-			// 
-			this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-			this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-			this.splitContainer2.Name = "splitContainer2";
-			this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
-			// 
-			// splitContainer2.Panel1
-			// 
-			this.splitContainer2.Panel1.Controls.Add(this.splitContainer3);
-			// 
-			// splitContainer2.Panel2
-			// 
-			this.splitContainer2.Panel2.Controls.Add(this.button1);
-			this.splitContainer2.Size = new System.Drawing.Size(1020, 613);
-			this.splitContainer2.SplitterDistance = 557;
-			this.splitContainer2.TabIndex = 0;
-			// 
-			// button1
-			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Location = new System.Drawing.Point(913, 11);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(95, 29);
-			this.button1.TabIndex = 0;
-			this.button1.Text = "Save";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
-			// 
-			// splitContainer3
-			// 
-			this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer3.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-			this.splitContainer3.Location = new System.Drawing.Point(0, 0);
-			this.splitContainer3.Name = "splitContainer3";
-			// 
-			// splitContainer3.Panel1
-			// 
-			this.splitContainer3.Panel1.Controls.Add(this.propertyGrid1);
-			// 
-			// splitContainer3.Panel2
-			// 
-			this.splitContainer3.Panel2.Controls.Add(this.splitContainer4);
-			this.splitContainer3.Size = new System.Drawing.Size(1020, 557);
-			this.splitContainer3.SplitterDistance = 388;
-			this.splitContainer3.TabIndex = 0;
-			// 
 			// tabControl1
 			// 
 			this.tabControl1.Controls.Add(this.tabPage1);
@@ -177,6 +129,60 @@
 			this.tabPage1.Text = "Cells";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
+			// listView1
+			// 
+			this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.listView1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.listView1.HideSelection = false;
+			this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1,
+            listViewItem2,
+            listViewItem3});
+			this.listView1.Location = new System.Drawing.Point(3, 3);
+			this.listView1.Name = "listView1";
+			this.listView1.Size = new System.Drawing.Size(318, 581);
+			this.listView1.TabIndex = 0;
+			this.listView1.UseCompatibleStateImageBehavior = false;
+			this.listView1.View = System.Windows.Forms.View.List;
+			this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
+			// 
+			// splitContainer2
+			// 
+			this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+			this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer2.Name = "splitContainer2";
+			this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			// 
+			// splitContainer2.Panel1
+			// 
+			this.splitContainer2.Panel1.Controls.Add(this.splitContainer3);
+			// 
+			// splitContainer2.Panel2
+			// 
+			this.splitContainer2.Panel2.Controls.Add(this.button1);
+			this.splitContainer2.Size = new System.Drawing.Size(1020, 613);
+			this.splitContainer2.SplitterDistance = 557;
+			this.splitContainer2.TabIndex = 0;
+			// 
+			// splitContainer3
+			// 
+			this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer3.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+			this.splitContainer3.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer3.Name = "splitContainer3";
+			// 
+			// splitContainer3.Panel1
+			// 
+			this.splitContainer3.Panel1.Controls.Add(this.propertyGrid1);
+			// 
+			// splitContainer3.Panel2
+			// 
+			this.splitContainer3.Panel2.Controls.Add(this.splitContainer4);
+			this.splitContainer3.Size = new System.Drawing.Size(1020, 557);
+			this.splitContainer3.SplitterDistance = 388;
+			this.splitContainer3.TabIndex = 0;
+			// 
 			// propertyGrid1
 			// 
 			this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -184,21 +190,6 @@
 			this.propertyGrid1.Name = "propertyGrid1";
 			this.propertyGrid1.Size = new System.Drawing.Size(388, 557);
 			this.propertyGrid1.TabIndex = 0;
-			// 
-			// listView1
-			// 
-			this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.listView1.HideSelection = false;
-			this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem19,
-            listViewItem20,
-            listViewItem21});
-			this.listView1.Location = new System.Drawing.Point(3, 3);
-			this.listView1.Name = "listView1";
-			this.listView1.Size = new System.Drawing.Size(318, 581);
-			this.listView1.TabIndex = 0;
-			this.listView1.UseCompatibleStateImageBehavior = false;
-			this.listView1.View = System.Windows.Forms.View.List;
 			// 
 			// splitContainer4
 			// 
@@ -253,7 +244,7 @@
 			// 
 			this.toolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem1.Image")));
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(199, 38);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(183, 22);
 			this.toolStripMenuItem1.Text = "Vias Connection (F2)";
 			this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
 			// 
@@ -261,7 +252,7 @@
 			// 
 			this.viasPowerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viasPowerToolStripMenuItem.Image")));
 			this.viasPowerToolStripMenuItem.Name = "viasPowerToolStripMenuItem";
-			this.viasPowerToolStripMenuItem.Size = new System.Drawing.Size(199, 38);
+			this.viasPowerToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.viasPowerToolStripMenuItem.Text = "Vias Power";
 			this.viasPowerToolStripMenuItem.Click += new System.EventHandler(this.viasPowerToolStripMenuItem_Click);
 			// 
@@ -269,7 +260,7 @@
 			// 
 			this.viasGroundToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viasGroundToolStripMenuItem.Image")));
 			this.viasGroundToolStripMenuItem.Name = "viasGroundToolStripMenuItem";
-			this.viasGroundToolStripMenuItem.Size = new System.Drawing.Size(199, 38);
+			this.viasGroundToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.viasGroundToolStripMenuItem.Text = "Vias Ground";
 			this.viasGroundToolStripMenuItem.Click += new System.EventHandler(this.viasGroundToolStripMenuItem_Click);
 			// 
@@ -277,7 +268,7 @@
 			// 
 			this.viasInputToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viasInputToolStripMenuItem.Image")));
 			this.viasInputToolStripMenuItem.Name = "viasInputToolStripMenuItem";
-			this.viasInputToolStripMenuItem.Size = new System.Drawing.Size(199, 38);
+			this.viasInputToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.viasInputToolStripMenuItem.Text = "Vias Input";
 			this.viasInputToolStripMenuItem.Click += new System.EventHandler(this.viasInputToolStripMenuItem_Click);
 			// 
@@ -285,7 +276,7 @@
 			// 
 			this.viasOutputToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viasOutputToolStripMenuItem.Image")));
 			this.viasOutputToolStripMenuItem.Name = "viasOutputToolStripMenuItem";
-			this.viasOutputToolStripMenuItem.Size = new System.Drawing.Size(199, 38);
+			this.viasOutputToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.viasOutputToolStripMenuItem.Text = "Vias Output";
 			this.viasOutputToolStripMenuItem.Click += new System.EventHandler(this.viasOutputToolStripMenuItem_Click);
 			// 
@@ -293,7 +284,7 @@
 			// 
 			this.viasInoutToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viasInoutToolStripMenuItem.Image")));
 			this.viasInoutToolStripMenuItem.Name = "viasInoutToolStripMenuItem";
-			this.viasInoutToolStripMenuItem.Size = new System.Drawing.Size(199, 38);
+			this.viasInoutToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.viasInoutToolStripMenuItem.Text = "Vias Input/Output";
 			this.viasInoutToolStripMenuItem.Click += new System.EventHandler(this.viasInoutToolStripMenuItem_Click);
 			// 
@@ -301,7 +292,7 @@
 			// 
 			this.viasFloatingToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viasFloatingToolStripMenuItem.Image")));
 			this.viasFloatingToolStripMenuItem.Name = "viasFloatingToolStripMenuItem";
-			this.viasFloatingToolStripMenuItem.Size = new System.Drawing.Size(199, 38);
+			this.viasFloatingToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.viasFloatingToolStripMenuItem.Text = "Vias Floating";
 			this.viasFloatingToolStripMenuItem.Click += new System.EventHandler(this.viasFloatingToolStripMenuItem_Click);
 			// 
@@ -322,7 +313,7 @@
 			// 
 			this.wireInterconnectToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("wireInterconnectToolStripMenuItem.Image")));
 			this.wireInterconnectToolStripMenuItem.Name = "wireInterconnectToolStripMenuItem";
-			this.wireInterconnectToolStripMenuItem.Size = new System.Drawing.Size(207, 38);
+			this.wireInterconnectToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.wireInterconnectToolStripMenuItem.Text = "Wire Interconnect (F3)";
 			this.wireInterconnectToolStripMenuItem.Click += new System.EventHandler(this.wireInterconnectToolStripMenuItem_Click);
 			// 
@@ -330,7 +321,7 @@
 			// 
 			this.wirePowerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("wirePowerToolStripMenuItem.Image")));
 			this.wirePowerToolStripMenuItem.Name = "wirePowerToolStripMenuItem";
-			this.wirePowerToolStripMenuItem.Size = new System.Drawing.Size(207, 38);
+			this.wirePowerToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.wirePowerToolStripMenuItem.Text = "Wire Power";
 			this.wirePowerToolStripMenuItem.Click += new System.EventHandler(this.wirePowerToolStripMenuItem_Click);
 			// 
@@ -338,7 +329,7 @@
 			// 
 			this.wireGroundToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("wireGroundToolStripMenuItem.Image")));
 			this.wireGroundToolStripMenuItem.Name = "wireGroundToolStripMenuItem";
-			this.wireGroundToolStripMenuItem.Size = new System.Drawing.Size(207, 38);
+			this.wireGroundToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.wireGroundToolStripMenuItem.Text = "Wire Ground";
 			this.wireGroundToolStripMenuItem.Click += new System.EventHandler(this.wireGroundToolStripMenuItem_Click);
 			// 
@@ -369,89 +360,89 @@
 			// cellNotToolStripMenuItem
 			// 
 			this.cellNotToolStripMenuItem.Name = "cellNotToolStripMenuItem";
-			this.cellNotToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.cellNotToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.cellNotToolStripMenuItem.Text = "Cell Not";
 			this.cellNotToolStripMenuItem.Click += new System.EventHandler(this.cellNotToolStripMenuItem_Click);
 			// 
 			// cellBufferToolStripMenuItem
 			// 
 			this.cellBufferToolStripMenuItem.Name = "cellBufferToolStripMenuItem";
-			this.cellBufferToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.cellBufferToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.cellBufferToolStripMenuItem.Text = "Cell Buffer";
 			this.cellBufferToolStripMenuItem.Click += new System.EventHandler(this.cellBufferToolStripMenuItem_Click);
 			// 
 			// cellMuxToolStripMenuItem
 			// 
 			this.cellMuxToolStripMenuItem.Name = "cellMuxToolStripMenuItem";
-			this.cellMuxToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.cellMuxToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.cellMuxToolStripMenuItem.Text = "Cell Mux";
 			this.cellMuxToolStripMenuItem.Click += new System.EventHandler(this.cellMuxToolStripMenuItem_Click);
 			// 
 			// cellLogicToolStripMenuItem
 			// 
 			this.cellLogicToolStripMenuItem.Name = "cellLogicToolStripMenuItem";
-			this.cellLogicToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.cellLogicToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.cellLogicToolStripMenuItem.Text = "Cell Logic";
 			this.cellLogicToolStripMenuItem.Click += new System.EventHandler(this.cellLogicToolStripMenuItem_Click);
 			// 
 			// cellAdderToolStripMenuItem
 			// 
 			this.cellAdderToolStripMenuItem.Name = "cellAdderToolStripMenuItem";
-			this.cellAdderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.cellAdderToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.cellAdderToolStripMenuItem.Text = "Cell Adder";
 			this.cellAdderToolStripMenuItem.Click += new System.EventHandler(this.cellAdderToolStripMenuItem_Click);
 			// 
 			// cellBusSupportToolStripMenuItem
 			// 
 			this.cellBusSupportToolStripMenuItem.Name = "cellBusSupportToolStripMenuItem";
-			this.cellBusSupportToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.cellBusSupportToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.cellBusSupportToolStripMenuItem.Text = "Cell Bus Support";
 			this.cellBusSupportToolStripMenuItem.Click += new System.EventHandler(this.cellBusSupportToolStripMenuItem_Click);
 			// 
 			// cellFlipFlopToolStripMenuItem
 			// 
 			this.cellFlipFlopToolStripMenuItem.Name = "cellFlipFlopToolStripMenuItem";
-			this.cellFlipFlopToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.cellFlipFlopToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.cellFlipFlopToolStripMenuItem.Text = "Cell Flip-Flop";
 			this.cellFlipFlopToolStripMenuItem.Click += new System.EventHandler(this.cellFlipFlopToolStripMenuItem_Click);
 			// 
 			// cellLatchToolStripMenuItem
 			// 
 			this.cellLatchToolStripMenuItem.Name = "cellLatchToolStripMenuItem";
-			this.cellLatchToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.cellLatchToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.cellLatchToolStripMenuItem.Text = "Cell Latch";
 			this.cellLatchToolStripMenuItem.Click += new System.EventHandler(this.cellLatchToolStripMenuItem_Click);
 			// 
 			// cellOtherToolStripMenuItem
 			// 
 			this.cellOtherToolStripMenuItem.Name = "cellOtherToolStripMenuItem";
-			this.cellOtherToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.cellOtherToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.cellOtherToolStripMenuItem.Text = "Cell Other";
 			this.cellOtherToolStripMenuItem.Click += new System.EventHandler(this.cellOtherToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(159, 6);
 			// 
 			// unitRegisterFileToolStripMenuItem
 			// 
 			this.unitRegisterFileToolStripMenuItem.Name = "unitRegisterFileToolStripMenuItem";
-			this.unitRegisterFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.unitRegisterFileToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.unitRegisterFileToolStripMenuItem.Text = "Unit Register File";
 			this.unitRegisterFileToolStripMenuItem.Click += new System.EventHandler(this.unitRegisterFileToolStripMenuItem_Click);
 			// 
 			// unitMemoryToolStripMenuItem
 			// 
 			this.unitMemoryToolStripMenuItem.Name = "unitMemoryToolStripMenuItem";
-			this.unitMemoryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.unitMemoryToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.unitMemoryToolStripMenuItem.Text = "Unit Memory";
 			this.unitMemoryToolStripMenuItem.Click += new System.EventHandler(this.unitMemoryToolStripMenuItem_Click);
 			// 
 			// unitCustomToolStripMenuItem
 			// 
 			this.unitCustomToolStripMenuItem.Name = "unitCustomToolStripMenuItem";
-			this.unitCustomToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.unitCustomToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.unitCustomToolStripMenuItem.Text = "Unit Custom";
 			this.unitCustomToolStripMenuItem.Click += new System.EventHandler(this.unitCustomToolStripMenuItem_Click);
 			// 
@@ -528,6 +519,17 @@
 			this.entityBox1.WireTextAlignment = TextAlignment.TopLeft;
 			this.entityBox1.Zoom = 100;
 			// 
+			// button1
+			// 
+			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.button1.Location = new System.Drawing.Point(913, 11);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(95, 29);
+			this.button1.TabIndex = 0;
+			this.button1.Text = "Save";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
+			// 
 			// FormCells
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -545,6 +547,8 @@
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
+			this.tabControl1.ResumeLayout(false);
+			this.tabPage1.ResumeLayout(false);
 			this.splitContainer2.Panel1.ResumeLayout(false);
 			this.splitContainer2.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
@@ -553,8 +557,6 @@
 			this.splitContainer3.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
 			this.splitContainer3.ResumeLayout(false);
-			this.tabControl1.ResumeLayout(false);
-			this.tabPage1.ResumeLayout(false);
 			this.splitContainer4.Panel1.ResumeLayout(false);
 			this.splitContainer4.Panel1.PerformLayout();
 			this.splitContainer4.Panel2.ResumeLayout(false);

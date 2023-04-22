@@ -4,17 +4,21 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static CellSupport;
 
 namespace DerouteSharp
 {
 	public partial class FormCells : Form
 	{
 		private bool Saved;
+		public bool Modifed = false;
 		private List<CellSupport.Cell> cells_db = new List<CellSupport.Cell>();
 		private CellSupport.Cell new_cell = new CellSupport.Cell();
+		private ListViewItem selected_item = null;
 
 		public FormCells(float source_lambda, List<CellSupport.Cell> cells)
 		{
@@ -70,16 +74,41 @@ namespace DerouteSharp
 			FormEnterValue enter_value = (FormEnterValue)sender;
 			new_cell.Name = enter_value.StrValue;
 			cells_db.Add(new_cell);
+
+			Saved = false;
+			button1.Enabled = !Saved;
+			Modifed = true;
+
+			DatabaseToControls();
 		}
 
 		private void DatabaseToControls()
 		{
+			listView1.Clear();
+			listView1.BeginUpdate();
 
+			foreach (var cell in cells_db)
+			{
+				ListViewItem item = new ListViewItem(cell.Name);
+				item.Tag = cell;
+				listView1.Items.Add(item);
+			}
+
+			listView1.EndUpdate();
 		}
 
 		private void EntitiesToCell()
 		{
+			if (selected_item != null)
+			{
+				CellSupport.Cell cell = selected_item.Tag as CellSupport.Cell;
+				cell.Entities = entityBox1.GetEntities();
+			}
+		}
 
+		public List<CellSupport.Cell> GetCollection()
+		{
+			return cells_db;
 		}
 
 		private void DeleteCell (string name)
@@ -99,6 +128,10 @@ namespace DerouteSharp
 			{
 				cells_db.Remove(cell_to_remove);
 			}
+
+			Saved = false;
+			button1.Enabled = !Saved;
+			Modifed = true;
 		}
 
 		#endregion "CRUD"
@@ -296,6 +329,7 @@ namespace DerouteSharp
 			EntitiesToCell();
 			Saved = true;
 			button1.Enabled = !Saved;
+			Modifed = true;
 		}
 
 		private void FormCells_FormClosing(object sender, FormClosingEventArgs e)
@@ -308,6 +342,29 @@ namespace DerouteSharp
 				{
 					e.Cancel = true;
 				}
+			}
+		}
+
+		private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (listView1.SelectedItems.Count > 0)
+			{
+				ListViewItem item = listView1.SelectedItems[0];
+				selected_item = item;
+				propertyGrid1.SelectedObject = item.Tag;
+
+				CellSupport.Cell cell = item.Tag as CellSupport.Cell;
+				entityBox1.LoadImage(new Bitmap(cell.cell_image));
+				entityBox1.root.Children.AddRange(cell.Entities);
+				entityBox1.Invalidate();
+			}
+			else
+			{
+				propertyGrid1.SelectedObject = null;
+
+				entityBox1.UnloadImage();
+				entityBox1.DeleteAllEntites();
+				entityBox1.Invalidate();
 			}
 		}
 	}

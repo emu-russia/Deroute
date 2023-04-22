@@ -101,7 +101,10 @@ public class CellSupport
 
 		// me too :=P
 
-		public List<Entity> entities { get; set; } = new List<Entity>();
+		/// <summary>
+		/// Entities from which the cell is made (CellXxx, Vias, etc.)
+		/// </summary>
+		public List<Entity> Entities { get; set; } = new List<Entity>();
 	}
 
 }

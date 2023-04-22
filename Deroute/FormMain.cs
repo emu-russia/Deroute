@@ -169,6 +169,7 @@ namespace DerouteSharp
 				else
 				{
 					cells_editor = new FormCells(entityBox1.Lambda, cells_db);
+					cells_editor.FormClosed += Cells_editor_FormClosed;
 					cells_editor.Show();
 				}
 
@@ -182,6 +183,16 @@ namespace DerouteSharp
 
 				cells_editor.CreateCell(cloneBitmap, point, size);
 			}
+		}
+
+		private void Cells_editor_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			FormCells form = (FormCells)sender;
+			if (form.Modifed)
+			{
+				cells_db = form.GetCollection();
+			}
+			cells_editor = null;
 		}
 
 		#endregion "Event Handlers"
@@ -1514,6 +1525,7 @@ namespace DerouteSharp
 			else
 			{
 				cells_editor = new FormCells(entityBox1.Lambda, cells_db);
+				cells_editor.FormClosed += Cells_editor_FormClosed;
 				cells_editor.Show();
 			}
 		}
