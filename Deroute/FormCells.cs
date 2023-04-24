@@ -14,41 +14,25 @@ namespace DerouteSharp
 {
 	public partial class FormCells : Form
 	{
-		private bool Saved;
 		public bool Modifed = false;
 		private List<CellSupport.Cell> cells_db = new List<CellSupport.Cell>();
 		private CellSupport.Cell new_cell = new CellSupport.Cell();
 		private ListViewItem selected_item = null;
+		private EntityBox parent_box;
 
-		public FormCells(float source_lambda, List<CellSupport.Cell> cells)
+		public FormCells(EntityBox parent, List<CellSupport.Cell> cells)
 		{
 			InitializeComponent();
 			cells_db = cells;
-			entityBox1.Lambda = source_lambda;
+			parent_box = parent;
+			entityBox1.Lambda = parent_box.Lambda;
 		}
 
 		private void FormCells_Load(object sender, EventArgs e)
 		{
 			entityBox1.AssociateSelectionPropertyGrid(propertyGrid1);
-			entityBox1.OnEntityAdd += EntityBox1_OnEntityAdd;
-			entityBox1.OnEntityRemove += EntityBox1_OnEntityRemove;
 			DatabaseToControls();
-			Saved = true;
-			button1.Enabled = !Saved;
 		}
-
-		private void EntityBox1_OnEntityRemove(object sender, Entity entity, EventArgs e)
-		{
-			Saved = false;
-			button1.Enabled = !Saved;
-		}
-
-		private void EntityBox1_OnEntityAdd(object sender, Entity entity, EventArgs e)
-		{
-			Saved = false;
-			button1.Enabled = !Saved;
-		}
-
 
 		#region "CRUD"
 
@@ -57,12 +41,13 @@ namespace DerouteSharp
 			if (source_image == null)
 				return;
 
-			entityBox1.Image = source_image;
+			new_cell = new CellSupport.Cell();
+			new_cell.cell_image = new Bitmap(source_image);
+
+			entityBox1.Image = new Bitmap(source_image);
 			entityBox1.Invalidate();
 
 			entityBox1.Mode = EntityMode.Selection;
-
-			new_cell.cell_image = source_image;
 
 			FormEnterValue enter_value = new FormEnterValue("Enter cell name");
 			enter_value.FormClosed += Enter_value_FormClosed;
@@ -75,10 +60,7 @@ namespace DerouteSharp
 			new_cell.Name = enter_value.StrValue;
 			cells_db.Add(new_cell);
 
-			Saved = false;
-			button1.Enabled = !Saved;
 			Modifed = true;
-
 			DatabaseToControls();
 		}
 
@@ -129,8 +111,6 @@ namespace DerouteSharp
 				cells_db.Remove(cell_to_remove);
 			}
 
-			Saved = false;
-			button1.Enabled = !Saved;
 			Modifed = true;
 		}
 
@@ -327,22 +307,7 @@ namespace DerouteSharp
 		private void button1_Click(object sender, EventArgs e)
 		{
 			EntitiesToCell();
-			Saved = true;
-			button1.Enabled = !Saved;
 			Modifed = true;
-		}
-
-		private void FormCells_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			if (!Saved)
-			{
-				var res = MessageBox.Show(this, "You sure you want to get out without saving?", "Exit",
-				MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
-				if (res != DialogResult.Yes)
-				{
-					e.Cancel = true;
-				}
-			}
 		}
 
 		private void listView1_SelectedIndexChanged(object sender, EventArgs e)
@@ -365,6 +330,28 @@ namespace DerouteSharp
 				entityBox1.UnloadImage();
 				entityBox1.DeleteAllEntites();
 				entityBox1.Invalidate();
+
+				selected_item = null;
+			}
+		}
+
+		private void listView1_DoubleClick(object sender, EventArgs e)
+		{
+			if (selected_item != null)
+			{
+				CellSupport.Cell cell = selected_item.Tag as CellSupport.Cell;
+				Console.WriteLine("Add {0} to EntityBox", cell.Name);
+			}
+		}
+
+		private void listView1_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete && selected_item != null)
+			{
+				CellSupport.Cell cell = selected_item.Tag as CellSupport.Cell;
+				Console.WriteLine("Delete {0}", cell.Name);
+				listView1.Items.Remove(selected_item);
+				DeleteCell(cell.Name);
 			}
 		}
 	}

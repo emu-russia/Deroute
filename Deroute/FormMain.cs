@@ -168,7 +168,7 @@ namespace DerouteSharp
 				}
 				else
 				{
-					cells_editor = new FormCells(entityBox1.Lambda, cells_db);
+					cells_editor = new FormCells(entityBox1, cells_db);
 					cells_editor.FormClosed += Cells_editor_FormClosed;
 					cells_editor.Show();
 				}
@@ -1524,7 +1524,7 @@ namespace DerouteSharp
 			}
 			else
 			{
-				cells_editor = new FormCells(entityBox1.Lambda, cells_db);
+				cells_editor = new FormCells(entityBox1, cells_db);
 				cells_editor.FormClosed += Cells_editor_FormClosed;
 				cells_editor.Show();
 			}
