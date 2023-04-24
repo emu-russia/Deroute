@@ -94,6 +94,38 @@ public class Entity
 	[XmlIgnore]
 	public float SavedLambdaEndY;
 
+	public Entity ()
+	{
+	}
+
+	public Entity (Entity other)
+	{
+		_Label = other._Label;
+		_LambdaWidth = other._LambdaWidth;
+		_LambdaHeight = other._LambdaHeight;
+		_LambdaX = other._LambdaX;
+		_LambdaY = other._LambdaY;
+		_LambdaEndX = other._LambdaEndX;
+		_LambdaEndY = other._LambdaEndY;
+		_Type = other._Type;
+		_Selected = other._Selected;
+		_ColorOverride = other._ColorOverride;
+		_FontOverride = other._FontOverride;
+		labelAlignment = other.labelAlignment;
+		_Priority = other._Priority;
+		_WidthOverride = other._WidthOverride;
+		if (other._pathPoints != null)
+		{
+			_pathPoints = new List<PointF>();
+			_pathPoints.AddRange(other._pathPoints);
+		}
+		if (_traverseBlackList != null)
+		{
+			_traverseBlackList = new List<EntityType>();
+			_traverseBlackList.AddRange(other._traverseBlackList);
+		}
+	}
+
 	[Category("Entity Properties")]
 	public string Label
 	{

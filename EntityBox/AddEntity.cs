@@ -497,5 +497,42 @@ namespace System.Windows.Forms
 			OnEntityAdd?.Invoke(this, item, EventArgs.Empty);
 		}
 
+
+		public void AddEntitiesByCrosshair (List<Entity> entites)
+		{
+			var cross = ScreenToLambda(LastRMB.X, LastRMB.Y);
+
+			foreach (var entity in entites)
+			{
+				var dest = GetDestinationNode();
+
+				Entity new_entity = new Entity(entity);
+
+				new_entity.LambdaX += cross.X;
+				new_entity.LambdaY += cross.Y;
+				new_entity.LambdaEndX += cross.X;
+				new_entity.LambdaEndY += cross.Y;
+
+				if (new_entity.PathPoints != null)
+				{
+					List<PointF> new_path = new List<PointF>();
+
+					foreach (var pt in new_entity.PathPoints)
+					{
+						PointF point = new PointF(pt.X + cross.X, pt.Y + cross.Y);
+						new_path.Add(point);
+					}
+
+					new_entity.PathPoints = new_path;
+				}
+
+				dest.Children.Add(new_entity);
+
+				OnEntityCountChanged?.Invoke(this, EventArgs.Empty);
+				OnEntityAdd?.Invoke(this, new_entity, EventArgs.Empty);
+			}
+
+			Invalidate();
+		}
 	}
 }

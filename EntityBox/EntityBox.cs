@@ -97,7 +97,7 @@ namespace System.Windows.Forms
 		private bool wireSelectionAutoTraverse;
 		private long UnserializeLastStamp = 0;
 		private bool grayscale = false;
-		private Point LastRMB = new Point(-1, -1);
+		private Point LastRMB = new Point(0, 0);
 		private bool DrawInProgress;
 		private List<Entity> copied = new List<Entity>();
 		private PointF TopLeftCopied;
@@ -163,6 +163,11 @@ namespace System.Windows.Forms
 		{
 			insertionNode = node;
 			OnDestinationNodeChanged?.Invoke(this, node, EventArgs.Empty);
+		}
+
+		public Entity GetDestinationNode ()
+		{
+			return insertionNode;
 		}
 
 		private void GetEntitiesRecursive(Entity parent, List<Entity> list)

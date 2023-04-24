@@ -341,6 +341,7 @@ namespace DerouteSharp
 			{
 				CellSupport.Cell cell = selected_item.Tag as CellSupport.Cell;
 				Console.WriteLine("Add {0} to EntityBox", cell.Name);
+				parent_box.AddEntitiesByCrosshair(cell.Entities);
 			}
 		}
 
