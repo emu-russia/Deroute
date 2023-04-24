@@ -556,11 +556,11 @@ namespace DerouteSharp
 			{
 				SaveEntitiesXml();
 			}
-			else if (e.KeyCode == Keys.R)
+			else if (e.KeyCode == Keys.R && e.Control)
 			{
 				CellSupport.RotateCell(entityBox1);
 			}
-			else if (e.KeyCode == Keys.F)
+			else if (e.KeyCode == Keys.F && e.Control)
 			{
 				CellSupport.FlipCell(entityBox1);
 			}
