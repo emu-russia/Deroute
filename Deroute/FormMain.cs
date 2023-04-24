@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -10,12 +9,9 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Threading;
 using NeuralNetwork;
-using static NeuralNetwork.EntityNetwork;
 using System.IO;
 using System.IO.Compression;
 using System.Xml.Serialization;
-using System.Reflection.Emit;
-using static System.Net.Mime.MediaTypeNames;
 
 //
 // Nothing to comment here. Everything is self-explanatory (GUI stubs)

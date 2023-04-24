@@ -1,14 +1,7 @@
 // Add various entities by user
 
-using System;
-using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Xml.Serialization;
 using System.Linq;
 
 namespace System.Windows.Forms
