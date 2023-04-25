@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -10,12 +9,9 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Threading;
 using NeuralNetwork;
-using static NeuralNetwork.EntityNetwork;
 using System.IO;
 using System.IO.Compression;
 using System.Xml.Serialization;
-using System.Reflection.Emit;
-using static System.Net.Mime.MediaTypeNames;
 
 //
 // Nothing to comment here. Everything is self-explanatory (GUI stubs)
@@ -168,7 +164,7 @@ namespace DerouteSharp
 				}
 				else
 				{
-					cells_editor = new FormCells(entityBox1.Lambda, cells_db);
+					cells_editor = new FormCells(entityBox1, cells_db);
 					cells_editor.FormClosed += Cells_editor_FormClosed;
 					cells_editor.Show();
 				}
@@ -560,11 +556,11 @@ namespace DerouteSharp
 			{
 				SaveEntitiesXml();
 			}
-			else if (e.KeyCode == Keys.R)
+			else if (e.KeyCode == Keys.R && e.Control)
 			{
 				CellSupport.RotateCell(entityBox1);
 			}
-			else if (e.KeyCode == Keys.F)
+			else if (e.KeyCode == Keys.F && e.Control)
 			{
 				CellSupport.FlipCell(entityBox1);
 			}
@@ -1524,7 +1520,7 @@ namespace DerouteSharp
 			}
 			else
 			{
-				cells_editor = new FormCells(entityBox1.Lambda, cells_db);
+				cells_editor = new FormCells(entityBox1, cells_db);
 				cells_editor.FormClosed += Cells_editor_FormClosed;
 				cells_editor.Show();
 			}

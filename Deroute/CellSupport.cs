@@ -16,6 +16,50 @@ public class CellSupport
 	public static void RotateCell (EntityBox box)
 	{
 		Console.WriteLine("rot");
+
+		List<Entity> entities = box.GetEntities();
+
+		foreach (var entity in entities)
+		{
+			if ((entity.IsCell() || entity.IsUnit()) && entity.Selected)
+			{
+				var ports = GetPorts(entity, entities);
+
+				var temp = entity.LambdaWidth;
+				entity.LambdaWidth = entity.LambdaHeight;
+				entity.LambdaHeight = temp;
+
+				switch (entity.LabelAlignment)
+				{
+					case TextAlignment.TopLeft:
+					case TextAlignment.GlobalSettings:
+						entity.LabelAlignment = TextAlignment.TopRight;
+						break;
+
+					case TextAlignment.TopRight:
+						entity.LabelAlignment = TextAlignment.BottomRight;
+						break;
+
+					case TextAlignment.BottomRight:
+						entity.LabelAlignment = TextAlignment.BottomLeft;
+						break;
+
+					case TextAlignment.BottomLeft:
+						entity.LabelAlignment = TextAlignment.TopLeft;
+						break;
+				}
+
+				foreach (var port in ports)
+				{
+					var ofs_x = port.LambdaX - entity.LambdaX;
+					var ofs_y = port.LambdaY - entity.LambdaY;
+					port.LambdaX = entity.LambdaX + (entity.LambdaWidth - ofs_y);
+					port.LambdaY = entity.LambdaY + ofs_x;
+				}
+			}
+		}
+
+		box.Invalidate();
 	}
 
 	public static void FlipCell (EntityBox box)
@@ -107,4 +151,31 @@ public class CellSupport
 		public List<Entity> Entities { get; set; } = new List<Entity>();
 	}
 
+
+	/// <summary>
+	/// All input/output/input vias within a cell/block become ports
+	/// </summary>
+	static List<Entity> GetPorts(Entity cell, List<Entity> ents)
+	{
+		List<Entity> ports = new List<Entity>();
+
+		foreach (var ent in ents)
+		{
+			if (IsPort(ent))
+			{
+				RectangleF rect = new RectangleF(cell.LambdaX, cell.LambdaY, cell.LambdaWidth, cell.LambdaHeight);
+				if (rect.Contains(ent.LambdaX, ent.LambdaY))
+				{
+					ports.Add(ent);
+				}
+			}
+		}
+
+		return ports;
+	}
+
+	static bool IsPort(Entity ent)
+	{
+		return ent.Type == EntityType.ViasInput || ent.Type == EntityType.ViasOutput || ent.Type == EntityType.ViasInout;
+	}
 }

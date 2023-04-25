@@ -12,14 +12,6 @@ At the center of the tool is a custom control called the EntityBox. Its task is 
 
 Entities are any connected elements that are used to build the topology of integrated circuits and printed circuit boards: wires, connecting contacts (vias), standard cells, register and memory blocks, other ICs and connectors.
 
-## Source image layers
-
-3 layers of images are supported.
-
-Each layer has its own scrolling and zoom, independent of the scrolling and zoom of the entire scene.
-
-Transparency can be assigned to each layer. Layers are drawn in the order: 2 -> 1 -> 0.
-
 ## Coordinate system
 
 Deroute operates in two coordinate systems:

@@ -145,6 +145,8 @@
 			this.listView1.UseCompatibleStateImageBehavior = false;
 			this.listView1.View = System.Windows.Forms.View.List;
 			this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
+			this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
+			this.listView1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listView1_KeyUp);
 			// 
 			// splitContainer2
 			// 
@@ -540,7 +542,6 @@
 			this.KeyPreview = true;
 			this.Name = "FormCells";
 			this.Text = "Cells";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormCells_FormClosing);
 			this.Load += new System.EventHandler(this.FormCells_Load);
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.FormCells_KeyUp);
 			this.splitContainer1.Panel1.ResumeLayout(false);
