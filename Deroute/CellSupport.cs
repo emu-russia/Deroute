@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.IO.Compression;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
@@ -106,26 +107,75 @@ public class CellSupport
 		box.Invalidate();
 	}
 
+	private static string GetTemporaryDirectory()
+	{
+		string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+		Directory.CreateDirectory(tempDirectory);
+		return tempDirectory;
+	}
+
 	public static List<Cell> DeserializeFromFile (string FileName)
 	{
 		XmlSerializer ser = new XmlSerializer(typeof(List<Cell>));
+		List<Cell> newList = new List<Cell>();
 
-		using (FileStream fs = new FileStream(FileName, FileMode.Open))
+		if (Path.GetExtension(FileName).ToLower() == ".xmlz")
 		{
-			List<Cell> newList = (List<Cell>)ser.Deserialize(fs);
-			return newList;
+			string temp_xml_dir = GetTemporaryDirectory();
+			ZipFile.ExtractToDirectory(FileName, temp_xml_dir);
+			DirectoryInfo di = new DirectoryInfo(temp_xml_dir);
+			bool first = true;
+			foreach (FileInfo file in di.GetFiles())
+			{
+				if (first)
+				{
+					using (FileStream fs = new FileStream(file.FullName, FileMode.Open))
+					{
+						newList = (List<Cell>)ser.Deserialize(fs);
+					}
+					first = false;
+				}
+				file.Delete();
+			}
+			Directory.Delete(temp_xml_dir);
 		}
+		else
+		{
+			using (FileStream fs = new FileStream(FileName, FileMode.Open))
+			{
+				newList = (List<Cell>)ser.Deserialize(fs);
+			}
+		}
+
+		return newList;
 	}
 
 	public static void SerializeToFile(List<Cell> cells, string FileName)
 	{
 		XmlSerializer ser = new XmlSerializer(typeof(List<Cell>));
 
-		//DeleteGarbage();
-
-		using (FileStream fs = new FileStream(FileName, FileMode.Create))
+		if (Path.GetExtension(FileName).ToLower() == ".xmlz")
 		{
-			ser.Serialize(fs, cells);
+			string temp_xml_dir = GetTemporaryDirectory();
+			string temp_xml_filename = temp_xml_dir + "/" + Path.GetFileNameWithoutExtension(FileName) + ".xml";
+			using (FileStream fs = new FileStream(temp_xml_filename, FileMode.Create))
+			{
+				ser.Serialize(fs, cells);
+			}
+			if (File.Exists(FileName))
+			{
+				File.Delete(FileName);
+			}
+			ZipFile.CreateFromDirectory(temp_xml_dir, FileName);
+			File.Delete(temp_xml_filename);
+			Directory.Delete(temp_xml_dir);
+		}
+		else
+		{
+			using (FileStream fs = new FileStream(FileName, FileMode.Create))
+			{
+				ser.Serialize(fs, cells);
+			}
 		}
 	}
 
