@@ -145,6 +145,7 @@
 			this.toolStripDropDownButton4 = new System.Windows.Forms.ToolStripDropDownButton();
 			this.stepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
 			this.wavesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -176,7 +177,6 @@
 			this.backgroundWorkerTimeSpent = new System.ComponentModel.BackgroundWorker();
 			this.backgroundWorkerML = new System.ComponentModel.BackgroundWorker();
 			this.saveFileDialog3 = new System.Windows.Forms.SaveFileDialog();
-			this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -1267,6 +1267,7 @@
 			this.toolStripDropDownButton4.Name = "toolStripDropDownButton4";
 			this.toolStripDropDownButton4.Size = new System.Drawing.Size(45, 36);
 			this.toolStripDropDownButton4.Text = "toolStripDropDownButton4";
+			this.toolStripDropDownButton4.ToolTipText = "Simulate";
 			// 
 			// stepToolStripMenuItem
 			// 
@@ -1283,6 +1284,13 @@
 			this.runToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.runToolStripMenuItem.Text = "Run/Stop";
 			this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
+			// 
+			// resetToolStripMenuItem
+			// 
+			this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
+			this.resetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.resetToolStripMenuItem.Text = "Reset";
+			this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator12
 			// 
@@ -1545,13 +1553,6 @@
 			// 
 			this.saveFileDialog3.DefaultExt = "v";
 			this.saveFileDialog3.Filter = "Verilog Files|*.v|All Files|*.*";
-			// 
-			// resetToolStripMenuItem
-			// 
-			this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-			this.resetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.resetToolStripMenuItem.Text = "Reset";
-			this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
 			// 
 			// FormMain
 			// 
