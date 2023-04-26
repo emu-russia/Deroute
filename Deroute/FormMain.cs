@@ -1605,7 +1605,18 @@ namespace DerouteSharp
 			SimOpenWaves();
 		}
 
+		private void resetToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			foreach (Entity entity in entityBox1.GetEntities())
+			{
+				entity.Val = LogicValue.X;
+				entity.PrevVal = LogicValue.X;
+			}
+			entityBox1.Invalidate();
+		}
+
 		#endregion "Simulation"
+
 
 	}       // Form1
 

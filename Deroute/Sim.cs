@@ -13,7 +13,23 @@ public class DerouteSim
 
 	public void Step()
 	{
-
+		foreach (Entity entity in box.GetEntities())
+		{
+			switch (entity.Val)
+			{
+				case LogicValue.X:
+				case LogicValue.Z:
+					entity.Val = LogicValue.Zero;
+					break;
+				case LogicValue.Zero:
+					entity.Val = LogicValue.One;
+					break;
+				case LogicValue.One:
+					entity.Val = LogicValue.Z;
+					break;
+			}
+		}
+		box.Invalidate();
 	}
 
 }

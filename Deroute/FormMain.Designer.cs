@@ -176,6 +176,7 @@
 			this.backgroundWorkerTimeSpent = new System.ComponentModel.BackgroundWorker();
 			this.backgroundWorkerML = new System.ComponentModel.BackgroundWorker();
 			this.saveFileDialog3 = new System.Windows.Forms.SaveFileDialog();
+			this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -613,11 +614,13 @@
 			this.entityBox1.HideRegions = false;
 			this.entityBox1.HideVias = false;
 			this.entityBox1.HideWires = false;
+			this.entityBox1.HighZColor = System.Drawing.Color.Gold;
 			this.entityBox1.ImageOpacity = 100;
 			this.entityBox1.Lambda = 5F;
 			this.entityBox1.Location = new System.Drawing.Point(0, 0);
 			this.entityBox1.Mode = System.Windows.Forms.EntityMode.Selection;
 			this.entityBox1.Name = "entityBox1";
+			this.entityBox1.OneColor = System.Drawing.Color.LawnGreen;
 			this.entityBox1.RegionOpacity = 128;
 			this.entityBox1.RegionOverrideColor = System.Drawing.Color.Black;
 			this.entityBox1.RegionPriority = 0;
@@ -656,6 +659,7 @@
 			this.entityBox1.WirePriority = 2;
 			this.entityBox1.WireSelectionAutoTraverse = false;
 			this.entityBox1.WireTextAlignment = TextAlignment.TopLeft;
+			this.entityBox1.ZeroColor = System.Drawing.Color.Green;
 			this.entityBox1.Zoom = 100;
 			this.entityBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.entityBox1_MouseClick);
 			// 
@@ -1255,6 +1259,7 @@
 			this.toolStripDropDownButton4.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.stepToolStripMenuItem,
             this.runToolStripMenuItem,
+            this.resetToolStripMenuItem,
             this.toolStripSeparator12,
             this.wavesToolStripMenuItem});
 			this.toolStripDropDownButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton4.Image")));
@@ -1541,6 +1546,13 @@
 			this.saveFileDialog3.DefaultExt = "v";
 			this.saveFileDialog3.Filter = "Verilog Files|*.v|All Files|*.*";
 			// 
+			// resetToolStripMenuItem
+			// 
+			this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
+			this.resetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.resetToolStripMenuItem.Text = "Reset";
+			this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
+			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1733,6 +1745,7 @@
 		private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 		private System.Windows.Forms.ToolStripMenuItem wavesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem;
 	}
 }
 
