@@ -158,6 +158,12 @@ namespace DerouteSharp
 			{
 				addCellFromSelectionToolStripMenuItem.Checked = false;
 
+				if (entityBox1.Image == null)
+				{
+					MessageBox.Show("You must first load the original image (File -> Load Image)", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					return;
+				}
+
 				if (cells_editor != null)
 				{
 					cells_editor.Focus();
