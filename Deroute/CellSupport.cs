@@ -65,6 +65,45 @@ public class CellSupport
 	public static void FlipCell (EntityBox box)
 	{
 		Console.WriteLine("flip");
+
+		List<Entity> entities = box.GetEntities();
+
+		foreach (var entity in entities)
+		{
+			if ((entity.IsCell() || entity.IsUnit()) && entity.Selected)
+			{
+				var ports = GetPorts(entity, entities);
+
+				switch (entity.LabelAlignment)
+				{
+					case TextAlignment.TopLeft:
+					case TextAlignment.GlobalSettings:
+						entity.LabelAlignment = TextAlignment.TopRight;
+						break;
+
+					case TextAlignment.TopRight:
+						entity.LabelAlignment = TextAlignment.TopLeft;
+						break;
+
+					case TextAlignment.BottomRight:
+						entity.LabelAlignment = TextAlignment.BottomLeft;
+						break;
+
+					case TextAlignment.BottomLeft:
+						entity.LabelAlignment = TextAlignment.BottomRight;
+						break;
+				}
+
+				foreach (var port in ports)
+				{
+					var midp = entity.LambdaX + entity.LambdaWidth / 2;
+					var ofs_x = midp - port.LambdaX;
+					port.LambdaX = midp + ofs_x;
+				}
+			}
+		}
+
+		box.Invalidate();
 	}
 
 	public static List<Cell> DeserializeFromFile (string FileName)
