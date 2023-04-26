@@ -64,7 +64,7 @@ namespace DerouteSharp
 			{
 				_value = Strtoul(textBox1.Text);
 			}
-			catch(Exception ex)
+			catch (Exception)
 			{
 				_value = 0;
 			}
