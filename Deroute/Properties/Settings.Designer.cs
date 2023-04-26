@@ -622,5 +622,41 @@ namespace DerouteSharp.Properties {
                 this["ViasPowerText"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Gold")]
+        public global::System.Drawing.Color HighZColor {
+            get {
+                return ((global::System.Drawing.Color)(this["HighZColor"]));
+            }
+            set {
+                this["HighZColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Green")]
+        public global::System.Drawing.Color ZeroColor {
+            get {
+                return ((global::System.Drawing.Color)(this["ZeroColor"]));
+            }
+            set {
+                this["ZeroColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("LawnGreen")]
+        public global::System.Drawing.Color OneColor {
+            get {
+                return ((global::System.Drawing.Color)(this["OneColor"]));
+            }
+            set {
+                this["OneColor"] = value;
+            }
+        }
     }
 }
