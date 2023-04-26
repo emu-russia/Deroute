@@ -226,7 +226,7 @@ public class CellSupport
 				{
 					using (MemoryStream ms = new MemoryStream(value))
 					{
-						cell_image = new Bitmap(ms);
+						cell_image = new Bitmap(Image.FromStream(ms));
 					}
 				}
 			}
