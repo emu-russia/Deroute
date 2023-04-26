@@ -141,6 +141,12 @@
 			this.traverseTIER2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.traverseTIER3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.traverseTIER5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripDropDownButton4 = new System.Windows.Forms.ToolStripDropDownButton();
+			this.stepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+			this.wavesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -800,7 +806,9 @@
             this.toolStripButton4,
             this.toolStripButton13,
             this.toolStripDropDownButton6,
-            this.toolStripDropDownButton5});
+            this.toolStripDropDownButton5,
+            this.toolStripSeparator11,
+            this.toolStripDropDownButton4});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(1218, 39);
@@ -1235,6 +1243,54 @@
 			this.traverseTIER5ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
 			this.traverseTIER5ToolStripMenuItem.Text = "Traverse TIER 5";
 			this.traverseTIER5ToolStripMenuItem.Click += new System.EventHandler(this.traverseTIER5ToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator11
+			// 
+			this.toolStripSeparator11.Name = "toolStripSeparator11";
+			this.toolStripSeparator11.Size = new System.Drawing.Size(6, 39);
+			// 
+			// toolStripDropDownButton4
+			// 
+			this.toolStripDropDownButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripDropDownButton4.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.stepToolStripMenuItem,
+            this.runToolStripMenuItem,
+            this.toolStripSeparator12,
+            this.wavesToolStripMenuItem});
+			this.toolStripDropDownButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton4.Image")));
+			this.toolStripDropDownButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripDropDownButton4.Name = "toolStripDropDownButton4";
+			this.toolStripDropDownButton4.Size = new System.Drawing.Size(45, 36);
+			this.toolStripDropDownButton4.Text = "toolStripDropDownButton4";
+			// 
+			// stepToolStripMenuItem
+			// 
+			this.stepToolStripMenuItem.Name = "stepToolStripMenuItem";
+			this.stepToolStripMenuItem.ShortcutKeyDisplayString = "F7";
+			this.stepToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.stepToolStripMenuItem.Text = "Step";
+			this.stepToolStripMenuItem.Click += new System.EventHandler(this.stepToolStripMenuItem_Click);
+			// 
+			// runToolStripMenuItem
+			// 
+			this.runToolStripMenuItem.Name = "runToolStripMenuItem";
+			this.runToolStripMenuItem.ShortcutKeyDisplayString = "F5";
+			this.runToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.runToolStripMenuItem.Text = "Run/Stop";
+			this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator12
+			// 
+			this.toolStripSeparator12.Name = "toolStripSeparator12";
+			this.toolStripSeparator12.Size = new System.Drawing.Size(177, 6);
+			// 
+			// wavesToolStripMenuItem
+			// 
+			this.wavesToolStripMenuItem.Name = "wavesToolStripMenuItem";
+			this.wavesToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+W";
+			this.wavesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.wavesToolStripMenuItem.Text = "Waves";
+			this.wavesToolStripMenuItem.Click += new System.EventHandler(this.wavesToolStripMenuItem_Click);
 			// 
 			// statusStrip1
 			// 
@@ -1671,6 +1727,12 @@
 		private System.Windows.Forms.ToolStripMenuItem addCellFromSelectionToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem rotateCellToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem flipCellToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
+		private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton4;
+		private System.Windows.Forms.ToolStripMenuItem stepToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+		private System.Windows.Forms.ToolStripMenuItem wavesToolStripMenuItem;
 	}
 }
 
