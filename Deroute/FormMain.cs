@@ -32,6 +32,7 @@ namespace DerouteSharp
 		private FormCells cells_editor = null;
 		private List<CellSupport.Cell> cells_db = new List<CellSupport.Cell>();
 		private DerouteSim sim;
+		private FormWaves waves = null;
 
 		public FormMain()
 		{
@@ -1577,6 +1578,23 @@ namespace DerouteSharp
 		{
 			Console.WriteLine("step");
 			sim.Step();
+			var dump = sim.GetDump();
+
+			ValueChangeData[] vcd = new ValueChangeData[dump.Count];
+
+			int i = 0;
+			foreach (var entity in dump.Keys)
+			{
+				vcd[i] = new ValueChangeData();
+				vcd[i].name = entity.Label;
+				vcd[i].values = dump[entity].ToArray();
+				i++;
+			}
+
+			if (waves != null)
+			{
+				waves.Update(vcd, 0);
+			}
 		}
 
 		private void SimRunStop()
@@ -1586,8 +1604,21 @@ namespace DerouteSharp
 
 		private void SimOpenWaves()
 		{
-			FormWaves waves = new FormWaves(sim);
-			waves.Show();
+			if (waves == null)
+			{
+				waves = new FormWaves();
+				waves.FormClosed += Waves_FormClosed;
+				waves.Show();
+			}
+			else
+			{
+				waves.Focus();
+			}
+		}
+
+		private void Waves_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			waves = null;
 		}
 
 		private void stepToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1607,12 +1638,7 @@ namespace DerouteSharp
 
 		private void resetToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (Entity entity in entityBox1.GetEntities())
-			{
-				entity.Val = LogicValue.X;
-				entity.PrevVal = LogicValue.X;
-			}
-			entityBox1.Invalidate();
+			sim.Reset();
 		}
 
 		#endregion "Simulation"

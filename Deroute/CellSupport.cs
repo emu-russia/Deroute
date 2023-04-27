@@ -1,6 +1,5 @@
 // Auxiliary utilities for cell management
 
-using DerouteSharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

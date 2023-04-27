@@ -12,12 +12,20 @@ namespace DerouteSharp
 {
 	public partial class FormWaves : Form
 	{
-		private DerouteSim sim;
-
-		public FormWaves(DerouteSim parent_sim)
+		public FormWaves()
 		{
 			InitializeComponent();
-			sim = parent_sim;
+		}
+
+		private void FormWaves_Load(object sender, EventArgs e)
+		{
+			wavesControl1.EnabledDottedEveryNth(2, true);
+			wavesControl1.EnableSelection(true);
+		}
+
+		public void Update(ValueChangeData[] samples, long bias)
+		{
+			wavesControl1.PlotWaves(samples, bias);
 		}
 
 		private void FormWaves_KeyUp(object sender, KeyEventArgs e)
@@ -25,6 +33,20 @@ namespace DerouteSharp
 			if (e.KeyCode == Keys.Escape)
 			{
 				Close();
+			}
+		}
+
+		private void toolStripButton1_Click(object sender, EventArgs e)
+		{
+			if (wavesControl1.IsSelectedSomething())
+			{
+				long bias;
+				ValueChangeData[] vcd = wavesControl1.SnatchSelection (out bias);
+				wavesControl1.ClearSelection();
+
+				FormWaves waves = new FormWaves();
+				waves.Show();
+				waves.Update(vcd, bias);
 			}
 		}
 	}

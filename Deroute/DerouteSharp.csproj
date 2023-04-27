@@ -170,6 +170,7 @@
     <Compile Include="TreeViewNoDoubleClick.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="WavesControl.cs" />
     <EmbeddedResource Include="FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
