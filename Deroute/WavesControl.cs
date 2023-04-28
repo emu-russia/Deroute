@@ -4,13 +4,6 @@ using System.Collections.Generic;
 
 namespace System.Windows.Forms
 {
-
-	public class ValueChangeData
-	{
-		public string name;
-		public LogicValue[] values;
-	}
-
 	public partial class WavesControl : Control
 	{
 		private BufferedGraphics gfx;
@@ -170,12 +163,19 @@ namespace System.Windows.Forms
 			}
 		}
 
+		/// <summary>
+		/// Transform a single sample from a VCD into a figure on the screen.
+		/// </summary>
+		/// <param name="i">The sequence number of the sample from the history (starting from 0) (aka ValueChangeData::values[n])</param>
+		/// <param name="val">Logical value</param>
+		/// <param name="n">Signal sequence number (starting from zero) (aka data[n])</param>
+		/// <returns>Right edge screen coordinates</returns>
 		private PointF TransformCoord (long i, LogicValue val, int n)
 		{
-			long padding_size = max_samples - data[n].values.Length;
-			float w = Width - xofs;
-			float h = (Height - yofs) / data.Length;
-			float ofs = h * n;
+			long padding_size = max_samples - data[n].values.Length;        // Align to the right signals that were not scoped from the beginning of the simulation
+			float w = Width - xofs;                                     // The width of the area where the waves are displayed
+			float h = (Height - yofs) / data.Length;                    // Height of area occupied by one signal
+			float ofs = h * n;                                              // Vertical offset of the display area of the specified signal n
 			float x = (float)((i + 1) * w) / (data[n].values.Length + padding_size);
 			float delta = maxVal - minVal;
 			if (maxVal == minVal)
@@ -186,27 +186,32 @@ namespace System.Windows.Forms
 			return tp;
 		}
 
+		/// <summary>
+		/// Inverse transformation of the screen coordinate (X) to the sequence number of the sample.
+		/// </summary>
+		/// <param name="x">Screen coordinate X</param>
+		/// <returns>The sequence number of the sample (all signals), starting from 0</returns>
 		private long InvTransform (int x)
 		{
-			return Math.Max(Math.Min((long)(((x - xofs) * max_samples) / (Width - xofs)), max_samples), 0);
+			return Math.Max(Math.Min((long)(((x - xofs) * max_samples) / (Width - xofs)), max_samples-1), 0);
 		}
 
 		private void DrawLabels (Graphics gr)
 		{
 			// Cycles legend
+			// float is used so that the cycle number is properly aligned to the middle of the phases.
+			// The number of phases is determined by the dotted_every_nth property (usually 2)
 
 			float start_cycle = (float)clock_bias / (float)(dotted_enabled ? dotted_every_nth : 1.0f);
 			float end_cycle = (float)(clock_bias + max_samples) / (float)(dotted_enabled ? dotted_every_nth : 1.0f);
 			float total_cycles = end_cycle - start_cycle;
 
-			Console.WriteLine("start_cycle: {0}, end_cycle: {1}, total_cycles: {2}", start_cycle, end_cycle, total_cycles);
-
-			for (float i = start_cycle; i< end_cycle; i += 1.0f)
+			for (float i = 0; i< total_cycles; i += 1.0f)
 			{
 				float w = (Width - xofs) / total_cycles;
 				float x = xofs + i * w;
 
-				string cycle_text = ((long)i).ToString();
+				string cycle_text = ((long)(i + start_cycle)).ToString();
 				SizeF textSize = gr.MeasureString(cycle_text, Font);
 				PointF pt = new PointF(
 					w / 2 - (int)(textSize.Width / 2) + x,
@@ -334,8 +339,8 @@ namespace System.Windows.Forms
 			List<ValueChangeData> res = new List<ValueChangeData>();
 			int dist = Math.Abs(SelectStartMouseX - LastMouseX);
 			int start_x = Math.Min(SelectStartMouseX, LastMouseX);
-			long sp = InvTransform(start_x);
-			long ep = InvTransform(start_x + dist);
+			long sp = InvTransform(start_x + 1);
+			long ep = InvTransform(start_x + dist - 1) + 1;
 			long sc = ep - sp;
 			bias += sp;
 
@@ -495,5 +500,11 @@ namespace System.Windows.Forms
 
 		[Category("Waves Appearance")]
 		public int DottedOpacity { get; set; }
+	}
+
+	public class ValueChangeData
+	{
+		public string name;
+		public LogicValue[] values;
 	}
 }
