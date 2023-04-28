@@ -196,15 +196,38 @@ namespace System.Windows.Forms
 
 					if (ViasShape == ViasShape.Round)
 					{
-						if (entity.Selected == true)
+						if (entity.Val != LogicValue.X)
 						{
-							radius += (int)Lambda;
+							Color logic_color = Color.Red;
+							switch (entity.Val)
+							{
+								case LogicValue.Z:
+									logic_color = HighZColor;
+									break;
+								case LogicValue.Zero:
+									logic_color = ZeroColor;
+									break;
+								case LogicValue.One:
+									logic_color = OneColor;
+									break;
+							}
 
-							gr.FillEllipse(new SolidBrush(SelectionColor),
+							radius += (int)Lambda;
+							gr.FillEllipse(new SolidBrush(logic_color),
 											centerX - radius, centerY - radius,
 											radius + radius, radius + radius);
-
 							radius -= (int)Lambda;
+						}
+						else
+						{
+							if (entity.Selected == true)
+							{
+								radius += (int)Lambda;
+								gr.FillEllipse(new SolidBrush(SelectionColor),
+												centerX - radius, centerY - radius,
+												radius + radius, radius + radius);
+								radius -= (int)Lambda;
+							}
 						}
 
 						gr.FillEllipse(new SolidBrush(viasColor),
@@ -213,15 +236,39 @@ namespace System.Windows.Forms
 					}
 					else
 					{
-						if (entity.Selected == true)
-						{
-							radius += (int)Lambda;
 
-							gr.FillRectangle(new SolidBrush(SelectionColor),
+						if (entity.Val != LogicValue.X)
+						{
+							Color logic_color = Color.Red;
+							switch (entity.Val)
+							{
+								case LogicValue.Z:
+									logic_color = HighZColor;
+									break;
+								case LogicValue.Zero:
+									logic_color = ZeroColor;
+									break;
+								case LogicValue.One:
+									logic_color = OneColor;
+									break;
+							}
+
+							radius += (int)Lambda;
+							gr.FillRectangle(new SolidBrush(logic_color),
 											   centerX - radius, centerY - radius,
 											   2 * radius, 2 * radius);
-
 							radius -= (int)Lambda;
+						}
+						else
+						{
+							if (entity.Selected == true)
+							{
+								radius += (int)Lambda;
+								gr.FillRectangle(new SolidBrush(SelectionColor),
+												   centerX - radius, centerY - radius,
+												   2 * radius, 2 * radius);
+								radius -= (int)Lambda;
+							}
 						}
 
 						gr.FillRectangle(new SolidBrush(viasColor),
@@ -330,20 +377,42 @@ namespace System.Windows.Forms
 					if (entity.WidthOverride > 0)
 						wireSize = entity.WidthOverride;
 
-					if (entity.Selected == true)
+					if (entity.Val != LogicValue.X)
 					{
-						gr.DrawLine(new Pen(SelectionColor, (float)wireSize * zf + (int)Lambda),
+						Color logic_color = Color.Red;
+						switch (entity.Val)
+						{
+							case LogicValue.Z:
+								logic_color = HighZColor;
+								break;
+							case LogicValue.Zero:
+								logic_color = ZeroColor;
+								break;
+							case LogicValue.One:
+								logic_color = OneColor;
+								break;
+						}
+
+						gr.DrawLine(new Pen(logic_color, (float)wireSize * zf + (int)Lambda),
+									 startX, startY,
+									 endX, endY);
+						gr.DrawLine(new Pen(logic_color, (float)wireSize * zf),
 									 startX, startY,
 									 endX, endY);
 					}
+					else
+					{
+						if (entity.Selected == true)
+						{
+							gr.DrawLine(new Pen(SelectionColor, (float)wireSize * zf + (int)Lambda),
+										 startX, startY,
+										 endX, endY);
+						}
 
-					//gr.CompositingQuality = CompositingQuality;
-					//gr.CompositingMode = CompositingMode.SourceCopy;
-
-
-					gr.DrawLine(new Pen(wireColor, (float)wireSize * zf),
-								 startX, startY,
-								 endX, endY);
+						gr.DrawLine(new Pen(wireColor, (float)wireSize * zf),
+									 startX, startY,
+									 endX, endY);
+					}
 
 					// Wire Label
 

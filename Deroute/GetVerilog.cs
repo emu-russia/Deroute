@@ -1,11 +1,7 @@
 // Deroute XML -> Verilog converter.
 
 using System;
-using System.Text;
-using System.IO;
-using System.IO.Compression;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 using System.Drawing;
 using System.Windows.Forms;
 

@@ -1,6 +1,5 @@
 // Auxiliary utilities for cell management
 
-using DerouteSharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -226,7 +225,7 @@ public class CellSupport
 				{
 					using (MemoryStream ms = new MemoryStream(value))
 					{
-						cell_image = new Bitmap(ms);
+						cell_image = new Bitmap(Image.FromStream(ms));
 					}
 				}
 			}

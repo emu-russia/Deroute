@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DerouteSharp
@@ -172,6 +167,9 @@ namespace DerouteSharp
 			public Color WireOverrideColor { get; set; }
 			public Color CellOverrideColor { get; set; }
 			public Color RegionOverrideColor { get; set; }
+			public Color HighZColor { get; set; }
+			public Color ZeroColor { get; set; }
+			public Color OneColor { get; set; }
 
 			private EntityBox savedEntityBox;
 
@@ -207,6 +205,9 @@ namespace DerouteSharp
 				WireOverrideColor = entityBox.WireOverrideColor;
 				CellOverrideColor = entityBox.CellOverrideColor;
 				RegionOverrideColor = entityBox.RegionOverrideColor;
+				HighZColor = entityBox.HighZColor;
+				ZeroColor = entityBox.ZeroColor;
+				OneColor = entityBox.OneColor;
 			}
 
 			public void Save()
@@ -239,6 +240,9 @@ namespace DerouteSharp
 				savedEntityBox.WireOverrideColor = WireOverrideColor;
 				savedEntityBox.CellOverrideColor = CellOverrideColor;
 				savedEntityBox.RegionOverrideColor = RegionOverrideColor;
+				savedEntityBox.HighZColor = HighZColor;
+				savedEntityBox.ZeroColor = ZeroColor;
+				savedEntityBox.OneColor = OneColor;
 			}
 
 		}

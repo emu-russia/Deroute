@@ -31,6 +31,8 @@ namespace DerouteSharp
 		private Random rnd = new Random(DateTime.Now.Millisecond);
 		private FormCells cells_editor = null;
 		private List<CellSupport.Cell> cells_db = new List<CellSupport.Cell>();
+		private DerouteSim sim;
+		private FormWaves waves = null;
 
 		public FormMain()
 		{
@@ -72,6 +74,8 @@ namespace DerouteSharp
 #endif
 
 			entityBox1.Focus();
+			
+			sim = new DerouteSim(entityBox1);
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -569,6 +573,18 @@ namespace DerouteSharp
 			else if (e.KeyCode == Keys.F && e.Control)
 			{
 				CellSupport.FlipCell(entityBox1);
+			}
+			else if (e.KeyCode == Keys.F5)
+			{
+				SimRunStop();
+			}
+			else if (e.KeyCode == Keys.F7)
+			{
+				SimStep();
+			}
+			else if (e.KeyCode == Keys.W && e.Control)
+			{
+				SimOpenWaves();
 			}
 		}
 
@@ -1555,6 +1571,78 @@ namespace DerouteSharp
 		}
 
 		#endregion "Cells"
+
+		#region "Simulation"
+
+		private void SimStep()
+		{
+			Console.WriteLine("step");
+			sim.Step();
+			var dump = sim.GetDump();
+
+			ValueChangeData[] vcd = new ValueChangeData[dump.Count];
+
+			int i = 0;
+			foreach (var entity in dump.Keys)
+			{
+				vcd[i] = new ValueChangeData();
+				vcd[i].name = entity.Label;
+				vcd[i].values = dump[entity].ToArray();
+				i++;
+			}
+
+			if (waves != null)
+			{
+				waves.Update(vcd, 11);
+			}
+		}
+
+		private void SimRunStop()
+		{
+			Console.WriteLine("Run/Stop sim");
+		}
+
+		private void SimOpenWaves()
+		{
+			if (waves == null)
+			{
+				waves = new FormWaves();
+				waves.FormClosed += Waves_FormClosed;
+				waves.Show();
+			}
+			else
+			{
+				waves.Focus();
+			}
+		}
+
+		private void Waves_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			waves = null;
+		}
+
+		private void stepToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SimStep();
+		}
+
+		private void runToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SimRunStop();
+		}
+
+		private void wavesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SimOpenWaves();
+		}
+
+		private void resetToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			sim.Reset();
+		}
+
+		#endregion "Simulation"
+
 
 	}       // Form1
 

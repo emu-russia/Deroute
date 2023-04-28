@@ -270,6 +270,9 @@ namespace System.Windows.Forms
 		private Color _WireOverrideColor;
 		private Color _CellOverrideColor;
 		private Color _RegionOverrideColor;
+		private Color _HighZColor;
+		private Color _ZeroColor;
+		private Color _OneColor;
 		private ViasShape _viasShape;
 		private int _viasBaseSize;
 		private int _wireBaseSize;
@@ -330,6 +333,10 @@ namespace System.Windows.Forms
 			_WireOverrideColor = Color.Black;
 			_CellOverrideColor = Color.Black;
 			_RegionOverrideColor = Color.Black;
+
+			_HighZColor = Color.Gold;
+			_ZeroColor = Color.Green;
+			_OneColor = Color.LawnGreen;
 
 			_ViasOpacity = 255;
 			_WireOpacity = 128;
@@ -576,6 +583,27 @@ namespace System.Windows.Forms
 		{
 			get { return _RegionOverrideColor; }
 			set { _RegionOverrideColor = value; Invalidate(); }
+		}
+
+		[Category("Entity Appearance")]
+		public Color HighZColor
+		{
+			get { return _HighZColor; }
+			set { _HighZColor = value; Invalidate(); }
+		}
+
+		[Category("Entity Appearance")]
+		public Color ZeroColor
+		{
+			get { return _ZeroColor; }
+			set { _ZeroColor = value; Invalidate(); }
+		}
+
+		[Category("Entity Appearance")]
+		public Color OneColor
+		{
+			get { return _OneColor; }
+			set { _OneColor = value; Invalidate(); }
 		}
 
 		[Category("Entity Appearance")]

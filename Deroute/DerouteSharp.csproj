@@ -140,6 +140,12 @@
     <Compile Include="FormTrainMLModel.Designer.cs">
       <DependentUpon>FormTrainMLModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormWaves.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormWaves.Designer.cs">
+      <DependentUpon>FormWaves.cs</DependentUpon>
+    </Compile>
     <Compile Include="Geometry.cs" />
     <Compile Include="GetVerilog.cs" />
     <Compile Include="KeyBind.cs">
@@ -160,7 +166,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Sim.cs" />
     <Compile Include="TreeViewNoDoubleClick.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WavesControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <EmbeddedResource Include="FormAbout.resx">
@@ -195,6 +205,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormTrainMLModel.resx">
       <DependentUpon>FormTrainMLModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormWaves.resx">
+      <DependentUpon>FormWaves.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="KeyBind.resx">
       <DependentUpon>KeyBind.cs</DependentUpon>

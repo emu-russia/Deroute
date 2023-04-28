@@ -52,6 +52,15 @@ public enum TextAlignment
 	BottomRight,
 }
 
+public enum LogicValue
+{
+	X = -2,
+	Z = -1,
+	Zero = 0,
+	One = 1,
+}
+
+
 public class Entity
 {
 	private string _Label;
@@ -436,4 +445,25 @@ public class Entity
 			}
 		}
 	}
+
+
+	#region "Sim Support"
+
+	[XmlIgnore]
+	[Category("Simulation")]
+	[Description("Determines if the entity is being monitored. If enabled, then after each simulation step the value goes to Waves")]
+	public bool Scope { get; set; } = false;
+
+	[XmlIgnore]
+	[Category("Simulation")]
+	[Description("Current logic value for the simulator")]
+	public LogicValue Val { get; set; } = LogicValue.X;
+
+	[XmlIgnore]
+	[Category("Simulation")]
+	[Description("Previous logic value for the simulator")]
+	public LogicValue PrevVal { get; set; } = LogicValue.X;
+
+	#endregion "Sim Support"
+
 }

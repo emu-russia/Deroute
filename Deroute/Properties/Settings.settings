@@ -152,5 +152,14 @@
     <Setting Name="ViasPowerText" Type="System.String" Scope="User">
       <Value Profile="(Default)">1'b1</Value>
     </Setting>
+    <Setting Name="HighZColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Gold</Value>
+    </Setting>
+    <Setting Name="ZeroColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Green</Value>
+    </Setting>
+    <Setting Name="OneColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">LawnGreen</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
