@@ -1593,7 +1593,7 @@ namespace DerouteSharp
 
 			if (waves != null)
 			{
-				waves.Update(vcd, 11);
+				waves.Update(vcd, 0);
 			}
 		}
 
