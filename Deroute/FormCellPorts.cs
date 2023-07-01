@@ -23,8 +23,8 @@ namespace DerouteSharp
 				text += "vias ";
 				text += cell.Label.Split(' ')[0] + ", ";
 				text += port.Label + ", ";
-				text += (port.LambdaX - cell.LambdaX).ToString("0.00") + ", ";
-				text += (port.LambdaY - cell.LambdaY).ToString("0.00") + ", ";
+				text += (port.LambdaX - cell.LambdaX).ToString("0.00").Replace(",", ".") + ", ";
+				text += (port.LambdaY - cell.LambdaY).ToString("0.00").Replace(",", ".") + ", ";
 				text += port.Type.ToString() + ", ";
 				text += "0";
 				text += "\r\n";
