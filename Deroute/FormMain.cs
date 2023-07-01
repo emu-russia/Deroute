@@ -1577,8 +1577,9 @@ namespace DerouteSharp
 		/// <param name="e"></param>
 		private void describeCellPortsForPatternsToolToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var ports = CellSupport.GetFirstSelectedCellPorts(entityBox1);
-			FormCellPorts form = new FormCellPorts(ports);
+			Entity cell;
+			var ports = CellSupport.GetFirstSelectedCellPorts(entityBox1, out cell);
+			FormCellPorts form = new FormCellPorts(cell, ports);
 			form.ShowDialog();
 		}
 
