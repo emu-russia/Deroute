@@ -177,6 +177,8 @@
 			this.backgroundWorkerTimeSpent = new System.ComponentModel.BackgroundWorker();
 			this.backgroundWorkerML = new System.ComponentModel.BackgroundWorker();
 			this.saveFileDialog3 = new System.Windows.Forms.SaveFileDialog();
+			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
+			this.describeCellPortsForPatternsToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -314,7 +316,9 @@
             this.toolStripSeparator7,
             this.addCellFromSelectionToolStripMenuItem,
             this.rotateCellToolStripMenuItem,
-            this.flipCellToolStripMenuItem});
+            this.flipCellToolStripMenuItem,
+            this.toolStripSeparator13,
+            this.describeCellPortsForPatternsToolToolStripMenuItem});
 			this.cellsToolStripMenuItem.Name = "cellsToolStripMenuItem";
 			this.cellsToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
 			this.cellsToolStripMenuItem.Text = "Cells";
@@ -322,33 +326,33 @@
 			// loadLibraryToolStripMenuItem
 			// 
 			this.loadLibraryToolStripMenuItem.Name = "loadLibraryToolStripMenuItem";
-			this.loadLibraryToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+			this.loadLibraryToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
 			this.loadLibraryToolStripMenuItem.Text = "Load Library";
 			this.loadLibraryToolStripMenuItem.Click += new System.EventHandler(this.loadLibraryToolStripMenuItem_Click);
 			// 
 			// saveLibraryToolStripMenuItem
 			// 
 			this.saveLibraryToolStripMenuItem.Name = "saveLibraryToolStripMenuItem";
-			this.saveLibraryToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+			this.saveLibraryToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
 			this.saveLibraryToolStripMenuItem.Text = "Save Library";
 			this.saveLibraryToolStripMenuItem.Click += new System.EventHandler(this.saveLibraryToolStripMenuItem_Click);
 			// 
 			// manageCellsToolStripMenuItem
 			// 
 			this.manageCellsToolStripMenuItem.Name = "manageCellsToolStripMenuItem";
-			this.manageCellsToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+			this.manageCellsToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
 			this.manageCellsToolStripMenuItem.Text = "Manage Cells";
 			this.manageCellsToolStripMenuItem.Click += new System.EventHandler(this.manageCellsToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator7
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(218, 6);
+			this.toolStripSeparator7.Size = new System.Drawing.Size(255, 6);
 			// 
 			// addCellFromSelectionToolStripMenuItem
 			// 
 			this.addCellFromSelectionToolStripMenuItem.Name = "addCellFromSelectionToolStripMenuItem";
-			this.addCellFromSelectionToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+			this.addCellFromSelectionToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
 			this.addCellFromSelectionToolStripMenuItem.Text = "Create cell from selection...";
 			this.addCellFromSelectionToolStripMenuItem.Click += new System.EventHandler(this.addCellFromSelectionToolStripMenuItem_Click);
 			// 
@@ -356,7 +360,7 @@
 			// 
 			this.rotateCellToolStripMenuItem.Name = "rotateCellToolStripMenuItem";
 			this.rotateCellToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+R";
-			this.rotateCellToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+			this.rotateCellToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
 			this.rotateCellToolStripMenuItem.Text = "Rotate selected cells";
 			this.rotateCellToolStripMenuItem.Click += new System.EventHandler(this.rotateCellToolStripMenuItem_Click);
 			// 
@@ -364,7 +368,7 @@
 			// 
 			this.flipCellToolStripMenuItem.Name = "flipCellToolStripMenuItem";
 			this.flipCellToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+F";
-			this.flipCellToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+			this.flipCellToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
 			this.flipCellToolStripMenuItem.Text = "Flip selected cells";
 			this.flipCellToolStripMenuItem.Click += new System.EventHandler(this.flipCellToolStripMenuItem_Click);
 			// 
@@ -1273,7 +1277,7 @@
 			// 
 			this.stepToolStripMenuItem.Name = "stepToolStripMenuItem";
 			this.stepToolStripMenuItem.ShortcutKeyDisplayString = "F7";
-			this.stepToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.stepToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
 			this.stepToolStripMenuItem.Text = "Step";
 			this.stepToolStripMenuItem.Click += new System.EventHandler(this.stepToolStripMenuItem_Click);
 			// 
@@ -1281,27 +1285,27 @@
 			// 
 			this.runToolStripMenuItem.Name = "runToolStripMenuItem";
 			this.runToolStripMenuItem.ShortcutKeyDisplayString = "F5";
-			this.runToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.runToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
 			this.runToolStripMenuItem.Text = "Run/Stop";
 			this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
 			// 
 			// resetToolStripMenuItem
 			// 
 			this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-			this.resetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.resetToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
 			this.resetToolStripMenuItem.Text = "Reset";
 			this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator12
 			// 
 			this.toolStripSeparator12.Name = "toolStripSeparator12";
-			this.toolStripSeparator12.Size = new System.Drawing.Size(177, 6);
+			this.toolStripSeparator12.Size = new System.Drawing.Size(150, 6);
 			// 
 			// wavesToolStripMenuItem
 			// 
 			this.wavesToolStripMenuItem.Name = "wavesToolStripMenuItem";
 			this.wavesToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+W";
-			this.wavesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.wavesToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
 			this.wavesToolStripMenuItem.Text = "Waves";
 			this.wavesToolStripMenuItem.Click += new System.EventHandler(this.wavesToolStripMenuItem_Click);
 			// 
@@ -1554,6 +1558,18 @@
 			this.saveFileDialog3.DefaultExt = "v";
 			this.saveFileDialog3.Filter = "Verilog Files|*.v|All Files|*.*";
 			// 
+			// toolStripSeparator13
+			// 
+			this.toolStripSeparator13.Name = "toolStripSeparator13";
+			this.toolStripSeparator13.Size = new System.Drawing.Size(255, 6);
+			// 
+			// describeCellPortsForPatternsToolToolStripMenuItem
+			// 
+			this.describeCellPortsForPatternsToolToolStripMenuItem.Name = "describeCellPortsForPatternsToolToolStripMenuItem";
+			this.describeCellPortsForPatternsToolToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+			this.describeCellPortsForPatternsToolToolStripMenuItem.Text = "Describe cell ports for Patterns tool";
+			this.describeCellPortsForPatternsToolToolStripMenuItem.Click += new System.EventHandler(this.describeCellPortsForPatternsToolToolStripMenuItem_Click);
+			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1747,6 +1763,8 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 		private System.Windows.Forms.ToolStripMenuItem wavesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
+		private System.Windows.Forms.ToolStripMenuItem describeCellPortsForPatternsToolToolStripMenuItem;
 	}
 }
 
