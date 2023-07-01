@@ -1570,6 +1570,19 @@ namespace DerouteSharp
 			CellSupport.FlipCell(entityBox1);
 		}
 
+		/// <summary>
+		/// Display a list of ports of the selected cell for the Patterns utility
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void describeCellPortsForPatternsToolToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Entity cell;
+			var ports = CellSupport.GetFirstSelectedCellPorts(entityBox1, out cell);
+			FormCellPorts form = new FormCellPorts(cell, ports);
+			form.ShowDialog();
+		}
+
 		#endregion "Cells"
 
 		#region "Simulation"
@@ -1641,8 +1654,8 @@ namespace DerouteSharp
 			sim.Reset();
 		}
 
-		#endregion "Simulation"
 
+		#endregion "Simulation"
 
 	}       // Form1
 

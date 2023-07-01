@@ -106,6 +106,24 @@ public class CellSupport
 		box.Invalidate();
 	}
 
+	public static List<Entity> GetFirstSelectedCellPorts (EntityBox box, out Entity cell)
+	{
+		cell = null;
+
+		List<Entity> entities = box.GetEntities();
+
+		foreach (var entity in entities)
+		{
+			if ((entity.IsCell() || entity.IsUnit()) && entity.Selected)
+			{
+				cell = entity;
+				return GetPorts(entity, entities);
+			}
+		}
+
+		return new List<Entity>();
+	}
+
 	private static string GetTemporaryDirectory()
 	{
 		string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
