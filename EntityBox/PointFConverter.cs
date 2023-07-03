@@ -5,8 +5,7 @@
  using System.ComponentModel.Design.Serialization;
  using System.Globalization;
  using System.Reflection;    
- using System.Windows.Forms;
-
+ 
  public class PointFConverter : TypeConverter {
 
 	 public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) {
