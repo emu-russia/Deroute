@@ -219,6 +219,20 @@ namespace System.Windows.Forms
 		}
 
 		[Category("Appearance")]
+		public float GridSize
+		{
+			get { return gridSize; }
+			set { gridSize = value; Invalidate(); }
+		}
+
+		[Category("Appearance")]
+		public bool SnapToGrid
+		{
+			get { return snapToGrid; }
+			set { snapToGrid = value; Invalidate(); }
+		}
+
+		[Category("Appearance")]
 		public bool HideLambdaMetrics
 		{
 			get { return hideLambdaMetrics; }

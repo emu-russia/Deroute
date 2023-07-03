@@ -82,8 +82,11 @@ namespace DerouteSharp
 			public bool Grayscale { get; set; }
 			[Description("How many pixels will equal one lambda.")]
 			public float Lambda { get; set; }
-			[Description("Lock the scrolling of layer 0 images, so you don't accidentally mess up.")]
 			public bool HideGrid { get; set; }
+			[Description("The size of one grid cell in lambda.")]
+			public float GridSize { get; set; }
+			[Description("Drawing with sticking to the grid.")]
+			public bool SnapToGrid { get; set; }
 			[Description("Hide the ruler in the lambda at the bottom right. I don't remember it ever being useful.")]
 			public bool HideLambdaMetrics { get; set; }
 			[Description("The position of the text label for the cells/units.")]
@@ -94,7 +97,6 @@ namespace DerouteSharp
 			public TextAlignment WireTextAlignment { get; set; }
 			[Description("This setting allows for automatic traverse (Tier 1) when any wire is selected. This is similar to pressing F10 after selecting a wire.")]
 			public bool WireSelectionAutoTraverse { get; set; }
-
 			[Description("Text that is automatically inserted into the Label property of the ViasGround entity being added.")]
 			public string ViasGroundText { get; set; }
 			[Description("Text that is automatically inserted into the Label property of the ViasPower entity being added.")]
@@ -110,6 +112,8 @@ namespace DerouteSharp
 				Grayscale = entityBox.Grayscale;
 				Lambda = entityBox.Lambda;
 				HideGrid = entityBox.HideGrid;
+				GridSize = entityBox.GridSize;
+				SnapToGrid = entityBox.SnapToGrid;
 				HideLambdaMetrics = entityBox.HideLambdaMetrics;
 				CellTextAlignment = entityBox.CellTextAlignment;
 				ViasTextAlignment = entityBox.ViasTextAlignment;
@@ -125,6 +129,8 @@ namespace DerouteSharp
 				savedEntityBox.Grayscale = Grayscale;
 				savedEntityBox.Lambda = Lambda;
 				savedEntityBox.HideGrid = HideGrid;
+				savedEntityBox.GridSize = GridSize;
+				savedEntityBox.SnapToGrid = SnapToGrid;
 				savedEntityBox.HideLambdaMetrics = HideLambdaMetrics;
 				savedEntityBox.CellTextAlignment = CellTextAlignment;
 				savedEntityBox.ViasTextAlignment = ViasTextAlignment;
@@ -364,6 +370,8 @@ namespace DerouteSharp
 			global.Grayscale = settings.Grayscale;
 			global.Lambda = settings.Lambda;
 			global.HideGrid = settings.HideGrid;
+			global.GridSize = settings.GridSize;
+			global.SnapToGrid = settings.SnapToGrid;
 			global.HideLambdaMetrics = settings.HideLambdaMetrics;
 			global.CellTextAlignment = (TextAlignment)settings.CellTextAlignment;
 			global.ViasTextAlignment = (TextAlignment)settings.ViasTextAlignment;
@@ -454,6 +462,8 @@ namespace DerouteSharp
 			settings.Grayscale = global.Grayscale;
 			settings.Lambda = global.Lambda;
 			settings.HideGrid = global.HideGrid;
+			settings.GridSize = global.GridSize;
+			settings.SnapToGrid = global.SnapToGrid;
 			settings.HideLambdaMetrics = global.HideLambdaMetrics;
 			settings.CellTextAlignment = (int)global.CellTextAlignment;
 			settings.ViasTextAlignment = (int)global.ViasTextAlignment;

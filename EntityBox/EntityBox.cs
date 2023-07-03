@@ -84,6 +84,8 @@ namespace System.Windows.Forms
 		private bool hideWires;
 		private bool hideCells;
 		private bool hideGrid;
+		private float gridSize;
+		private bool snapToGrid;
 		private bool hideLambdaMetrics;
 		private bool hideRegions;
 		private PropertyGrid entityGrid;

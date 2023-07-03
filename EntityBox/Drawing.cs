@@ -50,41 +50,39 @@ namespace System.Windows.Forms
 			if (Zoom <= 50)
 				return;
 
-			float scaleWidth = (int)Lambda * 5;
-
 			PointF topLeft = ScreenToLambda(0, 0);
 			PointF bottomRight = ScreenToLambda(Width, Height);
 
-			for (y = 0; y < bottomRight.Y; y += Lambda)
+			for (y = 0; y < bottomRight.Y; y += gridSize)
 			{
-				for (x = 0; x < bottomRight.X; x += Lambda)
+				for (x = 0; x < bottomRight.X; x += gridSize)
 				{
 					Point screen = LambdaToScreen(x, y);
 					gr.FillRectangle(Brushes.LightGray, screen.X, screen.Y, 1, 1);
 				}
 			}
 
-			for (y = 0; y >= topLeft.Y; y -= Lambda)
+			for (y = 0; y >= topLeft.Y; y -= gridSize)
 			{
-				for (x = 0; x < bottomRight.X; x += Lambda)
+				for (x = 0; x < bottomRight.X; x += gridSize)
 				{
 					Point screen = LambdaToScreen(x, y);
 					gr.FillRectangle(Brushes.LightGray, screen.X, screen.Y, 1, 1);
 				}
 			}
 
-			for (y = 0; y >= topLeft.Y; y -= Lambda)
+			for (y = 0; y >= topLeft.Y; y -= gridSize)
 			{
-				for (x = 0; x >= topLeft.X; x -= Lambda)
+				for (x = 0; x >= topLeft.X; x -= gridSize)
 				{
 					Point screen = LambdaToScreen(x, y);
 					gr.FillRectangle(Brushes.LightGray, screen.X, screen.Y, 1, 1);
 				}
 			}
 
-			for (y = 0; y < bottomRight.Y; y += Lambda)
+			for (y = 0; y < bottomRight.Y; y += gridSize)
 			{
-				for (x = 0; x >= topLeft.X; x -= Lambda)
+				for (x = 0; x >= topLeft.X; x -= gridSize)
 				{
 					Point screen = LambdaToScreen(x, y);
 					gr.FillRectangle(Brushes.LightGray, screen.X, screen.Y, 1, 1);
