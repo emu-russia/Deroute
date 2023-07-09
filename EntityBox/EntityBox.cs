@@ -1,13 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Windows.Forms;
+﻿using System.Drawing;
 using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Xml.Serialization;
-using System.Linq;
 
 namespace System.Windows.Forms
 {
@@ -84,6 +76,8 @@ namespace System.Windows.Forms
 		private bool hideWires;
 		private bool hideCells;
 		private bool hideGrid;
+		private float gridSize;
+		private bool snapToGrid;
 		private bool hideLambdaMetrics;
 		private bool hideRegions;
 		private PropertyGrid entityGrid;
