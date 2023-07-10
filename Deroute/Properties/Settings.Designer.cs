@@ -682,5 +682,17 @@ namespace DerouteSharp.Properties {
                 this["SnapToGrid"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SelectCellWithPorts {
+            get {
+                return ((bool)(this["SelectCellWithPorts"]));
+            }
+            set {
+                this["SelectCellWithPorts"] = value;
+            }
+        }
     }
 }

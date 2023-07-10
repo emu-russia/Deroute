@@ -101,6 +101,8 @@ namespace DerouteSharp
 			public string ViasGroundText { get; set; }
 			[Description("Text that is automatically inserted into the Label property of the ViasPower entity being added.")]
 			public string ViasPowerText { get; set; }
+			[Description("Select the cell along with the ports. Works only when selected by mouse click.")]
+			public bool SelectCellWithPorts { get; set; }
 
 			private EntityBox savedEntityBox;
 
@@ -121,6 +123,7 @@ namespace DerouteSharp
 				WireSelectionAutoTraverse = entityBox.WireSelectionAutoTraverse;
 				ViasGroundText = entityBox.ViasGroundText;
 				ViasPowerText = entityBox.ViasPowerText;
+				SelectCellWithPorts = entityBox.SelectCellWithPorts;
 			}
 
 			public void Save()
@@ -138,6 +141,7 @@ namespace DerouteSharp
 				savedEntityBox.WireSelectionAutoTraverse = WireSelectionAutoTraverse;
 				savedEntityBox.ViasGroundText = ViasGroundText;
 				savedEntityBox.ViasPowerText = ViasPowerText;
+				savedEntityBox.SelectCellWithPorts = SelectCellWithPorts;
 			}
 		}
 
@@ -378,6 +382,7 @@ namespace DerouteSharp
 			global.WireTextAlignment = (TextAlignment)settings.WireTextAlignment;
 			global.ViasGroundText = settings.ViasGroundText;
 			global.ViasPowerText = settings.ViasPowerText;
+			global.SelectCellWithPorts = settings.SelectCellWithPorts;
 
 			global.Save();
 
@@ -470,6 +475,7 @@ namespace DerouteSharp
 			settings.WireTextAlignment = (int)global.WireTextAlignment;
 			settings.ViasGroundText = global.ViasGroundText;
 			settings.ViasPowerText = global.ViasPowerText;
+			settings.SelectCellWithPorts = global.SelectCellWithPorts;
 
 			// Save color settings
 
