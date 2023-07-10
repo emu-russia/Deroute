@@ -19,6 +19,24 @@ namespace System.Windows.Forms
 			return draggingDist;
 		}
 
+		private Point SnapMousePosToGrid (int MouseX, int MouseY)
+		{
+			Point p = new Point();
+
+			p.X = MouseX;
+			p.Y = MouseY;
+
+			if (snapToGrid)
+			{
+				var lp = ScreenToLambda(p.X, p.Y);
+				lp.X = (float)Math.Round(lp.X / gridSize) * gridSize;
+				lp.Y = (float)Math.Round(lp.Y / gridSize) * gridSize;
+				p = LambdaToScreen(lp.X, lp.Y);
+			}
+
+			return p;
+		}
+
 		//
 		// Mouse hit test
 		//
@@ -72,10 +90,12 @@ namespace System.Windows.Forms
 												  Math.Pow(ortho.Y, 2));
 					len = Math.Max(1.0F, len);
 
+					var WireSize = entity.WidthOverride != 0 ? entity.WidthOverride : WireBaseSize;
+
 					PointF rot = RotatePoint(ortho, -90);
 					PointF normalized = new PointF(rot.X / len, rot.Y / len);
-					PointF baseVect = new PointF(normalized.X * ((WireBaseSize * zf) / 2),
-												  normalized.Y * ((WireBaseSize * zf) / 2));
+					PointF baseVect = new PointF(normalized.X * ((WireSize * zf) / 2),
+												  normalized.Y * ((WireSize * zf) / 2));
 
 					rect[0].X = baseVect.X + start.X;
 					rect[0].Y = baseVect.Y + start.Y;
@@ -84,8 +104,8 @@ namespace System.Windows.Forms
 
 					rot = RotatePoint(ortho, +90);
 					normalized = new PointF(rot.X / len, rot.Y / len);
-					baseVect = new PointF(normalized.X * ((WireBaseSize * zf) / 2),
-										   normalized.Y * ((WireBaseSize * zf) / 2));
+					baseVect = new PointF(normalized.X * ((WireSize * zf) / 2),
+										   normalized.Y * ((WireSize * zf) / 2));
 
 					rect[1].X = baseVect.X + start.X;
 					rect[1].Y = baseVect.Y + start.Y;
@@ -122,21 +142,23 @@ namespace System.Windows.Forms
 				}
 				else if (entity.IsVias() && HideVias == false)
 				{
+					var ViasSize = entity.WidthOverride != 0 ? entity.WidthOverride : ViasBaseSize;
+
 					rect[0] = LambdaToScreen(entity.LambdaX, entity.LambdaY);
-					rect[0].X -= ((float)ViasBaseSize * zf);
-					rect[0].Y -= ((float)ViasBaseSize * zf);
+					rect[0].X -= ((float)ViasSize * zf);
+					rect[0].Y -= ((float)ViasSize * zf);
 
 					rect[1] = LambdaToScreen(entity.LambdaX, entity.LambdaY);
-					rect[1].X += ((float)ViasBaseSize * zf);
-					rect[1].Y -= ((float)ViasBaseSize * zf);
+					rect[1].X += ((float)ViasSize * zf);
+					rect[1].Y -= ((float)ViasSize * zf);
 
 					rect[2] = LambdaToScreen(entity.LambdaX, entity.LambdaY);
-					rect[2].X += ((float)ViasBaseSize * zf);
-					rect[2].Y += ((float)ViasBaseSize * zf);
+					rect[2].X += ((float)ViasSize * zf);
+					rect[2].Y += ((float)ViasSize * zf);
 
 					rect[3] = LambdaToScreen(entity.LambdaX, entity.LambdaY);
-					rect[3].X -= ((float)ViasBaseSize * zf);
-					rect[3].Y += ((float)ViasBaseSize * zf);
+					rect[3].X -= ((float)ViasSize * zf);
+					rect[3].Y += ((float)ViasSize * zf);
 
 					if (PointInPoly(rect, point) == true)
 						return entity;
@@ -204,8 +226,9 @@ namespace System.Windows.Forms
 
 				if (Okay == true)
 				{
-					SavedMouseX = e.X;
-					SavedMouseY = e.Y;
+					var p = SnapMousePosToGrid(e.X, e.Y);
+					SavedMouseX = p.X;
+					SavedMouseY = p.Y;
 					SavedScrollX = _ScrollX;
 					SavedScrollY = _ScrollY;
 					DrawingBegin = true;
@@ -469,7 +492,8 @@ namespace System.Windows.Forms
 			if (e.Button == MouseButtons.Left && (Mode == EntityMode.WireGround ||
 				  Mode == EntityMode.WireInterconnect || Mode == EntityMode.WirePower) && DrawingBegin)
 			{
-				AddWire((EntityType)Mode, SavedMouseX, SavedMouseY, e.X, e.Y);
+				var p = SnapMousePosToGrid(e.X, e.Y);
+				AddWire((EntityType)Mode, SavedMouseX, SavedMouseY, p.X, p.Y);
 
 				DrawingBegin = false;
 			}
@@ -491,7 +515,8 @@ namespace System.Windows.Forms
 					Mode == EntityMode.UnitCustom
 					) && DrawingBegin)
 			{
-				AddCell((EntityType)Mode, SavedMouseX, SavedMouseY, e.X, e.Y);
+				var p = SnapMousePosToGrid(e.X, e.Y);
+				AddCell((EntityType)Mode, SavedMouseX, SavedMouseY, p.X, p.Y);
 
 				DrawingBegin = false;
 			}
@@ -572,8 +597,9 @@ namespace System.Windows.Forms
 			if (DrawingBegin && (Mode == EntityMode.WireGround ||
 				   Mode == EntityMode.WireInterconnect || Mode == EntityMode.WirePower))
 			{
-				LastMouseX = e.X;
-				LastMouseY = e.Y;
+				var p = SnapMousePosToGrid(e.X, e.Y);
+				LastMouseX = p.X;
+				LastMouseY = p.Y;
 				Invalidate();
 			}
 
@@ -593,8 +619,9 @@ namespace System.Windows.Forms
 					Mode == EntityMode.UnitMemory ||
 					Mode == EntityMode.UnitCustom))
 			{
-				LastMouseX = e.X;
-				LastMouseY = e.Y;
+				var p = SnapMousePosToGrid(e.X, e.Y);
+				LastMouseX = p.X;
+				LastMouseY = p.Y;
 				Invalidate();
 			}
 

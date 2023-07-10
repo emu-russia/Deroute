@@ -61,7 +61,7 @@
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(172, 48);
 			this.label1.TabIndex = 1;
-			this.label1.Text = "Deroute Tool 2.5\r\n© 2023, emu-russia";
+			this.label1.Text = "Deroute Tool 2.6\r\n© 2023, emu-russia";
 			// 
 			// label2
 			// 
@@ -149,6 +149,7 @@
 			this.entityBox1.CellTextAlignment = TextAlignment.TopLeft;
 			this.entityBox1.ForeColor = System.Drawing.Color.Snow;
 			this.entityBox1.Grayscale = false;
+			this.entityBox1.GridSize = 0F;
 			this.entityBox1.HideCells = false;
 			this.entityBox1.HideGrid = true;
 			this.entityBox1.HideImage = false;
@@ -172,6 +173,7 @@
 			this.entityBox1.SelectionBoxColor = System.Drawing.Color.Red;
 			this.entityBox1.SelectionColor = System.Drawing.Color.LimeGreen;
 			this.entityBox1.Size = new System.Drawing.Size(744, 243);
+			this.entityBox1.SnapToGrid = false;
 			this.entityBox1.TabIndex = 8;
 			this.entityBox1.Text = "entityBox1";
 			this.entityBox1.UnitCustomColor = System.Drawing.Color.Snow;
