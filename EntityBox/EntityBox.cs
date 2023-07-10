@@ -97,6 +97,7 @@ namespace System.Windows.Forms
 		private PointF TopLeftCopied;
 		private bool DrawStats = false;
 		private bool EnableOpacity = true;
+		private bool selectCellWithPorts = true;
 
 		public event EntityBoxEventHandler OnScrollChanged = null;
 		public event EntityBoxEventHandler OnZoomChanged = null;

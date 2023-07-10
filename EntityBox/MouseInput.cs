@@ -37,6 +37,25 @@ namespace System.Windows.Forms
 			return p;
 		}
 
+		private List<Entity> GetCellPorts(Entity cell, List<Entity> ents)
+		{
+			List<Entity> ports = new List<Entity>();
+
+			foreach (var ent in ents)
+			{
+				if (ent.IsPort())
+				{
+					RectangleF rect = new RectangleF(cell.LambdaX, cell.LambdaY, cell.LambdaWidth, cell.LambdaHeight);
+					if (rect.Contains(ent.LambdaX, ent.LambdaY))
+					{
+						ports.Add(ent);
+					}
+				}
+			}
+
+			return ports;
+		}
+
 		//
 		// Mouse hit test
 		//
@@ -421,6 +440,16 @@ namespace System.Windows.Forms
 				{
 					if (entity.Selected == true && draggingDist < 1F)
 					{
+						if (selectCellWithPorts && entity.IsCell())
+						{
+							List<Entity> ents = GetEntities();
+							List<Entity> ports = GetCellPorts(entity, ents);
+							foreach (var port in ports)
+							{
+								port.Selected = false;
+							}
+						}
+
 						entity.Selected = false;
 						Invalidate();
 
@@ -429,6 +458,16 @@ namespace System.Windows.Forms
 					}
 					else
 					{
+						if (selectCellWithPorts && entity.IsCell())
+						{
+							List<Entity> ents = GetEntities();
+							List<Entity> ports = GetCellPorts(entity, ents);
+							foreach (var port in ports)
+							{
+								port.Selected = true;
+							}
+						}
+
 						SelectEntity(entity);
 						if (entity.IsWire() && wireSelectionAutoTraverse)
 						{

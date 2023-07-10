@@ -245,6 +245,13 @@ namespace System.Windows.Forms
 			set { selectionBoxColor = value; Invalidate(); }
 		}
 
+		[Category("Appearance")]
+		public bool SelectCellWithPorts
+		{
+			get { return selectCellWithPorts; }
+			set { selectCellWithPorts = value; Invalidate(); }
+		}
+
 		//
 		// Entity properties
 		//
@@ -320,7 +327,7 @@ namespace System.Windows.Forms
 			_WireGroundColor = Color.Green;
 
 			_CellNotColor = Color.Navy;
-			_CellBufferColor = Color.Navy;
+			_CellBufferColor = Color.SteelBlue;
 			_CellMuxColor = Color.DarkOrange;
 			_CellLogicColor = Color.Yellow;
 			_CellAdderColor = Color.Red;
@@ -358,6 +365,7 @@ namespace System.Windows.Forms
 
 			_viasGroundText = "1'b0";
 			_viasPowerText = "1'b1";
+			selectCellWithPorts = true;
 		}
 
 		[Category("Entity Appearance")]

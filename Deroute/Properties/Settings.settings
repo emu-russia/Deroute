@@ -63,7 +63,7 @@
       <Value Profile="(Default)">Navy</Value>
     </Setting>
     <Setting Name="CellBufferColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">Navy</Value>
+      <Value Profile="(Default)">SteelBlue</Value>
     </Setting>
     <Setting Name="CellMuxColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">DarkOrange</Value>
@@ -165,6 +165,9 @@
       <Value Profile="(Default)">5</Value>
     </Setting>
     <Setting Name="SnapToGrid" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="SelectCellWithPorts" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>

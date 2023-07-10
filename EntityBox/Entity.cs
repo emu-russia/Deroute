@@ -356,6 +356,11 @@ public class Entity
 				 Type == EntityType.ViasPower);
 	}
 
+	public bool IsPort()
+	{
+		return Type == EntityType.ViasInput || Type == EntityType.ViasOutput || Type == EntityType.ViasInout;
+	}
+
 	public bool IsCell()
 	{
 		return (Type == EntityType.CellNot ||

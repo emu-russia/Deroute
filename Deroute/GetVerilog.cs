@@ -188,7 +188,7 @@ namespace DerouteSharp
 
 			foreach (var p in ents)
 			{
-				if (IsPort(p))
+				if (p.IsPort())
 				{
 					bool foundWithin = false;
 
@@ -224,7 +224,7 @@ namespace DerouteSharp
 
 			foreach (var ent in ents)
 			{
-				if (IsPort(ent))
+				if (ent.IsPort())
 				{
 					RectangleF rect = new RectangleF(cell.LambdaX, cell.LambdaY, cell.LambdaWidth, cell.LambdaHeight);
 					if (rect.Contains(ent.LambdaX, ent.LambdaY))
@@ -235,11 +235,6 @@ namespace DerouteSharp
 			}
 
 			return ports;
-		}
-
-		static bool IsPort(Entity ent)
-		{
-			return ent.Type == EntityType.ViasInput || ent.Type == EntityType.ViasOutput || ent.Type == EntityType.ViasInout;
 		}
 
 		/// <summary>
