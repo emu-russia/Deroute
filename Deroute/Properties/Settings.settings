@@ -63,7 +63,7 @@
       <Value Profile="(Default)">Navy</Value>
     </Setting>
     <Setting Name="CellBufferColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">Navy</Value>
+      <Value Profile="(Default)">SteelBlue</Value>
     </Setting>
     <Setting Name="CellMuxColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">DarkOrange</Value>
