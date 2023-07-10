@@ -19,6 +19,24 @@ namespace System.Windows.Forms
 			return draggingDist;
 		}
 
+		private Point SnapMousePosToGrid (int MouseX, int MouseY)
+		{
+			Point p = new Point();
+
+			p.X = MouseX;
+			p.Y = MouseY;
+
+			if (snapToGrid)
+			{
+				var lp = ScreenToLambda(p.X, p.Y);
+				lp.X = (float)Math.Round(lp.X / gridSize) * gridSize;
+				lp.Y = (float)Math.Round(lp.Y / gridSize) * gridSize;
+				p = LambdaToScreen(lp.X, lp.Y);
+			}
+
+			return p;
+		}
+
 		//
 		// Mouse hit test
 		//
@@ -208,8 +226,9 @@ namespace System.Windows.Forms
 
 				if (Okay == true)
 				{
-					SavedMouseX = e.X;
-					SavedMouseY = e.Y;
+					var p = SnapMousePosToGrid(e.X, e.Y);
+					SavedMouseX = p.X;
+					SavedMouseY = p.Y;
 					SavedScrollX = _ScrollX;
 					SavedScrollY = _ScrollY;
 					DrawingBegin = true;
@@ -473,7 +492,8 @@ namespace System.Windows.Forms
 			if (e.Button == MouseButtons.Left && (Mode == EntityMode.WireGround ||
 				  Mode == EntityMode.WireInterconnect || Mode == EntityMode.WirePower) && DrawingBegin)
 			{
-				AddWire((EntityType)Mode, SavedMouseX, SavedMouseY, e.X, e.Y);
+				var p = SnapMousePosToGrid(e.X, e.Y);
+				AddWire((EntityType)Mode, SavedMouseX, SavedMouseY, p.X, p.Y);
 
 				DrawingBegin = false;
 			}
@@ -495,7 +515,8 @@ namespace System.Windows.Forms
 					Mode == EntityMode.UnitCustom
 					) && DrawingBegin)
 			{
-				AddCell((EntityType)Mode, SavedMouseX, SavedMouseY, e.X, e.Y);
+				var p = SnapMousePosToGrid(e.X, e.Y);
+				AddCell((EntityType)Mode, SavedMouseX, SavedMouseY, p.X, p.Y);
 
 				DrawingBegin = false;
 			}
@@ -576,8 +597,9 @@ namespace System.Windows.Forms
 			if (DrawingBegin && (Mode == EntityMode.WireGround ||
 				   Mode == EntityMode.WireInterconnect || Mode == EntityMode.WirePower))
 			{
-				LastMouseX = e.X;
-				LastMouseY = e.Y;
+				var p = SnapMousePosToGrid(e.X, e.Y);
+				LastMouseX = p.X;
+				LastMouseY = p.Y;
 				Invalidate();
 			}
 
@@ -597,8 +619,9 @@ namespace System.Windows.Forms
 					Mode == EntityMode.UnitMemory ||
 					Mode == EntityMode.UnitCustom))
 			{
-				LastMouseX = e.X;
-				LastMouseY = e.Y;
+				var p = SnapMousePosToGrid(e.X, e.Y);
+				LastMouseX = p.X;
+				LastMouseY = p.Y;
 				Invalidate();
 			}
 
