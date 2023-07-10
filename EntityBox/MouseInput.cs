@@ -124,21 +124,23 @@ namespace System.Windows.Forms
 				}
 				else if (entity.IsVias() && HideVias == false)
 				{
+					var ViasSize = entity.WidthOverride != 0 ? entity.WidthOverride : ViasBaseSize;
+
 					rect[0] = LambdaToScreen(entity.LambdaX, entity.LambdaY);
-					rect[0].X -= ((float)ViasBaseSize * zf);
-					rect[0].Y -= ((float)ViasBaseSize * zf);
+					rect[0].X -= ((float)ViasSize * zf);
+					rect[0].Y -= ((float)ViasSize * zf);
 
 					rect[1] = LambdaToScreen(entity.LambdaX, entity.LambdaY);
-					rect[1].X += ((float)ViasBaseSize * zf);
-					rect[1].Y -= ((float)ViasBaseSize * zf);
+					rect[1].X += ((float)ViasSize * zf);
+					rect[1].Y -= ((float)ViasSize * zf);
 
 					rect[2] = LambdaToScreen(entity.LambdaX, entity.LambdaY);
-					rect[2].X += ((float)ViasBaseSize * zf);
-					rect[2].Y += ((float)ViasBaseSize * zf);
+					rect[2].X += ((float)ViasSize * zf);
+					rect[2].Y += ((float)ViasSize * zf);
 
 					rect[3] = LambdaToScreen(entity.LambdaX, entity.LambdaY);
-					rect[3].X -= ((float)ViasBaseSize * zf);
-					rect[3].Y += ((float)ViasBaseSize * zf);
+					rect[3].X -= ((float)ViasSize * zf);
+					rect[3].Y += ((float)ViasSize * zf);
 
 					if (PointInPoly(rect, point) == true)
 						return entity;
