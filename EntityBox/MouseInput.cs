@@ -72,10 +72,12 @@ namespace System.Windows.Forms
 												  Math.Pow(ortho.Y, 2));
 					len = Math.Max(1.0F, len);
 
+					var WireSize = entity.WidthOverride != 0 ? entity.WidthOverride : WireBaseSize;
+
 					PointF rot = RotatePoint(ortho, -90);
 					PointF normalized = new PointF(rot.X / len, rot.Y / len);
-					PointF baseVect = new PointF(normalized.X * ((WireBaseSize * zf) / 2),
-												  normalized.Y * ((WireBaseSize * zf) / 2));
+					PointF baseVect = new PointF(normalized.X * ((WireSize * zf) / 2),
+												  normalized.Y * ((WireSize * zf) / 2));
 
 					rect[0].X = baseVect.X + start.X;
 					rect[0].Y = baseVect.Y + start.Y;
@@ -84,8 +86,8 @@ namespace System.Windows.Forms
 
 					rot = RotatePoint(ortho, +90);
 					normalized = new PointF(rot.X / len, rot.Y / len);
-					baseVect = new PointF(normalized.X * ((WireBaseSize * zf) / 2),
-										   normalized.Y * ((WireBaseSize * zf) / 2));
+					baseVect = new PointF(normalized.X * ((WireSize * zf) / 2),
+										   normalized.Y * ((WireSize * zf) / 2));
 
 					rect[1].X = baseVect.X + start.X;
 					rect[1].Y = baseVect.Y + start.Y;
