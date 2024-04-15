@@ -125,6 +125,7 @@ namespace System.Windows.Forms
 			Lambda = 5.0F;
 			Zoom = 100;
 			_imageOpacity = 100;
+   			gridSize = 5;
 			hideImage = false;
 			hideVias = false;
 			hideWires = false;
