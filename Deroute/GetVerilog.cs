@@ -249,6 +249,17 @@ namespace DerouteSharp
 
 			text += GetModuleHeaderText(top);
 
+			// Wires
+
+			text += "\t// Wires\r\n";
+			text += "\r\n";
+
+			foreach (var wire in wires)
+			{
+				text += "\twire " + wire.name + ";\r\n";
+			}
+			text += "\r\n";
+
 			// Top -> Wires
 
 			foreach (var p in top.ports)
@@ -269,24 +280,16 @@ namespace DerouteSharp
 			}
 			text += "\r\n";
 
-			// Wires
-
-			text += "// Wires\r\n";
-			text += "\r\n";
-
-			foreach (var wire in wires)
-			{
-				text += "\twire " + wire.name + ";\r\n";
-			}
-			text += "\r\n";
-
 			// Instancies
 
-			text += "// Instances\r\n";
+			text += "\t// Instances\r\n";
 			text += "\r\n";
 
 			foreach (var inst in instances)
 			{
+				if (inst.ports.Count == 0)
+					continue;
+
 				text += "\t" + inst.module_name + " " + inst.inst_name + " (";
 
 				foreach (var p in inst.ports)
@@ -372,7 +375,10 @@ namespace DerouteSharp
 
 			foreach (var kv in modules)
 			{
-				text += GetModuleHeaderText(kv.Value);
+				var inst = kv.Value;
+				if (inst.ports.Count == 0)
+					continue;
+				text += GetModuleHeaderText(inst);
 				text += "endmodule // " + kv.Key + "\r\n\r\n";
 			}
 
