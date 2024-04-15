@@ -45,6 +45,8 @@ namespace DerouteSharp
 			string mod_prefix = top.module_name.ToLower() + "_";
 			instances = GetInstances(ents, mod_prefix);
 
+			SanityCheck(top, instances, wires);
+
 			// Output the verilog
 
 			string text = GetVerilogText(top, instances, wires, true) + GetModulesVerilog(instances);
@@ -416,6 +418,38 @@ namespace DerouteSharp
 				}
 			}
 			return null;
+		}
+
+		static void SanityCheck (FutureInstance top, List<FutureInstance> instances, List<FutureWire> wires)
+		{
+			foreach (var wire in wires)
+			{
+				int input_ports = 0;
+				int output_ports = 0;
+				foreach (var e in wire.parts)
+				{
+					if (top.ports.Contains(e))
+					{
+						if (e.Type == EntityType.ViasOutput)
+							input_ports++;
+						if (e.Type == EntityType.ViasInput)
+							output_ports++;
+					}
+					else
+					{
+						if (e.Type == EntityType.ViasOutput)
+							output_ports++;
+						if (e.Type == EntityType.ViasInput)
+							input_ports++;
+					}
+				}
+				if (output_ports > 1)
+					Console.WriteLine("ERROR: conflicting wire {0}!!!", wire.name);
+				if (output_ports == 0 && input_ports > 0)
+					Console.WriteLine("ERROR: floating wire {0}!!!", wire.name);
+				if (output_ports == 1 && input_ports == 0)
+					Console.WriteLine("WARNING: wire not driving anything {0}!!!", wire.name);
+			}
 		}
 	}
 }
