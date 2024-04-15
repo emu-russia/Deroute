@@ -498,7 +498,8 @@ namespace System.Windows.Forms
 					if (LastVia == null)
 					{
 						var via = AddVias((EntityType)Mode, e.X, e.Y, Color.Black);
-						LastVia = new PointF(via.LambdaX, via.LambdaY);
+						if (via != null)
+							LastVia = new PointF(via.LambdaX, via.LambdaY);
 					}
 					else
 					{
@@ -510,7 +511,8 @@ namespace System.Windows.Forms
 				else
 				{
 					var via = AddVias((EntityType)Mode, e.X, e.Y, Color.Black);
-					LastVia = new PointF(via.LambdaX, via.LambdaY);
+					if (via != null)
+						LastVia = new PointF(via.LambdaX, via.LambdaY);
 				}
 
 				DrawingBegin = false;
