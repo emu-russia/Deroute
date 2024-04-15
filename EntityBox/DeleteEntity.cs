@@ -48,7 +48,10 @@ namespace System.Windows.Forms
 					SetDestinationNode(entity.parent != null ? entity.parent : root);
 				}
 
-				entity.parent.Children.Remove(entity);
+				if (entity.parent != null)
+    					entity.parent.Children.Remove(entity);
+				else
+					root.Children.Remove(entity);
 			}
 
 			if (UpdateRequired == true)
