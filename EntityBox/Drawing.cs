@@ -758,36 +758,10 @@ namespace System.Windows.Forms
 
 				float imgZf = 1.0f;
 
-				ColorMatrix colorMatrix = new ColorMatrix();
-				colorMatrix.Matrix33 = _imageOpacity / 100F;
-
-				ImageAttributes imageAtt = new ImageAttributes();
-				imageAtt.SetColorMatrix(
-				   colorMatrix,
-				   ColorMatrixFlag.Default,
-				   ColorAdjustType.Bitmap);
-
-				if (EnableOpacity == false)
-				{
-					gr.DrawImage(_imageOrig,
-								  sx, sy,
-								  imageWidth * zf / imgZf,
-								  imageHeight * zf / imgZf);
-				}
-				else
-				{
-					gr.InterpolationMode = InterpolationMode.HighQualityBilinear;
-
-					gr.DrawImage(_imageOrig,
-						new Rectangle(
-							(int)sx, (int)sy,
-							(int)(imageWidth * zf), (int)(imageHeight * zf)),
-						0, 0,
-						imageWidth / imgZf,
-						imageHeight / imgZf,
-						GraphicsUnit.Pixel,
-						imageAtt);
-				}
+				gr.DrawImage(_imageOrig,
+								sx, sy,
+								imageWidth * zf / imgZf,
+								imageHeight * zf / imgZf);
 			}
 		}
 
@@ -838,12 +812,7 @@ namespace System.Windows.Forms
 			// Image Layers
 
 			Stamp1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-			if (!(ImageOpacity == 0 && EnableOpacity))
-			{
-				DrawImage(gr);
-			}
-
+			DrawImage(gr);
 			Stamp2 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 			if (DrawStats)
 				Console.WriteLine("Image Layers: " + (Stamp2 - Stamp1).ToString() + " ms");
