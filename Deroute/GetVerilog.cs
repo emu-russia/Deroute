@@ -45,11 +45,15 @@ namespace DerouteSharp
 			string mod_prefix = top.module_name.ToLower() + "_";
 			instances = GetInstances(ents, mod_prefix);
 
-			SanityCheck(top, instances, wires);
+			var sanity_text = SanityCheck(top, instances, wires);
 
 			// Output the verilog
 
-			string text = GetVerilogText(top, instances, wires, true) + GetModulesVerilog(instances);
+			string text = GetVerilogText(top, instances, wires, true, ref sanity_text) + GetModulesVerilog(instances);
+			if (sanity_text != "")
+			{
+				text += "\n\n" + sanity_text;
+			}
 			return text;
 		}
 
@@ -96,6 +100,8 @@ namespace DerouteSharp
 					{
 						fw.name = "w" + cnt.ToString();
 					}
+
+					fw.name = fw.name.Trim();
 
 					wires.Add(fw);
 
@@ -158,7 +164,7 @@ namespace DerouteSharp
 					// The first word is the module name, the second word (if any) is the instance name.
 					// If there is no name, then a name of the form `g1`, `g2` and so on is generated.
 
-					string label = ent.Label;
+					string label = ent.Label.Trim();
 
 					if (label == "")
 					{
@@ -168,8 +174,8 @@ namespace DerouteSharp
 					var pair = label.Split(' ');
 
 					inst.cell = ent;
-					inst.module_name = common_prefix + pair[0];
-					inst.inst_name = pair.Length == 1 ? "g" + cnt.ToString() : pair[1];
+					inst.module_name = common_prefix + pair[0].Trim();
+					inst.inst_name = pair.Length == 1 ? "g" + cnt.ToString() : pair[1].Trim();
 					inst.ports = GetPorts(ent, ents);
 
 					instances.Add(inst);
@@ -218,7 +224,7 @@ namespace DerouteSharp
 		}
 
 		/// <summary>
-		/// All input/output/input vias within a cell/block become ports
+		/// All input/output/inOut vias within a cell/block become ports
 		/// </summary>
 		static List<Entity> GetPorts (Entity cell, List<Entity> ents)
 		{
@@ -243,7 +249,7 @@ namespace DerouteSharp
 		/// The script does not check connectivity and does not make any special checks at all.
 		/// All errors can be checked later when using the generated HDL in your favorite CAD.
 		/// </summary>
-		static string GetVerilogText (FutureInstance top, List<FutureInstance> instances, List<FutureWire> wires, bool compact)
+		static string GetVerilogText (FutureInstance top, List<FutureInstance> instances, List<FutureWire> wires, bool compact, ref string sanity_text)
 		{
 			string text = "";
 
@@ -299,6 +305,7 @@ namespace DerouteSharp
 					if (p.Label == "")
 					{
 						Console.WriteLine("ERROR: Cell {0}:{1} has unnamed port!", inst.module_name, inst.inst_name);
+						sanity_text += "// ERROR: Cell " + inst.module_name + ":" + inst.inst_name + " has unnamed port!\n";
 						continue;
 					}
 
@@ -315,8 +322,8 @@ namespace DerouteSharp
 					}
 					else
 					{
-						//text += "." + p.Label + "()";
 						Console.WriteLine("WARNING: Cell {0}:{1} port {2} not connected.", inst.module_name, inst.inst_name, p.Label);
+						sanity_text += "// WARNING: Cell " + inst.module_name + ":" + inst.inst_name + " port " + p.Label + " not connected.\n";
 					}
 				}
 
@@ -420,8 +427,9 @@ namespace DerouteSharp
 			return null;
 		}
 
-		static void SanityCheck (FutureInstance top, List<FutureInstance> instances, List<FutureWire> wires)
+		static string SanityCheck (FutureInstance top, List<FutureInstance> instances, List<FutureWire> wires)
 		{
+			string text = "";
 			foreach (var wire in wires)
 			{
 				int input_ports = 0;
@@ -442,14 +450,25 @@ namespace DerouteSharp
 						if (e.Type == EntityType.ViasInput)
 							input_ports++;
 					}
+					// ViasInout ??
 				}
 				if (output_ports > 1)
+				{
 					Console.WriteLine("ERROR: conflicting wire {0}!!!", wire.name);
+					text += "// ERROR: conflicting wire " + wire.name + "\n";
+				}
 				if (output_ports == 0 && input_ports > 0)
+				{
 					Console.WriteLine("ERROR: floating wire {0}!!!", wire.name);
+					text += "// ERROR: floating wire " + wire.name + "\n";
+				}
 				if (output_ports == 1 && input_ports == 0)
+				{
 					Console.WriteLine("WARNING: wire not driving anything {0}!!!", wire.name);
+					text += "// WARNING: wire not driving anything " + wire.name + "\n";
+				}
 			}
+			return text;
 		}
 	}
 }

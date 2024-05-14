@@ -37,8 +37,8 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-			this.entityBox1 = new System.Windows.Forms.EntityBox();
 			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+			this.entityBox1 = new System.Windows.Forms.EntityBox();
 			this.SuspendLayout();
 			// 
 			// button1
@@ -61,7 +61,7 @@
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(172, 48);
 			this.label1.TabIndex = 1;
-			this.label1.Text = "Deroute Tool 2.7\r\n© 2024, emu-russia";
+			this.label1.Text = "Deroute Tool 2.8\r\n© 2024, emu-russia";
 			// 
 			// label2
 			// 
@@ -109,10 +109,10 @@
 			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(24, 322);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(452, 26);
+			this.label6.Size = new System.Drawing.Size(464, 26);
 			this.label6.TabIndex = 6;
 			this.label6.Text = "Everything (code, images etc) is public domain (Creative Commons Zero). Use at yo" +
-    "ur own risk)\r\nNo credits required.\r\n";
+    "ur own risk 😋\r\nNo credits required.\r\n";
 			// 
 			// linkLabel1
 			// 
@@ -125,6 +125,13 @@
 			this.linkLabel1.TabStop = true;
 			this.linkLabel1.Text = "https://discord.gg/WJcvqyCHkh";
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+			// 
+			// backgroundWorker1
+			// 
+			this.backgroundWorker1.WorkerReportsProgress = true;
+			this.backgroundWorker1.WorkerSupportsCancellation = true;
+			this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+			this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
 			// 
 			// entityBox1
 			// 
@@ -207,13 +214,6 @@
 			this.entityBox1.ZeroColor = System.Drawing.Color.Green;
 			this.entityBox1.Zoom = 100;
 			this.entityBox1.OnEntityAdd += new System.Windows.Forms.EntityBoxEntityEventHandler(this.entityBox1_OnEntityAdd);
-			// 
-			// backgroundWorker1
-			// 
-			this.backgroundWorker1.WorkerReportsProgress = true;
-			this.backgroundWorker1.WorkerSupportsCancellation = true;
-			this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-			this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
 			// 
 			// FormAbout
 			// 
