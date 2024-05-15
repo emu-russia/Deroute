@@ -2,7 +2,8 @@
 
 Tool for untangling wires.
 
-![sample](/Deroute/Build/sample.jpg)
+|![sample1](/imgstore/sample1.png)|![sample2](/imgstore/sample2.png)|
+|---|---|
 
 It can be used for reverse engineering of integrated circuits and printed circuit boards.
 
