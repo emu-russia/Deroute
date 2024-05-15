@@ -19,8 +19,13 @@ namespace System.Windows.Forms
 
 			List<Entity> selectedWires = GetSelectedWires();
 
-			if (selectedWires.Count <= 1)
+			if (selectedWires.Count == 0)
 				return;
+			else if (selectedWires.Count == 1)
+			{
+				AlignWireStraight(selectedWires[0], Vertical);
+				return;
+			}
 
 			//
 			// Find left-most and right-most points + Determine average wire type
@@ -141,6 +146,20 @@ namespace System.Windows.Forms
 			Invalidate();
 		}
 
+		/// <summary>
+		/// Added by request from the team (needed to align single wires vertically or horizontally).
+		/// </summary>
+		private void AlignWireStraight (Entity wire, bool Vertical)
+		{
+			if (Vertical)
+			{
+				wire.LambdaEndX = wire.LambdaX;
+			}
+			else
+			{
+				wire.LambdaEndY = wire.LambdaY;
+			}
+		}
 
 	}
 }
