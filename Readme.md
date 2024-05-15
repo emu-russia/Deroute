@@ -2,8 +2,9 @@
 
 Tool for untangling wires.
 
-|![sample1](/imgstore/sample1.png)|![sample2](/imgstore/sample2.png)|
-|---|---|
+![sample1](/imgstore/sample1.png)
+
+![sample2](/imgstore/sample2.png)
 
 It can be used for reverse engineering of integrated circuits and printed circuit boards.
 
