@@ -792,6 +792,22 @@ namespace DerouteSharp
 			}
 		}
 
+		private void loadSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (openFileDialog3.ShowDialog() == DialogResult.OK)
+			{
+				FormSettings.LoadSettingsFromFile(openFileDialog3.FileName, entityBox1);
+			}
+		}
+
+		private void saveSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (saveFileDialog4.ShowDialog() == DialogResult.OK)
+			{
+				FormSettings.SaveSettingsToFile(saveFileDialog4.FileName, entityBox1);
+			}
+		}
+
 
 		#region "Hierarchy"
 
@@ -1656,6 +1672,7 @@ namespace DerouteSharp
 
 
 		#endregion "Simulation"
+
 
 	}       // Form1
 

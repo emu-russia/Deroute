@@ -44,9 +44,10 @@
 			// button1
 			// 
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Location = new System.Drawing.Point(638, 396);
+			this.button1.Location = new System.Drawing.Point(851, 487);
+			this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(109, 41);
+			this.button1.Size = new System.Drawing.Size(145, 50);
 			this.button1.TabIndex = 0;
 			this.button1.Text = "Close";
 			this.button1.UseVisualStyleBackColor = true;
@@ -57,19 +58,21 @@
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.label1.AutoSize = true;
 			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label1.Location = new System.Drawing.Point(584, 258);
+			this.label1.Location = new System.Drawing.Point(779, 318);
+			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(172, 48);
+			this.label1.Size = new System.Drawing.Size(222, 58);
 			this.label1.TabIndex = 1;
-			this.label1.Text = "Deroute Tool 2.9\r\n© 2024, emu-russia";
+			this.label1.Text = "Deroute Tool 3.0\r\n© 2024, emu-russia";
 			// 
 			// label2
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(24, 266);
+			this.label2.Location = new System.Drawing.Point(32, 327);
+			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(125, 13);
+			this.label2.Size = new System.Drawing.Size(157, 16);
 			this.label2.TabIndex = 2;
 			this.label2.Text = ".NET Framework Version";
 			// 
@@ -77,9 +80,10 @@
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(155, 266);
+			this.label3.Location = new System.Drawing.Point(207, 327);
+			this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(42, 13);
+			this.label3.Size = new System.Drawing.Size(53, 16);
 			this.label3.TabIndex = 3;
 			this.label3.Text = "Version";
 			// 
@@ -87,9 +91,10 @@
 			// 
 			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(24, 293);
+			this.label4.Location = new System.Drawing.Point(32, 361);
+			this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(75, 13);
+			this.label4.Size = new System.Drawing.Size(94, 16);
 			this.label4.TabIndex = 4;
 			this.label4.Text = "Memory in use";
 			// 
@@ -97,9 +102,10 @@
 			// 
 			this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(155, 293);
+			this.label5.Location = new System.Drawing.Point(207, 361);
+			this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(33, 13);
+			this.label5.Size = new System.Drawing.Size(41, 16);
 			this.label5.TabIndex = 5;
 			this.label5.Text = "Bytes";
 			// 
@@ -107,9 +113,10 @@
 			// 
 			this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(24, 322);
+			this.label6.Location = new System.Drawing.Point(32, 396);
+			this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(464, 26);
+			this.label6.Size = new System.Drawing.Size(580, 32);
 			this.label6.TabIndex = 6;
 			this.label6.Text = "Everything (code, images etc) is public domain (Creative Commons Zero). Use at yo" +
     "ur own risk 😋\r\nNo credits required.\r\n";
@@ -118,9 +125,10 @@
 			// 
 			this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.Location = new System.Drawing.Point(24, 366);
+			this.linkLabel1.Location = new System.Drawing.Point(32, 450);
+			this.linkLabel1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.linkLabel1.Name = "linkLabel1";
-			this.linkLabel1.Size = new System.Drawing.Size(163, 13);
+			this.linkLabel1.Size = new System.Drawing.Size(196, 16);
 			this.linkLabel1.TabIndex = 7;
 			this.linkLabel1.TabStop = true;
 			this.linkLabel1.Text = "https://discord.gg/WJcvqyCHkh";
@@ -167,7 +175,8 @@
 			this.entityBox1.HighZColor = System.Drawing.Color.Gold;
 			this.entityBox1.ImageOpacity = 100;
 			this.entityBox1.Lambda = 5F;
-			this.entityBox1.Location = new System.Drawing.Point(12, 12);
+			this.entityBox1.Location = new System.Drawing.Point(16, 15);
+			this.entityBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.entityBox1.Mode = System.Windows.Forms.EntityMode.Selection;
 			this.entityBox1.Name = "entityBox1";
 			this.entityBox1.OneColor = System.Drawing.Color.LawnGreen;
@@ -180,7 +189,7 @@
 			this.entityBox1.SelectEntitiesAfterAdd = true;
 			this.entityBox1.SelectionBoxColor = System.Drawing.Color.Red;
 			this.entityBox1.SelectionColor = System.Drawing.Color.LimeGreen;
-			this.entityBox1.Size = new System.Drawing.Size(744, 243);
+			this.entityBox1.Size = new System.Drawing.Size(992, 299);
 			this.entityBox1.SnapToGrid = false;
 			this.entityBox1.TabIndex = 8;
 			this.entityBox1.Text = "entityBox1";
@@ -217,9 +226,9 @@
 			// 
 			// FormAbout
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(769, 454);
+			this.ClientSize = new System.Drawing.Size(1025, 559);
 			this.Controls.Add(this.entityBox1);
 			this.Controls.Add(this.linkLabel1);
 			this.Controls.Add(this.label6);
@@ -231,7 +240,8 @@
 			this.Controls.Add(this.button1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
-			this.MinimumSize = new System.Drawing.Size(520, 327);
+			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.MinimumSize = new System.Drawing.Size(687, 392);
 			this.Name = "FormAbout";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "About";
