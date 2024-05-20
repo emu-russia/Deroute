@@ -248,6 +248,12 @@ namespace DerouteSharp
 					bool first = true;
 					foreach (FileInfo file in di.GetFiles())
 					{
+						if (file.FullName.Contains("deroute_settings.xml"))
+						{
+							FormSettings.LoadSettingsFromFile(file.FullName, entityBox1);
+							file.Delete();
+							continue;
+						}
 						if (first)
 						{
 							entityBox1.Unserialize(file.FullName, true);
@@ -290,12 +296,15 @@ namespace DerouteSharp
 					string temp_xml_dir = GetTemporaryDirectory();
 					string temp_xml_filename = temp_xml_dir + "/" + Path.GetFileNameWithoutExtension(filename) + ".xml";
 					entityBox1.Serialize(temp_xml_filename);
+					string temp_settings_filename = temp_xml_dir + "/deroute_settings.xml";
+					FormSettings.SaveSettingsToFile(temp_settings_filename, entityBox1);
 					if (File.Exists(filename))
 					{
 						File.Delete(filename);
 					}
 					ZipFile.CreateFromDirectory(temp_xml_dir, filename);
 					File.Delete(temp_xml_filename);
+					File.Delete(temp_settings_filename);
 					Directory.Delete(temp_xml_dir);
 				}
 				else
@@ -789,6 +798,22 @@ namespace DerouteSharp
 			if (settings.DialogResult == DialogResult.OK)
 			{
 				entityBox1.Invalidate();
+			}
+		}
+
+		private void loadSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (openFileDialog3.ShowDialog() == DialogResult.OK)
+			{
+				FormSettings.LoadSettingsFromFile(openFileDialog3.FileName, entityBox1);
+			}
+		}
+
+		private void saveSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (saveFileDialog4.ShowDialog() == DialogResult.OK)
+			{
+				FormSettings.SaveSettingsToFile(saveFileDialog4.FileName, entityBox1);
 			}
 		}
 
@@ -1656,6 +1681,7 @@ namespace DerouteSharp
 
 
 		#endregion "Simulation"
+
 
 	}       // Form1
 
