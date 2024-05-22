@@ -125,6 +125,80 @@ namespace System.Windows.Forms
 			}
 		}
 
+		/// <summary>
+		/// A common method for drawing regions as well as Cell/Unit that have more than 2 vertices in PathPoints.
+		/// </summary>
+		private void DrawRegion (Entity entity, Graphics gr, int opacity, Color color)
+		{
+			float zf = (float)Zoom / 100.0F;
+			Brush brush = new SolidBrush(Color.FromArgb(opacity, color));
+
+			GraphicsPath gp = new GraphicsPath();
+
+			PointF prev = (PointF)LambdaToScreen(entity.PathPoints[0].X, entity.PathPoints[0].Y);
+			PointF first = prev;
+
+			foreach (PointF pathPoint in entity.PathPoints)
+			{
+				PointF translated = (PointF)LambdaToScreen(pathPoint.X, pathPoint.Y);
+
+				if (translated == prev)
+					continue;
+
+				gp.AddLine(prev, translated);
+
+				prev = translated;
+			}
+
+			gp.AddLine(prev, first);
+
+			if (entity.Selected == true)
+			{
+				gr.DrawPath(new Pen(SelectionColor, (float)WireBaseSize * zf + (int)Lambda),
+							  gp);
+			}
+
+			gr.FillPath(brush, gp);
+
+			// Region Label
+
+			if (entity.Label != null && entity.Label.Length > 0)
+			{
+				Point p0 = LambdaToScreen(entity.PathPoints[0].X, entity.PathPoints[0].Y);
+				Point p1 = LambdaToScreen(entity.PathPoints[1].X, entity.PathPoints[1].Y);
+
+				Point start = new Point(p0.X, p0.Y);
+				Point end = new Point(p1.X, p1.Y);
+				Point temp;
+
+				if (p0.X == p1.X && p0.Y == p1.Y)
+					return;
+
+				if (end.X < start.X)
+				{
+					temp = start;
+					start = end;
+					end = temp;
+				}
+
+				int a = end.Y - start.Y;
+				int b = end.X - start.X;
+				float Tga = (float)a / (float)b;
+				float alpha = (float)Math.Atan(Tga);
+
+				Font font = Font;
+				if (entity.FontOverride != null)
+					font = entity.FontOverride;
+
+				gr.TranslateTransform(start.X, start.Y);
+				gr.RotateTransform((float)(180.0F * alpha / Math.PI));
+				gr.ScaleTransform(zf, zf);
+				gr.DrawString(entity.Label, font, new SolidBrush(ForeColor),
+							   0, 0);
+				gr.ResetTransform();
+			}
+		}
+
 		private void DrawEntity(Entity entity, Graphics gr)
 		{
 			Color viasColor;
@@ -519,6 +593,12 @@ namespace System.Windows.Forms
 					if (entity.ColorOverride != Color.Black)
 						cellColor = entity.ColorOverride;
 
+					if (entity.PathPoints.Count >= 3)
+					{
+						DrawRegion(entity, gr, CellOpacity, cellColor);
+						break;
+					}
+
 					cellColor = Color.FromArgb(CellOpacity, cellColor);
 
 					Point topLeft = LambdaToScreen(entity.LambdaX, entity.LambdaY);
@@ -672,73 +752,7 @@ namespace System.Windows.Forms
 					if (hideRegions)
 						break;
 
-					Brush brush = new SolidBrush(Color.FromArgb(RegionOpacity, entity.ColorOverride));
-
-					GraphicsPath gp = new GraphicsPath();
-
-					PointF prev = (PointF)LambdaToScreen(entity.PathPoints[0].X, entity.PathPoints[0].Y);
-					PointF first = prev;
-
-					foreach (PointF pathPoint in entity.PathPoints)
-					{
-						PointF translated = (PointF)LambdaToScreen(pathPoint.X, pathPoint.Y);
-
-						if (translated == prev)
-							continue;
-
-						gp.AddLine(prev, translated);
-
-						prev = translated;
-					}
-
-					gp.AddLine(prev, first);
-
-					if (entity.Selected == true)
-					{
-						gr.DrawPath(new Pen(SelectionColor, (float)WireBaseSize * zf + (int)Lambda),
-									  gp);
-					}
-
-					gr.FillPath(brush, gp);
-
-					// Region Label
-
-					if (entity.Label != null && entity.Label.Length > 0)
-					{
-						Point p0 = LambdaToScreen(entity.PathPoints[0].X, entity.PathPoints[0].Y);
-						Point p1 = LambdaToScreen(entity.PathPoints[1].X, entity.PathPoints[1].Y);
-
-						Point start = new Point(p0.X, p0.Y);
-						Point end = new Point(p1.X, p1.Y);
-						Point temp;
-
-						if (p0.X == p1.X && p0.Y == p1.Y)
-							break;
-
-						if (end.X < start.X)
-						{
-							temp = start;
-							start = end;
-							end = temp;
-						}
-
-						int a = end.Y - start.Y;
-						int b = end.X - start.X;
-						float Tga = (float)a / (float)b;
-						float alpha = (float)Math.Atan(Tga);
-
-						Font font = Font;
-						if (entity.FontOverride != null)
-							font = entity.FontOverride;
-
-						gr.TranslateTransform(start.X, start.Y);
-						gr.RotateTransform((float)(180.0F * alpha / Math.PI));
-						gr.ScaleTransform(zf, zf);
-						gr.DrawString(entity.Label, font, new SolidBrush(ForeColor),
-									   0, 0);
-						gr.ResetTransform();
-					}
-
+					DrawRegion(entity, gr, RegionOpacity, entity.ColorOverride);
 					break;
 
 			}

@@ -45,7 +45,7 @@
 			// 
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.button1.Location = new System.Drawing.Point(851, 487);
-			this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.button1.Margin = new System.Windows.Forms.Padding(4);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(145, 50);
 			this.button1.TabIndex = 0;
@@ -63,7 +63,7 @@
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(222, 58);
 			this.label1.TabIndex = 1;
-			this.label1.Text = "Deroute Tool 3.0\r\n© 2024, emu-russia";
+			this.label1.Text = "Deroute Tool 3.1\r\n© 2024, emu-russia";
 			// 
 			// label2
 			// 
@@ -176,7 +176,7 @@
 			this.entityBox1.ImageOpacity = 100;
 			this.entityBox1.Lambda = 5F;
 			this.entityBox1.Location = new System.Drawing.Point(16, 15);
-			this.entityBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.entityBox1.Margin = new System.Windows.Forms.Padding(4);
 			this.entityBox1.Mode = System.Windows.Forms.EntityMode.Selection;
 			this.entityBox1.Name = "entityBox1";
 			this.entityBox1.OneColor = System.Drawing.Color.LawnGreen;
@@ -240,7 +240,7 @@
 			this.Controls.Add(this.button1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
-			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.Margin = new System.Windows.Forms.Padding(4);
 			this.MinimumSize = new System.Drawing.Size(687, 392);
 			this.Name = "FormAbout";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
