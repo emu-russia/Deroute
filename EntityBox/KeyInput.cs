@@ -59,7 +59,7 @@ namespace System.Windows.Forms
 				{
 					if (entity.Selected)
 					{
-						if (entity.PathPoints.Count != 0)
+						if (entity.PathPoints != null && entity.PathPoints.Count != 0)
 						{
 							entity.LambdaX += deltaX;
 							entity.LambdaY += deltaY;

@@ -136,7 +136,7 @@ namespace System.Windows.Forms
 				}
 				else if (entity.IsCell() && HideCells == false)
 				{
-					if (entity.PathPoints.Count != 0)
+					if (entity.PathPoints != null && entity.PathPoints.Count != 0)
 					{
 						PointF[] poly = new PointF[entity.PathPoints.Count];
 
@@ -281,7 +281,7 @@ namespace System.Windows.Forms
 				{
 					foreach (Entity entity in selected)
 					{
-						if (entity.PathPoints.Count != 0)
+						if (entity.PathPoints != null && entity.PathPoints.Count != 0)
 						{
 							entity.SavedPathPoints = new List<PointF>(entity.PathPoints);
 						}
@@ -400,7 +400,7 @@ namespace System.Windows.Forms
 
 							if (ent.IsCell())
 							{
-								if (ent.PathPoints.Count != 0)
+								if (ent.PathPoints != null && ent.PathPoints.Count != 0)
 								{
 									foreach (PointF point in ent.PathPoints)
 									{
@@ -700,7 +700,7 @@ namespace System.Windows.Forms
 			{
 				foreach (Entity entity in selected)
 				{
-					if (entity.PathPoints.Count != 0)
+					if (entity.PathPoints != null && entity.PathPoints.Count != 0)
 					{
 						for (int i = 0; i < entity.PathPoints.Count; i++)
 						{
