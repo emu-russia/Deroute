@@ -111,7 +111,7 @@ namespace System.Windows.Forms
 			return true;
 		}
 
-		private bool PointInPoly(PointF[] poly, PointF point)
+		private static bool PointInPoly(PointF[] poly, PointF point)
 		{
 			int max_point = poly.Length - 1;
 			float total_angle = GetAngle(
@@ -130,7 +130,7 @@ namespace System.Windows.Forms
 			return (Math.Abs(total_angle) > 0.000001);
 		}
 
-		private float GetAngle(float Ax, float Ay,
+		private static float GetAngle(float Ax, float Ay,
 			float Bx, float By, float Cx, float Cy)
 		{
 			float dot_product = DotProduct(Ax, Ay, Bx, By, Cx, Cy);
@@ -140,7 +140,7 @@ namespace System.Windows.Forms
 			return (float)Math.Atan2(cross_product, dot_product);
 		}
 
-		private float DotProduct(float Ax, float Ay,
+		private static float DotProduct(float Ax, float Ay,
 			float Bx, float By, float Cx, float Cy)
 		{
 			float BAx = Ax - Bx;
@@ -151,7 +151,7 @@ namespace System.Windows.Forms
 			return (BAx * BCx + BAy * BCy);
 		}
 
-		private float CrossProductLength(float Ax, float Ay,
+		private static float CrossProductLength(float Ax, float Ay,
 			float Bx, float By, float Cx, float Cy)
 		{
 			float BAx = Ax - Bx;
