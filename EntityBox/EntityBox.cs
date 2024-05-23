@@ -325,7 +325,7 @@ namespace System.Windows.Forms
 
 			foreach (Entity entity in sourceList )
 			{
-				if (entity.IsRegion())
+				if (entity.PathPoints != null && entity.PathPoints.Count != 0)
 				{
 					for (int i = 0; i < entity.PathPoints.Count; i++ )
 					{
@@ -337,15 +337,13 @@ namespace System.Windows.Forms
 						entity.PathPoints[i] = scaled;
 					}
 				}
-				else
-				{
-					entity.LambdaX *= scale;
-					entity.LambdaY *= scale;
-					entity.LambdaEndX *= scale;
-					entity.LambdaEndY *= scale;
-					entity.LambdaWidth *= scale;
-					entity.LambdaHeight *= scale;
-				}
+
+				entity.LambdaX *= scale;
+				entity.LambdaY *= scale;
+				entity.LambdaEndX *= scale;
+				entity.LambdaEndY *= scale;
+				entity.LambdaWidth *= scale;
+				entity.LambdaHeight *= scale;
 			}
 
 			Invalidate();

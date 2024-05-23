@@ -593,7 +593,7 @@ namespace System.Windows.Forms
 					if (entity.ColorOverride != Color.Black)
 						cellColor = entity.ColorOverride;
 
-					if (entity.PathPoints.Count >= 3)
+					if (entity.PathPoints != null && entity.PathPoints.Count >= 3)
 					{
 						DrawRegion(entity, gr, CellOpacity, cellColor);
 						break;
