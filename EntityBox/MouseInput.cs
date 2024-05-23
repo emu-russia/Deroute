@@ -37,7 +37,10 @@ namespace System.Windows.Forms
 			return p;
 		}
 
-		private List<Entity> GetCellPorts(Entity cell, List<Entity> ents)
+		/// <summary>
+		/// All input/output/inOut vias within a cell/block become ports
+		/// </summary>
+		public static List<Entity> GetCellPorts(Entity cell, List<Entity> ents)
 		{
 			List<Entity> ports = new List<Entity>();
 
@@ -45,10 +48,29 @@ namespace System.Windows.Forms
 			{
 				if (ent.IsPort())
 				{
-					RectangleF rect = new RectangleF(cell.LambdaX, cell.LambdaY, cell.LambdaWidth, cell.LambdaHeight);
-					if (rect.Contains(ent.LambdaX, ent.LambdaY))
+					if (cell.PathPoints != null && cell.PathPoints.Count != 0)
 					{
-						ports.Add(ent);
+						PointF[] poly = new PointF[cell.PathPoints.Count];
+						PointF point = new PointF(ent.LambdaX, ent.LambdaY);
+
+						int idx = 0;
+						foreach (PointF pathPoint in cell.PathPoints)
+						{
+							poly[idx++] = pathPoint;
+						}
+
+						if (PointInPoly(poly, point))
+						{
+							ports.Add(ent);
+						}
+					}
+					else
+					{
+						RectangleF rect = new RectangleF(cell.LambdaX, cell.LambdaY, cell.LambdaWidth, cell.LambdaHeight);
+						if (rect.Contains(ent.LambdaX, ent.LambdaY))
+						{
+							ports.Add(ent);
+						}
 					}
 				}
 			}

@@ -176,7 +176,7 @@ namespace DerouteSharp
 					inst.cell = ent;
 					inst.module_name = common_prefix + pair[0].Trim();
 					inst.inst_name = pair.Length == 1 ? "g" + cnt.ToString() : pair[1].Trim();
-					inst.ports = GetPorts(ent, ents);
+					inst.ports = EntityBox.GetCellPorts(ent, ents);
 
 					instances.Add(inst);
 
@@ -204,11 +204,14 @@ namespace DerouteSharp
 					{
 						if (c.IsCell())
 						{
-							RectangleF rect = new RectangleF (c.LambdaX, c.LambdaY, c.LambdaWidth, c.LambdaHeight);
-							if (rect.Contains(p.LambdaX, p.LambdaY))
+							var cell_ports = EntityBox.GetCellPorts(c, ents);
+							foreach (var port in cell_ports)
 							{
-								foundWithin = true;
-								break;
+								if (port.LambdaX == p.LambdaX && port.LambdaY == p.LambdaY)
+								{
+									foundWithin = true;
+									break;
+								}
 							}
 						}
 					}
@@ -216,28 +219,6 @@ namespace DerouteSharp
 					if (!foundWithin)
 					{
 						ports.Add(p);
-					}
-				}
-			}
-
-			return ports;
-		}
-
-		/// <summary>
-		/// All input/output/inOut vias within a cell/block become ports
-		/// </summary>
-		static List<Entity> GetPorts (Entity cell, List<Entity> ents)
-		{
-			List<Entity> ports = new List<Entity>();
-
-			foreach (var ent in ents)
-			{
-				if (ent.IsPort())
-				{
-					RectangleF rect = new RectangleF(cell.LambdaX, cell.LambdaY, cell.LambdaWidth, cell.LambdaHeight);
-					if (rect.Contains(ent.LambdaX, ent.LambdaY))
-					{
-						ports.Add(ent);
 					}
 				}
 			}

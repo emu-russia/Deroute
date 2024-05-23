@@ -23,7 +23,7 @@ public class CellSupport
 		{
 			if ((entity.IsCell() || entity.IsUnit()) && entity.Selected)
 			{
-				var ports = GetPorts(entity, entities);
+				var ports = EntityBox.GetCellPorts(entity, entities);
 
 				var temp = entity.LambdaWidth;
 				entity.LambdaWidth = entity.LambdaHeight;
@@ -72,7 +72,7 @@ public class CellSupport
 		{
 			if ((entity.IsCell() || entity.IsUnit()) && entity.Selected)
 			{
-				var ports = GetPorts(entity, entities);
+				var ports = EntityBox.GetCellPorts(entity, entities);
 
 				switch (entity.LabelAlignment)
 				{
@@ -117,7 +117,7 @@ public class CellSupport
 			if ((entity.IsCell() || entity.IsUnit()) && entity.Selected)
 			{
 				cell = entity;
-				return GetPorts(entity, entities);
+				return EntityBox.GetCellPorts(entity, entities);
 			}
 		}
 
@@ -257,26 +257,4 @@ public class CellSupport
 		public List<Entity> Entities { get; set; } = new List<Entity>();
 	}
 
-
-	/// <summary>
-	/// All input/output/input vias within a cell/block become ports
-	/// </summary>
-	static List<Entity> GetPorts(Entity cell, List<Entity> ents)
-	{
-		List<Entity> ports = new List<Entity>();
-
-		foreach (var ent in ents)
-		{
-			if (ent.IsPort())
-			{
-				RectangleF rect = new RectangleF(cell.LambdaX, cell.LambdaY, cell.LambdaWidth, cell.LambdaHeight);
-				if (rect.Contains(ent.LambdaX, ent.LambdaY))
-				{
-					ports.Add(ent);
-				}
-			}
-		}
-
-		return ports;
-	}
 }
