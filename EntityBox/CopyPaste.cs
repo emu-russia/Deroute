@@ -73,7 +73,7 @@ namespace System.Windows.Forms
 				item.LambdaEndX = entity.LambdaEndX - TopLeftCopied.X + delta.X;
 				item.LambdaEndY = entity.LambdaEndY - TopLeftCopied.Y + delta.Y;
 
-				if (entity.IsRegion())
+				if (entity.PathPoints != null && entity.PathPoints.Count != 0)
 				{
 					item.PathPoints = new List<PointF>();
 

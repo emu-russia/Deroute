@@ -59,7 +59,7 @@ namespace System.Windows.Forms
 				{
 					if (entity.Selected)
 					{
-						if (entity.IsRegion())
+						if (entity.PathPoints != null && entity.PathPoints.Count != 0)
 						{
 							entity.LambdaX += deltaX;
 							entity.LambdaY += deltaY;
@@ -77,17 +77,13 @@ namespace System.Windows.Forms
 							}
 
 							entity.PathPoints = points;
+						}
 
-							NeedUpdate = true;
-						}
-						else
-						{
-							entity.LambdaX += deltaX;
-							entity.LambdaY += deltaY;
-							entity.LambdaEndX += deltaX;
-							entity.LambdaEndY += deltaY;
-							NeedUpdate = true;
-						}
+						entity.LambdaX += deltaX;
+						entity.LambdaY += deltaY;
+						entity.LambdaEndX += deltaX;
+						entity.LambdaEndY += deltaY;
+						NeedUpdate = true;
 					}
 				}
 

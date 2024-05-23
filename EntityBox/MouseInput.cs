@@ -136,13 +136,29 @@ namespace System.Windows.Forms
 				}
 				else if (entity.IsCell() && HideCells == false)
 				{
-					rect[0] = LambdaToScreen(entity.LambdaX, entity.LambdaY);
-					rect[1] = LambdaToScreen(entity.LambdaX, entity.LambdaY + entity.LambdaHeight);
-					rect[2] = LambdaToScreen(entity.LambdaX + entity.LambdaWidth, entity.LambdaY + entity.LambdaHeight);
-					rect[3] = LambdaToScreen(entity.LambdaX + entity.LambdaWidth, entity.LambdaY);
+					if (entity.PathPoints != null && entity.PathPoints.Count != 0)
+					{
+						PointF[] poly = new PointF[entity.PathPoints.Count];
 
-					if (PointInPoly(rect, point) == true)
-						return entity;
+						int idx = 0;
+						foreach (PointF pathPoint in entity.PathPoints)
+						{
+							poly[idx++] = (PointF)LambdaToScreen(pathPoint.X, pathPoint.Y);
+						}
+
+						if (PointInPoly(poly, point) == true)
+							return entity;
+					}
+					else
+					{
+						rect[0] = LambdaToScreen(entity.LambdaX, entity.LambdaY);
+						rect[1] = LambdaToScreen(entity.LambdaX, entity.LambdaY + entity.LambdaHeight);
+						rect[2] = LambdaToScreen(entity.LambdaX + entity.LambdaWidth, entity.LambdaY + entity.LambdaHeight);
+						rect[3] = LambdaToScreen(entity.LambdaX + entity.LambdaWidth, entity.LambdaY);
+
+						if (PointInPoly(rect, point) == true)
+							return entity;
+					}
 				}
 				else if (entity.Type == EntityType.Beacon)
 				{
@@ -265,18 +281,16 @@ namespace System.Windows.Forms
 				{
 					foreach (Entity entity in selected)
 					{
-						if (entity.IsRegion())
+						if (entity.PathPoints != null && entity.PathPoints.Count != 0)
 						{
 							entity.SavedPathPoints = new List<PointF>(entity.PathPoints);
 						}
-						else
-						{
-							entity.SavedLambdaX = entity.LambdaX;
-							entity.SavedLambdaY = entity.LambdaY;
 
-							entity.SavedLambdaEndX = entity.LambdaEndX;
-							entity.SavedLambdaEndY = entity.LambdaEndY;
-						}
+						entity.SavedLambdaX = entity.LambdaX;
+						entity.SavedLambdaY = entity.LambdaY;
+
+						entity.SavedLambdaEndX = entity.LambdaEndX;
+						entity.SavedLambdaEndY = entity.LambdaEndY;
 					}
 
 					DragStartMouseX = e.X;
@@ -386,13 +400,27 @@ namespace System.Windows.Forms
 
 							if (ent.IsCell())
 							{
-								RectangleF rect2 = new RectangleF(ent.LambdaX, ent.LambdaY,
-																   ent.LambdaWidth, ent.LambdaHeight);
-
-								if (rect.IntersectsWith(rect2))
+								if (ent.PathPoints != null && ent.PathPoints.Count != 0)
 								{
-									SelectEntity(ent);
-									CatchSomething = true;
+									foreach (PointF point in ent.PathPoints)
+									{
+										if (rect.Contains(point))
+										{
+											SelectEntity(ent);
+											CatchSomething = true;
+										}
+									}
+								}
+								else
+								{
+									RectangleF rect2 = new RectangleF(ent.LambdaX, ent.LambdaY,
+																	   ent.LambdaWidth, ent.LambdaHeight);
+
+									if (rect.IntersectsWith(rect2))
+									{
+										SelectEntity(ent);
+										CatchSomething = true;
+									}
 								}
 							}
 							else if (ent.IsWire())
@@ -672,7 +700,7 @@ namespace System.Windows.Forms
 			{
 				foreach (Entity entity in selected)
 				{
-					if (entity.IsRegion())
+					if (entity.PathPoints != null && entity.PathPoints.Count != 0)
 					{
 						for (int i = 0; i < entity.PathPoints.Count; i++)
 						{
