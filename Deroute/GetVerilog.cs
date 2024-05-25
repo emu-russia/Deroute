@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using static DerouteSharp.FormGetVerilogSettings;
 
 namespace DerouteSharp
 {
@@ -22,7 +23,29 @@ namespace DerouteSharp
 			public string inst_name;
 		}
 
-		public static string EntitiesToVerilogSource(EntityBox ebox, string top_module_name, ref bool abort)
+		private static List<Entity> GetEntitiesByMode(EntityBox ebox, FormGetVerilogSettings.VerilogExportMode mode, string layer_name)
+		{
+			switch (mode)
+			{
+				case FormGetVerilogSettings.VerilogExportMode.Everyhing:
+					return ebox.GetEntities();
+				case FormGetVerilogSettings.VerilogExportMode.SpecifiedLayerOnly:
+					foreach (var entity in ebox.root.Children)
+					{
+						if (entity.Type == EntityType.Layer && entity.Label.Trim() == layer_name)
+						{
+							List<Entity> layer = new List<Entity>();
+							ebox.GetEntitiesRecursive(entity, layer);
+							return layer;
+						}
+					}
+					break;
+			}
+
+			return new List<Entity>();	// empty
+		}
+
+		public static string EntitiesToVerilogSource(EntityBox ebox, VerilogExportSettings settings, string top_module_name, ref bool abort)
 		{
 			FutureInstance top = new FutureInstance();
 			List<FutureInstance> instances;
@@ -30,7 +53,7 @@ namespace DerouteSharp
 
 			// Load the original XML
 
-			List<Entity> ents = ebox.GetEntities();
+			List<Entity> ents = GetEntitiesByMode(ebox, settings.mode, settings.layer_name);
 
 			top.module_name = top_module_name;
 			top.ports = GetTopPorts(ents, ref abort);

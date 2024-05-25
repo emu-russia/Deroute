@@ -330,6 +330,17 @@ namespace System.Windows.Forms
 			base.OnMouseDown(e);
 		}
 
+		private bool AnyParentInvisible (Entity entity)
+		{
+			while (entity.parent != null)
+			{
+				if (!entity.Visible)
+					return true;
+				entity = entity.parent;
+			}
+			return false;
+		}
+
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			Focus();
@@ -417,7 +428,7 @@ namespace System.Windows.Forms
 					{
 						foreach (Entity ent in GetEntities())
 						{
-							if (ent.Selected)
+							if (ent.Selected || AnyParentInvisible(ent))
 								continue;
 
 							if (ent.IsCell())

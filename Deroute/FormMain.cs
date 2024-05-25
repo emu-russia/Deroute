@@ -322,15 +322,17 @@ namespace DerouteSharp
 		string verilog_file = null;                 // Full file path to the Verilog export file
 		bool abort_verilog_export = false;              // Abort the Verilog export process. Asynchronous variable
 		FormProgress form_verilog_progress = null;          // Infinite progress dialog with cancel button
+		FormGetVerilogSettings.VerilogExportSettings verilog_settings;
 
 		private void saveSceneAsNetlistToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			FormGetVerilogSettings verilog_settings = new FormGetVerilogSettings(entityBox1);
-			if (verilog_settings.ShowDialog() == DialogResult.OK)
+			FormGetVerilogSettings form_verilog_settings = new FormGetVerilogSettings(entityBox1);
+			if (form_verilog_settings.ShowDialog() == DialogResult.OK)
 			{
 				if (saveFileDialog3.ShowDialog() == DialogResult.OK)
 				{
 					verilog_file = saveFileDialog3.FileName;
+					verilog_settings = form_verilog_settings.GetVerilogExportSettings();
 					form_verilog_progress = new FormProgress("Verilog Export", "To stop exporting Verilog click Cancel or close this window.");
 					form_verilog_progress.FormClosed += Form_verilog_progress_FormClosed;
 					form_verilog_progress.Show();
@@ -347,7 +349,7 @@ namespace DerouteSharp
 		private void backgroundWorkerVerilog_DoWork(object sender, DoWorkEventArgs e)
 		{
 			abort_verilog_export = false;
-			string text = GetVerilog.EntitiesToVerilogSource(entityBox1, Path.GetFileNameWithoutExtension(verilog_file), ref abort_verilog_export);
+			string text = GetVerilog.EntitiesToVerilogSource(entityBox1, verilog_settings, Path.GetFileNameWithoutExtension(verilog_file), ref abort_verilog_export);
 			if (text != null)
 			{
 				File.WriteAllText(verilog_file, text, Encoding.ASCII);

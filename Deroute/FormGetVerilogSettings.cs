@@ -12,6 +12,9 @@ namespace DerouteSharp
 		{
 			InitializeComponent();
 
+			// TODO.
+			radioButton2.Enabled = false;
+
 			radioButton1.Checked = true;
 			comboBox1.Enabled = false;
 
