@@ -183,6 +183,7 @@
 			this.saveFileDialog3 = new System.Windows.Forms.SaveFileDialog();
 			this.openFileDialog3 = new System.Windows.Forms.OpenFileDialog();
 			this.saveFileDialog4 = new System.Windows.Forms.SaveFileDialog();
+			this.backgroundWorkerVerilog = new System.ComponentModel.BackgroundWorker();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -760,7 +761,7 @@
 			this.tabPage1.Controls.Add(this.propertyGrid2);
 			this.tabPage1.Location = new System.Drawing.Point(4, 24);
 			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPage1.Size = new System.Drawing.Size(285, 553);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Entity Props";
@@ -779,7 +780,7 @@
 			this.tabPage3.Controls.Add(this.listView1);
 			this.tabPage3.Location = new System.Drawing.Point(4, 24);
 			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(212, 561);
+			this.tabPage3.Size = new System.Drawing.Size(285, 553);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "Beacons";
 			this.tabPage3.UseVisualStyleBackColor = true;
@@ -794,7 +795,7 @@
 			this.listView1.HideSelection = false;
 			this.listView1.Location = new System.Drawing.Point(0, 0);
 			this.listView1.Name = "listView1";
-			this.listView1.Size = new System.Drawing.Size(212, 561);
+			this.listView1.Size = new System.Drawing.Size(285, 553);
 			this.listView1.TabIndex = 0;
 			this.listView1.UseCompatibleStateImageBehavior = false;
 			this.listView1.View = System.Windows.Forms.View.Details;
@@ -1529,7 +1530,7 @@
 			this.tabPage4.Controls.Add(this.myTreeView1);
 			this.tabPage4.Location = new System.Drawing.Point(4, 22);
 			this.tabPage4.Name = "tabPage4";
-			this.tabPage4.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPage4.Size = new System.Drawing.Size(211, 555);
 			this.tabPage4.TabIndex = 0;
 			this.tabPage4.Text = "Hierarchy";
@@ -1556,7 +1557,7 @@
 			this.tabPage2.Controls.Add(this.listViewModules);
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Size = new System.Drawing.Size(156, 563);
+			this.tabPage2.Size = new System.Drawing.Size(211, 555);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Modules";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -1570,7 +1571,7 @@
 			this.listViewModules.HideSelection = false;
 			this.listViewModules.Location = new System.Drawing.Point(0, 0);
 			this.listViewModules.Name = "listViewModules";
-			this.listViewModules.Size = new System.Drawing.Size(156, 563);
+			this.listViewModules.Size = new System.Drawing.Size(211, 555);
 			this.listViewModules.TabIndex = 0;
 			this.listViewModules.UseCompatibleStateImageBehavior = false;
 			this.listViewModules.View = System.Windows.Forms.View.Details;
@@ -1603,6 +1604,10 @@
 			// saveFileDialog4
 			// 
 			this.saveFileDialog4.Filter = "XML Files|*.xml|All Files|*.*";
+			// 
+			// backgroundWorkerVerilog
+			// 
+			this.backgroundWorkerVerilog.WorkerSupportsCancellation = true;
 			// 
 			// FormMain
 			// 
@@ -1803,6 +1808,7 @@
 		private System.Windows.Forms.SaveFileDialog saveFileDialog4;
 		private System.Windows.Forms.ToolStripMenuItem loadSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveSettingsToolStripMenuItem;
+		private System.ComponentModel.BackgroundWorker backgroundWorkerVerilog;
 	}
 }
 
