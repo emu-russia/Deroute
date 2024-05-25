@@ -12,6 +12,7 @@ using NeuralNetwork;
 using System.IO;
 using System.IO.Compression;
 using System.Xml.Serialization;
+using System.Text.RegularExpressions;
 
 //
 // Nothing to comment here. Everything is self-explanatory (GUI stubs)
@@ -41,6 +42,10 @@ namespace DerouteSharp
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
+#if DEBUG && (!__MonoCS__)
+			AllocConsole();
+#endif
+
 			entityBox1.AssociateSelectionPropertyGrid(propertyGrid2);
 
 			entityBox1.Mode = EntityMode.Selection;
@@ -63,15 +68,18 @@ namespace DerouteSharp
 
 			backgroundWorkerTimeSpent.RunWorkerAsync();
 
+			FormAbout about = new FormAbout();
+			var ver = about.GetVersion();
+			var groups = Regex.Match(ver, @"[\d]\.[\d]");
+			var vernum = groups.Groups[0].Value;
+
+			Text = Text + " " + vernum;
 			savedText = Text;
+			Console.Write(savedText);
 
 			FormSettings.LoadSettings(entityBox1);
 
 			PopulateTree();
-
-#if DEBUG && (!__MonoCS__)
-			AllocConsole ();
-#endif
 
 			entityBox1.Focus();
 			

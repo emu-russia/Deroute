@@ -221,5 +221,10 @@ namespace DerouteSharp
 			if (!Spawning && entity.IsVias())
 				CreatePath();
 		}
+
+		public string GetVersion ()
+		{
+			return label1.Text;
+		}
 	}
 }
