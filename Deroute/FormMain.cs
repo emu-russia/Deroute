@@ -325,7 +325,7 @@ namespace DerouteSharp
 
 		private void saveSceneAsNetlistToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			FormGetVerilogSettings verilog_settings = new FormGetVerilogSettings();
+			FormGetVerilogSettings verilog_settings = new FormGetVerilogSettings(entityBox1);
 			if (verilog_settings.ShowDialog() == DialogResult.OK)
 			{
 				if (saveFileDialog3.ShowDialog() == DialogResult.OK)

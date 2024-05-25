@@ -69,6 +69,7 @@
 			this.radioButton3.TabStop = true;
 			this.radioButton3.Text = "Export only the specified Layer as a module, without regard to hierarchy";
 			this.radioButton3.UseVisualStyleBackColor = true;
+			this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
 			// 
 			// comboBox1
 			// 
