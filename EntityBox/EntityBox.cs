@@ -165,7 +165,7 @@ namespace System.Windows.Forms
 			return insertionNode;
 		}
 
-		private void GetEntitiesRecursive(Entity parent, List<Entity> list)
+		public void GetEntitiesRecursive(Entity parent, List<Entity> list)
 		{
 			list.Add(parent);
 

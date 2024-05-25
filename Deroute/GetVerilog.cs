@@ -2,8 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
+using static DerouteSharp.FormGetVerilogSettings;
 
 namespace DerouteSharp
 {
@@ -23,7 +23,29 @@ namespace DerouteSharp
 			public string inst_name;
 		}
 
-		public static string EntitiesToVerilogSource(EntityBox ebox, string top_module_name)
+		private static List<Entity> GetEntitiesByMode(EntityBox ebox, FormGetVerilogSettings.VerilogExportMode mode, string layer_name)
+		{
+			switch (mode)
+			{
+				case FormGetVerilogSettings.VerilogExportMode.Everyhing:
+					return ebox.GetEntities();
+				case FormGetVerilogSettings.VerilogExportMode.SpecifiedLayerOnly:
+					foreach (var entity in ebox.root.Children)
+					{
+						if (entity.Type == EntityType.Layer && entity.Label.Trim() == layer_name)
+						{
+							List<Entity> layer = new List<Entity>();
+							ebox.GetEntitiesRecursive(entity, layer);
+							return layer;
+						}
+					}
+					break;
+			}
+
+			return new List<Entity>();	// empty
+		}
+
+		public static string EntitiesToVerilogSource(EntityBox ebox, VerilogExportSettings settings, string top_module_name, ref bool abort)
 		{
 			FutureInstance top = new FutureInstance();
 			List<FutureInstance> instances;
@@ -31,25 +53,33 @@ namespace DerouteSharp
 
 			// Load the original XML
 
-			List<Entity> ents = ebox.GetEntities();
+			List<Entity> ents = GetEntitiesByMode(ebox, settings.mode, settings.layer_name);
 
 			top.module_name = top_module_name;
-			top.ports = GetTopPorts(ents);
+			top.ports = GetTopPorts(ents, ref abort);
+			if (abort)
+				return null;
 
 			// Get wire list
 
-			wires = GetWires(ebox, ents);
+			wires = GetWires(ebox, ents, ref abort);
+			if (abort)
+				return null;
 
 			// Get a list of module instances
 
 			string mod_prefix = top.module_name.ToLower() + "_";
-			instances = GetInstances(ents, mod_prefix);
+			instances = GetInstances(ents, mod_prefix, ref abort);
+			if (abort)
+				return null;
 
 			var sanity_text = SanityCheck(top, instances, wires);
 
 			// Output the verilog
 
-			string text = GetVerilogText(top, instances, wires, true, ref sanity_text) + GetModulesVerilog(instances);
+			string text = GetVerilogText(top, instances, wires, true, ref sanity_text, ref abort) + GetModulesVerilog(instances);
+			if (abort)
+				return null;
 			if (sanity_text != "")
 			{
 				text += "\n\n" + sanity_text;
@@ -60,7 +90,7 @@ namespace DerouteSharp
 		/// <summary>
 		/// Wires are obtained by combining segments by traverse.
 		/// </summary>
-		static List<FutureWire> GetWires (EntityBox ebox, List<Entity> ents)
+		static List<FutureWire> GetWires (EntityBox ebox, List<Entity> ents, ref bool abort)
 		{
 			List<FutureWire> wires = new List<FutureWire>();
 
@@ -68,6 +98,12 @@ namespace DerouteSharp
 
 			foreach (var wire in ents)
 			{
+				if (abort)
+				{
+					Console.WriteLine("GetWires Aborted");
+					return null;
+				}
+
 				if (wire.IsWire() && !IsInCollectionAlready(wire, wires))
 				{
 					wire.Selected = true;
@@ -148,7 +184,7 @@ namespace DerouteSharp
 		/// <summary>
 		/// All cells (entities of `Cell` type) and custom blocks (entities of `Unit` type) become module instances.
 		/// </summary>
-		static List<FutureInstance> GetInstances (List<Entity> ents, string common_prefix)
+		static List<FutureInstance> GetInstances (List<Entity> ents, string common_prefix, ref bool abort)
 		{
 			List<FutureInstance> instances = new List<FutureInstance>();
 
@@ -156,6 +192,12 @@ namespace DerouteSharp
 
 			foreach (var ent in ents)
 			{
+				if (abort)
+				{
+					Console.WriteLine("GetInstances Aborted");
+					return null;
+				}
+
 				if (ent.IsCell())
 				{
 					FutureInstance inst = new FutureInstance();
@@ -190,18 +232,30 @@ namespace DerouteSharp
 		/// <summary>
 		/// The ports for the top module are all input/output/inout vias NOT of cells
 		/// </summary>
-		static List<Entity> GetTopPorts (List<Entity> ents)
+		static List<Entity> GetTopPorts (List<Entity> ents, ref bool abort)
 		{
 			List<Entity> ports = new List<Entity>();
 
 			foreach (var p in ents)
 			{
+				if (abort)
+				{
+					Console.WriteLine("GetTopPorts Aborted");
+					return null;
+				}
+
 				if (p.IsPort())
 				{
 					bool foundWithin = false;
 
 					foreach (var c in ents)
 					{
+						if (abort)
+						{
+							Console.WriteLine("GetTopPorts Aborted");
+							return null;
+						}
+
 						if (c.IsCell())
 						{
 							var cell_ports = EntityBox.GetCellPorts(c, ents);
@@ -230,7 +284,7 @@ namespace DerouteSharp
 		/// The script does not check connectivity and does not make any special checks at all.
 		/// All errors can be checked later when using the generated HDL in your favorite CAD.
 		/// </summary>
-		static string GetVerilogText (FutureInstance top, List<FutureInstance> instances, List<FutureWire> wires, bool compact, ref string sanity_text)
+		static string GetVerilogText (FutureInstance top, List<FutureInstance> instances, List<FutureWire> wires, bool compact, ref string sanity_text, ref bool abort)
 		{
 			string text = "";
 
@@ -253,6 +307,12 @@ namespace DerouteSharp
 
 			foreach (var p in top.ports)
 			{
+				if (abort)
+				{
+					Console.WriteLine("GetVerilogText assign Aborted");
+					return null;
+				}
+
 				var wire = GetConnection(p, wires);
 
 				if (wire != null)
@@ -276,6 +336,12 @@ namespace DerouteSharp
 
 			foreach (var inst in instances)
 			{
+				if (abort)
+				{
+					Console.WriteLine("GetVerilogText Instances Aborted");
+					return null;
+				}
+
 				if (inst.ports.Count == 0)
 					continue;
 

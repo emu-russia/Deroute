@@ -92,6 +92,12 @@
     <Compile Include="FormCells.Designer.cs">
       <DependentUpon>FormCells.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormGetVerilogSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormGetVerilogSettings.Designer.cs">
+      <DependentUpon>FormGetVerilogSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,6 +133,12 @@
     </Compile>
     <Compile Include="FormMiniEntityBox.Designer.cs">
       <DependentUpon>FormMiniEntityBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormProgress.Designer.cs">
+      <DependentUpon>FormProgress.cs</DependentUpon>
     </Compile>
     <Compile Include="FormRunMLModel.cs">
       <SubType>Form</SubType>
@@ -188,6 +200,9 @@
     <EmbeddedResource Include="FormCells.resx">
       <DependentUpon>FormCells.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormGetVerilogSettings.resx">
+      <DependentUpon>FormGetVerilogSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -205,6 +220,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormMiniEntityBox.resx">
       <DependentUpon>FormMiniEntityBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormProgress.resx">
+      <DependentUpon>FormProgress.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormRunMLModel.resx">
       <DependentUpon>FormRunMLModel.cs</DependentUpon>
