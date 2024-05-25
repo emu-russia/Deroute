@@ -319,16 +319,40 @@ namespace DerouteSharp
 			SaveEntitiesXml();
 		}
 
+		string verilog_file = null;                 // Full file path to the Verilog export file
+		bool abort_verilog_export = false;              // Abort the Verilog export process. Asynchronous variable
+		FormProgress form_verilog_progress = null;          // Infinite progress dialog with cancel button
+
 		private void saveSceneAsNetlistToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			DialogResult result = saveFileDialog3.ShowDialog();
-
-			if (result == DialogResult.OK)
+			FormGetVerilogSettings verilog_settings = new FormGetVerilogSettings();
+			if (verilog_settings.ShowDialog() == DialogResult.OK)
 			{
-				string verilog_name = saveFileDialog3.FileName;
-				string text = GetVerilog.EntitiesToVerilogSource(entityBox1, Path.GetFileNameWithoutExtension(verilog_name));
-				File.WriteAllText(verilog_name, text, Encoding.ASCII);
-				MessageBox.Show("Verilog successfully exported to file: " + verilog_name, "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				if (saveFileDialog3.ShowDialog() == DialogResult.OK)
+				{
+					verilog_file = saveFileDialog3.FileName;
+					form_verilog_progress = new FormProgress("Verilog Export", "To stop exporting Verilog click Cancel or close this window.");
+					form_verilog_progress.FormClosed += Form_verilog_progress_FormClosed;
+					form_verilog_progress.Show();
+					backgroundWorkerVerilog.RunWorkerAsync();
+				}
+			}
+		}
+
+		private void Form_verilog_progress_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			abort_verilog_export = true;
+		}
+
+		private void backgroundWorkerVerilog_DoWork(object sender, DoWorkEventArgs e)
+		{
+			abort_verilog_export = false;
+			string text = GetVerilog.EntitiesToVerilogSource(entityBox1, Path.GetFileNameWithoutExtension(verilog_file), ref abort_verilog_export);
+			if (text != null)
+			{
+				File.WriteAllText(verilog_file, text, Encoding.ASCII);
+				form_verilog_progress.Close();
+				MessageBox.Show("Verilog successfully exported to file: " + verilog_file, "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 		}
 
@@ -1678,6 +1702,7 @@ namespace DerouteSharp
 		{
 			sim.Reset();
 		}
+
 
 
 		#endregion "Simulation"

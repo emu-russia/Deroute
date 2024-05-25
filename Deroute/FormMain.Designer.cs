@@ -1608,6 +1608,7 @@
 			// backgroundWorkerVerilog
 			// 
 			this.backgroundWorkerVerilog.WorkerSupportsCancellation = true;
+			this.backgroundWorkerVerilog.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerVerilog_DoWork);
 			// 
 			// FormMain
 			// 

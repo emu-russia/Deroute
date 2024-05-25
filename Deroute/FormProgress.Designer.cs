@@ -61,6 +61,7 @@
 			this.button1.TabIndex = 4;
 			this.button1.Text = "Cancel";
 			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
 			// 
 			// FormProgress
 			// 
@@ -73,6 +74,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "FormProgress";
 			this.Text = "Progress...";
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormProgress_FormClosed);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
