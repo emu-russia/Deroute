@@ -35,6 +35,7 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.comboBox1 = new System.Windows.Forms.ComboBox();
+			this.checkBox2 = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// button1
@@ -124,11 +125,24 @@
 			this.comboBox1.Size = new System.Drawing.Size(176, 21);
 			this.comboBox1.TabIndex = 5;
 			// 
+			// checkBox2
+			// 
+			this.checkBox2.AutoSize = true;
+			this.checkBox2.Checked = true;
+			this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.checkBox2.Location = new System.Drawing.Point(16, 91);
+			this.checkBox2.Name = "checkBox2";
+			this.checkBox2.Size = new System.Drawing.Size(96, 17);
+			this.checkBox2.TabIndex = 6;
+			this.checkBox2.Text = "Ignore invisible";
+			this.checkBox2.UseVisualStyleBackColor = true;
+			// 
 			// FormBulkRename
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(436, 179);
+			this.Controls.Add(this.checkBox2);
 			this.Controls.Add(this.comboBox1);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
@@ -152,5 +166,6 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.ComboBox comboBox1;
+		private System.Windows.Forms.CheckBox checkBox2;
 	}
 }

@@ -82,6 +82,34 @@ namespace DerouteSharp
 		{
 			bool typeApplied = false;
 
+			if (checkBox2.Enabled && !entity.Visible)
+			{
+				return false;
+			}
+
+			if (checkBox2.Enabled && entity.Visible)
+			{
+				// Check that all parents are visible
+
+				Entity parent = entity.parent;
+				bool parentsVisible = true;
+
+				while (parent != null)
+				{
+					if (!parent.Visible)
+					{
+						parentsVisible = false;
+						break;
+					}
+
+					parent = parent.parent;
+				}
+				if (!parentsVisible)
+				{
+					return false;
+				}
+			}
+
 			switch ((ComboItem)comboBox1.SelectedIndex)
 			{
 				case ComboItem.Any:
