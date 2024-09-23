@@ -54,7 +54,7 @@ namespace System.Windows.Forms
 		private Point DetermineSceneSize(out Point origin)
 		{
 			Point point = new Point(0, 0);
-			Point originOut = new Point(0, 0);
+			Point originOut = new Point(int.MaxValue, int.MaxValue);
 
 			float savedScrollX = 0, savedScrollY = 0;
 			int savedZoom = 0;
@@ -102,6 +102,11 @@ namespace System.Windows.Forms
 				foreach (Entity entity in GetEntities())
 				{
 					Point screenCoords = new Point();
+
+					if (entity.Type == EntityType.Layer || entity.Type == EntityType.Root)
+					{
+						continue;
+					}
 
 					//
 					// Bottom Right Bounds
@@ -214,6 +219,12 @@ namespace System.Windows.Forms
 			_zoom = savedZoom;
 
 			origin = originOut;
+
+			int bound_pixels = 50;
+			origin.X -= bound_pixels;
+			origin.Y -= bound_pixels;
+			point.X += bound_pixels;
+			point.Y += bound_pixels;
 
 			return point;
 		}
