@@ -59,7 +59,7 @@ namespace System.Windows.Forms
 							poly[idx++] = pathPoint;
 						}
 
-						if (PointInPoly(poly, point))
+						if (PointInPoly(poly, point) && ent.IsVisible())
 						{
 							ports.Add(ent);
 						}
@@ -67,7 +67,7 @@ namespace System.Windows.Forms
 					else
 					{
 						RectangleF rect = new RectangleF(cell.LambdaX, cell.LambdaY, cell.LambdaWidth, cell.LambdaHeight);
-						if (rect.Contains(ent.LambdaX, ent.LambdaY))
+						if (rect.Contains(ent.LambdaX, ent.LambdaY) && ent.IsVisible())
 						{
 							ports.Add(ent);
 						}
