@@ -414,6 +414,31 @@ public class Entity
 		return (float)(LambdaEndY - LambdaY) / (LambdaEndX - LambdaX + float.Epsilon);
 	}
 
+	/// <summary>
+	/// Verify that the entity itself and all of its parents are visible.
+	/// </summary>
+	/// <returns></returns>
+	public bool IsVisible()
+	{
+		if (!Visible)
+			return false;
+
+		bool parent_visible = true;
+
+		var next_parent = parent;
+		while (next_parent != null)
+		{
+			if (!next_parent.Visible)
+			{
+				parent_visible = false;
+				break;
+			}
+			next_parent = next_parent.parent;
+		}
+
+		return parent_visible;
+	}
+
 	[Category("Entity Properties")]
 	[XmlIgnore]
 	public float WireTangent
