@@ -1350,6 +1350,12 @@ namespace DerouteSharp
 			form.ShowDialog();
 		}
 
+		private void bulkPortAssignmentToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			FormBulkPortAssign form = new FormBulkPortAssign(entityBox1);
+			form.ShowDialog();
+		}
+
 		#endregion
 
 
@@ -1712,6 +1718,7 @@ namespace DerouteSharp
 		{
 			sim.Reset();
 		}
+
 
 
 

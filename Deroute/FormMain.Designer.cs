@@ -184,6 +184,7 @@
 			this.openFileDialog3 = new System.Windows.Forms.OpenFileDialog();
 			this.saveFileDialog4 = new System.Windows.Forms.SaveFileDialog();
 			this.backgroundWorkerVerilog = new System.ComponentModel.BackgroundWorker();
+			this.bulkPortAssignmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -517,7 +518,8 @@
             this.removeNotOrthogonalWiresToolStripMenuItem,
             this.entityLocatorToolStripMenuItem,
             this.addViasAtTheWireEndsToolStripMenuItem,
-            this.bulkRenameToolStripMenuItem});
+            this.bulkRenameToolStripMenuItem,
+            this.bulkPortAssignmentToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
 			this.toolsToolStripMenuItem.Text = "Tools";
@@ -1610,6 +1612,13 @@
 			this.backgroundWorkerVerilog.WorkerSupportsCancellation = true;
 			this.backgroundWorkerVerilog.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerVerilog_DoWork);
 			// 
+			// bulkPortAssignmentToolStripMenuItem
+			// 
+			this.bulkPortAssignmentToolStripMenuItem.Name = "bulkPortAssignmentToolStripMenuItem";
+			this.bulkPortAssignmentToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+			this.bulkPortAssignmentToolStripMenuItem.Text = "Bulk port assignment";
+			this.bulkPortAssignmentToolStripMenuItem.Click += new System.EventHandler(this.bulkPortAssignmentToolStripMenuItem_Click);
+			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1810,6 +1819,7 @@
 		private System.Windows.Forms.ToolStripMenuItem loadSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveSettingsToolStripMenuItem;
 		private System.ComponentModel.BackgroundWorker backgroundWorkerVerilog;
+		private System.Windows.Forms.ToolStripMenuItem bulkPortAssignmentToolStripMenuItem;
 	}
 }
 
