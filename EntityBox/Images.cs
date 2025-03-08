@@ -55,7 +55,7 @@ namespace System.Windows.Forms
 					tile.width = Math.Min(image.Width - tile.ofsx, tilesize_w);
 					tile.height = Math.Min (image.Height - tile.ofsy, tilesize_h);
 
-					tile.img = CloneBitmapPart (image, tile.ofsx, tile.ofsy, tile.width, tile.height);
+					tile.img = CloneBitmapPart (image, tile.ofsx, tile.ofsy, tile.width, tile.height, grayscale);
 
 					tilemap.Add(tile);
 				}
@@ -461,7 +461,7 @@ namespace System.Windows.Forms
 			Invalidate();
 		}
 
-		static Bitmap CloneBitmapPart(Bitmap source, int offsetX, int offsetY, int width, int height)
+		static Bitmap CloneBitmapPart(Bitmap source, int offsetX, int offsetY, int width, int height, bool grayscale_mode)
 		{
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
@@ -474,6 +474,10 @@ namespace System.Windows.Forms
 			}
 
 			Bitmap clone = new Bitmap(width, height, source.PixelFormat);
+			if (grayscale_mode)
+			{
+				clone.Palette = source.Palette;
+			}
 
 			BitmapData sourceData = source.LockBits(
 				new Rectangle(offsetX, offsetY, width, height),
