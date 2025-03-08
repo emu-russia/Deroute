@@ -40,10 +40,34 @@ namespace System.Windows.Forms
 			tilemap.Clear();
 		}
 
+		int GetDivisor (int size)
+		{
+			if (size < 1000)
+			{
+				return 8;
+			}
+			else if (size < 10000)
+			{
+				return 16;
+			}
+			else if (size < 20000)
+			{
+				return 24;
+			}
+			else if (size < 30000)
+			{
+				return 32;
+			}
+			else
+			{
+				return 64;
+			}
+		}
+
 		void SplitImageInTiles(Bitmap image)
 		{
-			int tilesize_w = next_power_of_two(image.Width / 16);
-			int tilesize_h = next_power_of_two(image.Height / 16);
+			int tilesize_w = next_power_of_two(image.Width / GetDivisor(image.Width));
+			int tilesize_h = next_power_of_two(image.Height / GetDivisor(image.Height));
 
 			for (int y = 0; y < image.Height; y += tilesize_h)
 			{

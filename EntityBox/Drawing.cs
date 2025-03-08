@@ -782,12 +782,20 @@ namespace System.Windows.Forms
 			Point imageOffset = LambdaToScreen(0, 0);
 			if (tilemap_image)
 			{
-				Rectangle rect = new Rectangle(-imageOffset.X, -imageOffset.Y, Width, Height);
+				float zf = (float)Zoom / 100F;
+
+				PointF top = ScreenToLambda(0, 0);
+				PointF bot = ScreenToLambda(Width, Height);
+
+				Point top_img = LambdaToImage(top.X, top.Y);
+				Point bot_img = LambdaToImage(bot.X, bot.Y);
+
+				Rectangle rect = new Rectangle(top_img.X, top_img.Y, bot_img.X - top_img.X, bot_img.Y - top_img.Y);
+
 				List<Tile> tileset = GetTileset(rect);
 				foreach (Tile tile in tileset)
 				{
-					PointF lambda_ofs = ImageToLambda(tile.ofsx, tile.ofsy);
-					Point ofs = LambdaToScreen(lambda_ofs.X, lambda_ofs.Y);
+					Point ofs = new Point ((int)(tile.ofsx * zf) + imageOffset.X, (int)(tile.ofsy * zf) + imageOffset.Y);
 					DrawSingleImage(gr, tile.img, ofs, tile.width, tile.height);
 				}
 			}
