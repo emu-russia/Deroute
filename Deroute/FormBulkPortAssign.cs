@@ -41,6 +41,7 @@ namespace DerouteSharp
 				var label = cell.Label.ToLower();
 				bool process_cell =
 					label.Contains("not") && nots ||
+					label.Contains("inv") && nots ||        // Some chip researchers refer to inverters as INVs (inv)
 					label.Contains("buf") && bufs ||
 					label.Contains("nor") && simple_comb ||
 					label.Contains("xor") && simple_comb ||

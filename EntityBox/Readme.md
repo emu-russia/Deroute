@@ -76,6 +76,7 @@ The control properties are mainly for controlling the workspace:
 - ImageOpacity0,1,2: sets the transparency (0-255) for the corresponding picture layer
 - SelectEntitiesAfterAdd: automatically selects the entities to be added
 - Grayscale: sets all the pictures to black and white
+- OptimizeTilemap: use accelerated rendering of images using partitioning into tiles
 - Lambda: the number of pixels corresponding to 1 lambda unit
 - Mode: mode of operation (see below)
 - ScrollImage0,1,2: offset of the image relative to the origin

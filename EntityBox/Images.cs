@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -7,6 +8,100 @@ namespace System.Windows.Forms
 {
 	public partial class EntityBox : Control
 	{
+		private Image _imageOrig = null;
+		private int _imageOpacity;
+		private bool grayscale = false;
+		bool tilemap_image = true;
+
+		class Tile
+		{
+			public int ofsx;
+			public int ofsy;
+			public int width;
+			public int height;
+			public Image img;
+		}
+		List<Tile> tilemap = new List<Tile>();
+
+		int next_power_of_two (int x)
+		{
+			int power = 1;
+			while(power<x)
+				power*=2;
+			return power;
+		}
+
+		void ClearTilemap()
+		{
+			foreach (Tile tile in tilemap)
+			{
+				tile.img = null;
+			}
+			tilemap.Clear();
+		}
+
+		int GetDivisor (int size)
+		{
+			if (size < 1000)
+			{
+				return 8;
+			}
+			else if (size < 10000)
+			{
+				return 16;
+			}
+			else if (size < 20000)
+			{
+				return 24;
+			}
+			else if (size < 30000)
+			{
+				return 32;
+			}
+			else
+			{
+				return 64;
+			}
+		}
+
+		void SplitImageInTiles(Bitmap image)
+		{
+			int tilesize_w = next_power_of_two(image.Width / GetDivisor(image.Width));
+			int tilesize_h = next_power_of_two(image.Height / GetDivisor(image.Height));
+
+			for (int y = 0; y < image.Height; y += tilesize_h)
+			{
+				for (int x = 0; x < image.Width; x += tilesize_w)
+				{
+					Tile tile = new Tile();
+					tile.ofsx = x;
+					tile.ofsy = y;
+					tile.width = Math.Min(image.Width - tile.ofsx, tilesize_w);
+					tile.height = Math.Min (image.Height - tile.ofsy, tilesize_h);
+
+					tile.img = CloneBitmapPart (image, tile.ofsx, tile.ofsy, tile.width, tile.height, grayscale);
+
+					tilemap.Add(tile);
+				}
+			}
+		}
+
+		List<Tile> GetTileset (Rectangle rect)
+		{
+			List<Tile> inset = new List<Tile>();
+
+			foreach (Tile tile in tilemap)
+			{
+				Rectangle tile_rect = new Rectangle(tile.ofsx, tile.ofsy, tile.width, tile.height);
+				if (rect.IntersectsWith (tile_rect))
+				{
+					inset.Add(tile);
+				}
+			}
+
+			return inset;
+		}
+
 		private Image ToGrayscale(Image source)
 		{
 			if (grayscale == true)
@@ -365,17 +460,87 @@ namespace System.Windows.Forms
 
 		public void LoadImage(Image image)
 		{
-			Image = image;
+			if (tilemap_image)
+			{
+				ClearTilemap();
+				GC.Collect();
+				SplitImageInTiles((Bitmap)ToGrayscale(image));
+				Invalidate();
+			}
+			else
+			{
+				Image = image;
+			}
 		}
 
 		public void UnloadImage()
 		{
-			_imageOrig.Dispose();
-			_imageOrig = null;
+			ClearTilemap();
+			if (_imageOrig != null)
+			{
+				_imageOrig.Dispose();
+				_imageOrig = null;
+			}
 			GC.Collect();
 			Invalidate();
 		}
 
+		static Bitmap CloneBitmapPart(Bitmap source, int offsetX, int offsetY, int width, int height, bool grayscale_mode)
+		{
+			if (source == null)
+				throw new ArgumentNullException(nameof(source));
 
+			// Verify that the specified area is within the original image
+			if (offsetX < 0 || offsetY < 0 || width <= 0 || height <= 0 ||
+				offsetX + width > source.Width || offsetY + height > source.Height)
+			{
+				throw new ArgumentException("The specified area extends beyond the image.");
+			}
+
+			Bitmap clone = new Bitmap(width, height, source.PixelFormat);
+			if (grayscale_mode)
+			{
+				clone.Palette = source.Palette;
+			}
+
+			BitmapData sourceData = source.LockBits(
+				new Rectangle(offsetX, offsetY, width, height),
+				ImageLockMode.ReadOnly,
+				source.PixelFormat);
+
+			BitmapData cloneData = clone.LockBits(
+				new Rectangle(0, 0, width, height),
+				ImageLockMode.WriteOnly,
+				clone.PixelFormat);
+
+			try
+			{
+				int bytesPerPixel = Image.GetPixelFormatSize(source.PixelFormat) / 8;
+				int heightInPixels = height;
+				int widthInBytes = width * bytesPerPixel;
+
+				unsafe
+				{
+					byte* sourcePtr = (byte*)sourceData.Scan0;
+					byte* clonePtr = (byte*)cloneData.Scan0;
+
+					for (int y = 0; y < heightInPixels; y++)
+					{
+						Buffer.MemoryCopy(
+							sourcePtr + y * sourceData.Stride,
+							clonePtr + y * cloneData.Stride,
+							widthInBytes,
+							widthInBytes);
+					}
+				}
+			}
+			finally
+			{
+				source.UnlockBits(sourceData);
+				clone.UnlockBits(cloneData);
+			}
+
+			return clone;
+		}
 	}
 }

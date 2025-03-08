@@ -98,6 +98,13 @@ namespace System.Windows.Forms
 		}
 
 		[Category("Logic")]
+		public bool OptimizeTilemap
+		{
+			get { return tilemap_image; }
+			set { tilemap_image = value; }
+		}
+
+		[Category("Logic")]
 		public float Lambda
 		{
 			get { return _lambda; }

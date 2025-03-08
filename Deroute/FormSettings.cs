@@ -95,6 +95,8 @@ namespace DerouteSharp
 			public bool SelectEntitiesAfterAdd { get; set; }
 			[Description("Make loaded images in grayscale, to save memory.")]
 			public bool Grayscale { get; set; }
+			[Description("Use accelerated rendering of images using partitioning into tiles. The source image is split into 16x16 tiles")]
+			public bool OptimizeTilemap { get; set; }
 			[Description("How many pixels will equal one lambda.")]
 			public float Lambda { get; set; }
 			public bool HideGrid { get; set; }
@@ -131,6 +133,7 @@ namespace DerouteSharp
 
 				SelectEntitiesAfterAdd = entityBox.SelectEntitiesAfterAdd;
 				Grayscale = entityBox.Grayscale;
+				OptimizeTilemap = entityBox.OptimizeTilemap;
 				Lambda = entityBox.Lambda;
 				HideGrid = entityBox.HideGrid;
 				GridSize = entityBox.GridSize;
@@ -149,6 +152,7 @@ namespace DerouteSharp
 			{
 				savedEntityBox.SelectEntitiesAfterAdd = SelectEntitiesAfterAdd;
 				savedEntityBox.Grayscale = Grayscale;
+				savedEntityBox.OptimizeTilemap = OptimizeTilemap;
 				savedEntityBox.Lambda = Lambda;
 				savedEntityBox.HideGrid = HideGrid;
 				savedEntityBox.GridSize = GridSize;
@@ -451,6 +455,7 @@ namespace DerouteSharp
 
 			global.SelectEntitiesAfterAdd = settings.SelectEntitiesAfterAdd;
 			global.Grayscale = settings.Grayscale;
+			global.OptimizeTilemap = settings.OptimizeTilemap;
 			global.Lambda = settings.Lambda;
 			global.HideGrid = settings.HideGrid;
 			global.GridSize = settings.GridSize;
@@ -556,6 +561,7 @@ namespace DerouteSharp
 
 			settings.SelectEntitiesAfterAdd = global.SelectEntitiesAfterAdd;
 			settings.Grayscale = global.Grayscale;
+			settings.OptimizeTilemap = global.OptimizeTilemap;
 			settings.Lambda = global.Lambda;
 			settings.HideGrid = global.HideGrid;
 			settings.GridSize = global.GridSize;
@@ -656,6 +662,7 @@ namespace DerouteSharp
 
 			global.SelectEntitiesAfterAdd = settings.globalSettings.SelectEntitiesAfterAdd;
 			global.Grayscale = settings.globalSettings.Grayscale;
+			global.OptimizeTilemap = settings.globalSettings.OptimizeTilemap;
 			global.Lambda = settings.globalSettings.Lambda;
 			global.HideGrid = settings.globalSettings.HideGrid;
 			global.GridSize = settings.globalSettings.GridSize;
@@ -761,6 +768,7 @@ namespace DerouteSharp
 
 			settings.globalSettings.SelectEntitiesAfterAdd = global.SelectEntitiesAfterAdd;
 			settings.globalSettings.Grayscale = global.Grayscale;
+			settings.globalSettings.OptimizeTilemap = global.OptimizeTilemap;
 			settings.globalSettings.Lambda = global.Lambda;
 			settings.globalSettings.HideGrid = global.HideGrid;
 			settings.globalSettings.GridSize = global.GridSize;
