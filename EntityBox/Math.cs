@@ -69,7 +69,7 @@ namespace System.Windows.Forms
 			return dest;
 		}
 
-		public PointF ImageToLamda(PointF imageScroll, Point origin)
+		public PointF ImageToLambda(PointF imageScroll, Point origin)
 		{
 			PointF dest = new PointF();
 			dest.X = (float)origin.X / Lambda + imageScroll.X;

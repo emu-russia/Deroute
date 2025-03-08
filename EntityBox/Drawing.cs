@@ -1,5 +1,6 @@
 ﻿// Drawing
 
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -758,24 +759,44 @@ namespace System.Windows.Forms
 			}
 		}
 
-		private void DrawImage(Graphics gr)
+		private void DrawSingleImage(Graphics gr, Image img, Point imageOffset, int imgWidth, int imgHeight)
 		{
 			float zf = (float)Zoom / 100F;
 
-			if (_imageOrig != null && hideImage == false)
+			if (img != null && hideImage == false)
 			{
-				Point imageOffset = LambdaToScreen(0, 0);
-				float imageWidth = (float)_imageOrig.Width;
-				float imageHeight = (float)_imageOrig.Height;
+				float imageWidth = (float)imgWidth;
+				float imageHeight = (float)imgHeight;
 				float sx = imageOffset.X;
 				float sy = imageOffset.Y;
 
-				float imgZf = 1.0f;
+				gr.DrawImage(img,
+							sx, sy,
+							imageWidth * zf,
+							imageHeight * zf);
+			}
+		}
 
-				gr.DrawImage(_imageOrig,
-								sx, sy,
-								imageWidth * zf / imgZf,
-								imageHeight * zf / imgZf);
+		private void DrawImage(Graphics gr)
+		{
+			Point imageOffset = LambdaToScreen(0, 0);
+			if (tilemap_image)
+			{
+				Rectangle rect = new Rectangle(-imageOffset.X, -imageOffset.Y, Width, Height);
+				List<Tile> tileset = GetTileset(rect);
+				foreach (Tile tile in tileset)
+				{
+					PointF lambda_ofs = ImageToLambda(tile.ofsx, tile.ofsy);
+					Point ofs = LambdaToScreen(lambda_ofs.X, lambda_ofs.Y);
+					DrawSingleImage(gr, tile.img, ofs, tile.width, tile.height);
+				}
+			}
+			else
+			{
+				if (_imageOrig != null)
+				{
+					DrawSingleImage(gr, _imageOrig, imageOffset, _imageOrig.Width, _imageOrig.Height);
+				}
 			}
 		}
 

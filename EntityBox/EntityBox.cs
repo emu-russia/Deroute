@@ -51,7 +51,6 @@ namespace System.Windows.Forms
 		private Entity insertionNode;            // Destination for add/paste operations (root by default)
 
 		private Image beaconImage = null;
-		private Image _imageOrig = null;
 		private float _lambda;
 		private int _zoom;
 		private float _ScrollX;
@@ -84,13 +83,11 @@ namespace System.Windows.Forms
 		private List<Entity> selected;
 		private float draggingDist;
 		private Color selectionBoxColor;
-		private int _imageOpacity;
 		private BufferedGraphics gfx = null;
 		private BufferedGraphicsContext context;
 		private bool selectEntitiesAfterAdd;
 		private bool wireSelectionAutoTraverse;
 		private long UnserializeLastStamp = 0;
-		private bool grayscale = false;
 		private Point LastRMB = new Point(0, 0);
 		private bool DrawInProgress;
 		private List<Entity> copied = new List<Entity>();
