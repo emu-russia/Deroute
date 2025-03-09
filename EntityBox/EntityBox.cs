@@ -107,6 +107,7 @@ namespace System.Windows.Forms
 		public event EntityBoxFrameDoneHandler OnFrameDone = null;
 		public event EntityBoxEntityEventHandler OnModuleChanged = null;
 		public event EntityBoxPlaneGeometryHandler OnSelectionBox = null;
+		public event EntityBoxEventHandler OnImageLoad = null;
 
 		public EntityBox()
 		{

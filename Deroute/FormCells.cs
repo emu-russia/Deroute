@@ -310,9 +310,10 @@ namespace DerouteSharp
 				ListViewItem item = listView1.SelectedItems[0];
 				selected_item = item;
 				propertyGrid1.SelectedObject = item.Tag;
+				bool abort_image_loading = false;
 
 				CellSupport.Cell cell = item.Tag as CellSupport.Cell;
-				entityBox1.LoadImage(new Bitmap(cell.cell_image));
+				entityBox1.LoadImage(new Bitmap(cell.cell_image), ref abort_image_loading);
 				entityBox1.root.Children.AddRange(cell.Entities);
 				entityBox1.Invalidate();
 			}
