@@ -75,6 +75,7 @@
 			this.entityLocatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addViasAtTheWireEndsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bulkRenameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.bulkPortAssignmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.keyBindingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -184,7 +185,7 @@
 			this.openFileDialog3 = new System.Windows.Forms.OpenFileDialog();
 			this.saveFileDialog4 = new System.Windows.Forms.SaveFileDialog();
 			this.backgroundWorkerVerilog = new System.ComponentModel.BackgroundWorker();
-			this.bulkPortAssignmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.backgroundWorkerImageLoad = new System.ComponentModel.BackgroundWorker();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -566,6 +567,13 @@
 			this.bulkRenameToolStripMenuItem.Text = "Bulk Rename";
 			this.bulkRenameToolStripMenuItem.Click += new System.EventHandler(this.bulkRenameToolStripMenuItem_Click);
 			// 
+			// bulkPortAssignmentToolStripMenuItem
+			// 
+			this.bulkPortAssignmentToolStripMenuItem.Name = "bulkPortAssignmentToolStripMenuItem";
+			this.bulkPortAssignmentToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+			this.bulkPortAssignmentToolStripMenuItem.Text = "Bulk port assignment";
+			this.bulkPortAssignmentToolStripMenuItem.Click += new System.EventHandler(this.bulkPortAssignmentToolStripMenuItem_Click);
+			// 
 			// helpToolStripMenuItem
 			// 
 			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -663,6 +671,7 @@
 			this.entityBox1.Mode = System.Windows.Forms.EntityMode.Selection;
 			this.entityBox1.Name = "entityBox1";
 			this.entityBox1.OneColor = System.Drawing.Color.LawnGreen;
+			this.entityBox1.OptimizeTilemap = true;
 			this.entityBox1.RegionOpacity = 128;
 			this.entityBox1.RegionOverrideColor = System.Drawing.Color.Black;
 			this.entityBox1.RegionPriority = 0;
@@ -1612,12 +1621,10 @@
 			this.backgroundWorkerVerilog.WorkerSupportsCancellation = true;
 			this.backgroundWorkerVerilog.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerVerilog_DoWork);
 			// 
-			// bulkPortAssignmentToolStripMenuItem
+			// backgroundWorkerImageLoad
 			// 
-			this.bulkPortAssignmentToolStripMenuItem.Name = "bulkPortAssignmentToolStripMenuItem";
-			this.bulkPortAssignmentToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-			this.bulkPortAssignmentToolStripMenuItem.Text = "Bulk port assignment";
-			this.bulkPortAssignmentToolStripMenuItem.Click += new System.EventHandler(this.bulkPortAssignmentToolStripMenuItem_Click);
+			this.backgroundWorkerImageLoad.WorkerSupportsCancellation = true;
+			this.backgroundWorkerImageLoad.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerImageLoad_DoWork);
 			// 
 			// FormMain
 			// 
@@ -1820,6 +1827,7 @@
 		private System.Windows.Forms.ToolStripMenuItem saveSettingsToolStripMenuItem;
 		private System.ComponentModel.BackgroundWorker backgroundWorkerVerilog;
 		private System.Windows.Forms.ToolStripMenuItem bulkPortAssignmentToolStripMenuItem;
+		private System.ComponentModel.BackgroundWorker backgroundWorkerImageLoad;
 	}
 }
 

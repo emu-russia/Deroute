@@ -64,7 +64,7 @@ namespace System.Windows.Forms
 			}
 		}
 
-		void SplitImageInTiles(Bitmap image)
+		bool SplitImageInTiles(Bitmap image, ref bool abort_image_loading)
 		{
 			int tilesize_w = next_power_of_two(image.Width / GetDivisor(image.Width));
 			int tilesize_h = next_power_of_two(image.Height / GetDivisor(image.Height));
@@ -73,6 +73,11 @@ namespace System.Windows.Forms
 			{
 				for (int x = 0; x < image.Width; x += tilesize_w)
 				{
+					if (abort_image_loading)
+					{
+						return false;
+					}
+
 					Tile tile = new Tile();
 					tile.ofsx = x;
 					tile.ofsy = y;
@@ -84,6 +89,8 @@ namespace System.Windows.Forms
 					tilemap.Add(tile);
 				}
 			}
+
+			return true;
 		}
 
 		List<Tile> GetTileset (Rectangle rect)
@@ -458,18 +465,23 @@ namespace System.Windows.Forms
 			return output;
 		}
 
-		public void LoadImage(Image image)
+		public void LoadImage(Image image, ref bool abort_image_loading)
 		{
 			if (tilemap_image)
 			{
 				ClearTilemap();
 				GC.Collect();
-				SplitImageInTiles((Bitmap)ToGrayscale(image));
+				bool res = SplitImageInTiles((Bitmap)ToGrayscale(image), ref abort_image_loading);
 				Invalidate();
+				if (res)
+				{
+					OnImageLoad?.Invoke(this, EventArgs.Empty);
+				}
 			}
 			else
 			{
 				Image = image;
+				OnImageLoad?.Invoke(this, EventArgs.Empty);
 			}
 		}
 

@@ -60,6 +60,7 @@ namespace DerouteSharp
 			entityBox1.OnDestinationNodeChanged += EntityBox1_OnDestinationNodeChanged;
 			entityBox1.OnModuleChanged += EntityBox1_OnModuleChanged;
 			entityBox1.OnSelectionBox += EntityBox1_OnSelectionBox;
+			entityBox1.OnImageLoad += EntityBox1_OnImageLoad;
 
 			entityBox1.BeaconImage = Properties.Resources.beacon_entity;
 
@@ -214,15 +215,41 @@ namespace DerouteSharp
 
 		#region "Load / Save"
 
+		FormProgress imageLoadProgress;
+		string imageLoadSourceFilename;
+		bool abort_image_loading;
+
 		private void loadImageToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			DialogResult result = openFileDialog1.ShowDialog();
 
 			if ( result == DialogResult.OK )
 			{
-				System.Drawing.Image image = System.Drawing.Image.FromFile(openFileDialog1.FileName);
-				entityBox1.LoadImage(image);
+				abort_image_loading = false;
+				imageLoadSourceFilename = openFileDialog1.FileName;
+				backgroundWorkerImageLoad.RunWorkerAsync();
+
+				if (entityBox1.OptimizeTilemap)
+				{
+					imageLoadProgress = new FormProgress("Loading an image", "Wait for the image to load...");
+					imageLoadProgress.FormClosed += FormProgress_FormClosed;
+					imageLoadProgress.ShowDialog();
+				}
 			}
+		}
+
+		private void EntityBox1_OnImageLoad(object sender, EventArgs e)
+		{
+			if (imageLoadProgress != null)
+			{
+				imageLoadProgress.Close();
+				imageLoadProgress = null;
+			}
+		}
+
+		private void FormProgress_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			abort_image_loading = true;
 		}
 
 		private void saveSceneAsImageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -237,6 +264,12 @@ namespace DerouteSharp
 
 				Cursor = Cursors.Default;
 			}
+		}
+
+		private void backgroundWorkerImageLoad_DoWork(object sender, DoWorkEventArgs e)
+		{
+			System.Drawing.Image image = System.Drawing.Image.FromFile(imageLoadSourceFilename);
+			entityBox1.LoadImage(image, ref abort_image_loading);
 		}
 
 		private void LoadEntitiesXml()
@@ -1718,6 +1751,7 @@ namespace DerouteSharp
 		{
 			sim.Reset();
 		}
+
 
 
 
