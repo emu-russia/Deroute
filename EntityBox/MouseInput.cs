@@ -534,6 +534,10 @@ namespace System.Windows.Forms
 						{
 							TraversalSelection(1);
 						}
+						if (entity.IsVias())
+						{
+							LastVia = new PointF(entity.LambdaX, entity.LambdaY);
+						}
 						Invalidate();
 
 						if (entityGrid != null)
