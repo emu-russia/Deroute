@@ -145,9 +145,12 @@ namespace DerouteSharp
 
 			RepopulateModulesList();
 
-			// Update tree
+			// Update tree, if live update is enabled
 
-			PopulateTree();
+			if (checkBoxLiveUpdate.Checked)
+			{
+				PopulateTree();
+			}
 		}
 
 		private void EntityLabelChanged(object sender, Entity entity, EventArgs e)
@@ -1204,6 +1207,16 @@ namespace DerouteSharp
 			parent.Children[bCtrlIdx] = tempEntity;
 		}
 
+		/// <summary>
+		/// Update the hierarchy.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void button1_Click(object sender, EventArgs e)
+		{
+			PopulateTree();
+		}
+
 		#endregion
 
 
@@ -1751,6 +1764,7 @@ namespace DerouteSharp
 		{
 			sim.Reset();
 		}
+
 
 
 
