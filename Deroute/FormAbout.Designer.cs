@@ -61,7 +61,7 @@
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(172, 48);
 			this.label1.TabIndex = 1;
-			this.label1.Text = "Deroute Tool 3.2\r\n© 2024, emu-russia";
+			this.label1.Text = "Deroute Tool 3.3\r\n© 2025, emu-russia";
 			// 
 			// label2
 			// 
@@ -171,6 +171,7 @@
 			this.entityBox1.Mode = System.Windows.Forms.EntityMode.Selection;
 			this.entityBox1.Name = "entityBox1";
 			this.entityBox1.OneColor = System.Drawing.Color.LawnGreen;
+			this.entityBox1.OptimizeTilemap = true;
 			this.entityBox1.RegionOpacity = 128;
 			this.entityBox1.RegionOverrideColor = System.Drawing.Color.Black;
 			this.entityBox1.RegionPriority = 0;

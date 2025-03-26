@@ -175,7 +175,9 @@
 			this.splitContainer3 = new System.Windows.Forms.SplitContainer();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
-			this.myTreeView1 = new DerouteSharp.MyTreeView();
+			this.splitContainer4 = new System.Windows.Forms.SplitContainer();
+			this.buttonUpdateTree = new System.Windows.Forms.Button();
+			this.checkBoxLiveUpdate = new System.Windows.Forms.CheckBox();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.listViewModules = new System.Windows.Forms.ListView();
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -186,6 +188,7 @@
 			this.saveFileDialog4 = new System.Windows.Forms.SaveFileDialog();
 			this.backgroundWorkerVerilog = new System.ComponentModel.BackgroundWorker();
 			this.backgroundWorkerImageLoad = new System.ComponentModel.BackgroundWorker();
+			this.myTreeView1 = new DerouteSharp.MyTreeView();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -206,6 +209,10 @@
 			this.splitContainer3.SuspendLayout();
 			this.tabControl2.SuspendLayout();
 			this.tabPage4.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
+			this.splitContainer4.Panel1.SuspendLayout();
+			this.splitContainer4.Panel2.SuspendLayout();
+			this.splitContainer4.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -1538,7 +1545,7 @@
 			// 
 			// tabPage4
 			// 
-			this.tabPage4.Controls.Add(this.myTreeView1);
+			this.tabPage4.Controls.Add(this.splitContainer4);
 			this.tabPage4.Location = new System.Drawing.Point(4, 22);
 			this.tabPage4.Name = "tabPage4";
 			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
@@ -1547,21 +1554,47 @@
 			this.tabPage4.Text = "Hierarchy";
 			this.tabPage4.UseVisualStyleBackColor = true;
 			// 
-			// myTreeView1
+			// splitContainer4
 			// 
-			this.myTreeView1.AllowDrop = true;
-			this.myTreeView1.CheckBoxes = true;
-			this.myTreeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.myTreeView1.Location = new System.Drawing.Point(3, 3);
-			this.myTreeView1.Name = "myTreeView1";
-			this.myTreeView1.Size = new System.Drawing.Size(205, 549);
-			this.myTreeView1.TabIndex = 0;
-			this.myTreeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.myTreeView1_AfterCheck);
-			this.myTreeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.myTreeView1_ItemDrag);
-			this.myTreeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.myTreeView1_AfterSelect);
-			this.myTreeView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragDrop);
-			this.myTreeView1.DragEnter += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragEnter);
-			this.myTreeView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.myTreeView1_KeyDown);
+			this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer4.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+			this.splitContainer4.Location = new System.Drawing.Point(3, 3);
+			this.splitContainer4.Name = "splitContainer4";
+			this.splitContainer4.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			// 
+			// splitContainer4.Panel1
+			// 
+			this.splitContainer4.Panel1.Controls.Add(this.myTreeView1);
+			// 
+			// splitContainer4.Panel2
+			// 
+			this.splitContainer4.Panel2.Controls.Add(this.buttonUpdateTree);
+			this.splitContainer4.Panel2.Controls.Add(this.checkBoxLiveUpdate);
+			this.splitContainer4.Size = new System.Drawing.Size(205, 549);
+			this.splitContainer4.SplitterDistance = 507;
+			this.splitContainer4.TabIndex = 1;
+			// 
+			// buttonUpdateTree
+			// 
+			this.buttonUpdateTree.Location = new System.Drawing.Point(127, 6);
+			this.buttonUpdateTree.Name = "buttonUpdateTree";
+			this.buttonUpdateTree.Size = new System.Drawing.Size(75, 23);
+			this.buttonUpdateTree.TabIndex = 1;
+			this.buttonUpdateTree.Text = "Update";
+			this.buttonUpdateTree.UseVisualStyleBackColor = true;
+			this.buttonUpdateTree.Click += new System.EventHandler(this.button1_Click);
+			// 
+			// checkBoxLiveUpdate
+			// 
+			this.checkBoxLiveUpdate.AutoSize = true;
+			this.checkBoxLiveUpdate.Checked = true;
+			this.checkBoxLiveUpdate.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.checkBoxLiveUpdate.Location = new System.Drawing.Point(5, 10);
+			this.checkBoxLiveUpdate.Name = "checkBoxLiveUpdate";
+			this.checkBoxLiveUpdate.Size = new System.Drawing.Size(84, 17);
+			this.checkBoxLiveUpdate.TabIndex = 0;
+			this.checkBoxLiveUpdate.Text = "Live Update";
+			this.checkBoxLiveUpdate.UseVisualStyleBackColor = true;
 			// 
 			// tabPage2
 			// 
@@ -1626,6 +1659,22 @@
 			this.backgroundWorkerImageLoad.WorkerSupportsCancellation = true;
 			this.backgroundWorkerImageLoad.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerImageLoad_DoWork);
 			// 
+			// myTreeView1
+			// 
+			this.myTreeView1.AllowDrop = true;
+			this.myTreeView1.CheckBoxes = true;
+			this.myTreeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.myTreeView1.Location = new System.Drawing.Point(0, 0);
+			this.myTreeView1.Name = "myTreeView1";
+			this.myTreeView1.Size = new System.Drawing.Size(205, 507);
+			this.myTreeView1.TabIndex = 0;
+			this.myTreeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.myTreeView1_AfterCheck);
+			this.myTreeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.myTreeView1_ItemDrag);
+			this.myTreeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.myTreeView1_AfterSelect);
+			this.myTreeView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragDrop);
+			this.myTreeView1.DragEnter += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragEnter);
+			this.myTreeView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.myTreeView1_KeyDown);
+			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1664,6 +1713,11 @@
 			this.splitContainer3.ResumeLayout(false);
 			this.tabControl2.ResumeLayout(false);
 			this.tabPage4.ResumeLayout(false);
+			this.splitContainer4.Panel1.ResumeLayout(false);
+			this.splitContainer4.Panel2.ResumeLayout(false);
+			this.splitContainer4.Panel2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
+			this.splitContainer4.ResumeLayout(false);
 			this.tabPage2.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -1828,6 +1882,9 @@
 		private System.ComponentModel.BackgroundWorker backgroundWorkerVerilog;
 		private System.Windows.Forms.ToolStripMenuItem bulkPortAssignmentToolStripMenuItem;
 		private System.ComponentModel.BackgroundWorker backgroundWorkerImageLoad;
+		private System.Windows.Forms.SplitContainer splitContainer4;
+		private System.Windows.Forms.Button buttonUpdateTree;
+		private System.Windows.Forms.CheckBox checkBoxLiveUpdate;
 	}
 }
 
