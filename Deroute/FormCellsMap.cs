@@ -37,10 +37,10 @@ namespace DerouteSharp
 			foreach (var row in rows)
 			{
 				Console.WriteLine("row: {0}, x: {1}, y: {2}", row.index, row.planeX, row.planeY);
-			}
 
-			foreach (var row in rows)
-			{
+				text += "row " + row.index.ToString() + ": ";
+
+				List<Entity> row_cells = new List<Entity>();
 				foreach (var cell in cells)
 				{
 					if (cell.Label == "")
@@ -48,31 +48,46 @@ namespace DerouteSharp
 						continue;
 					}
 
-					List<Entity> row_cells = new List<Entity>();
-
 					if (arrange == WorkspaceRowArrangement.Vertical)
 					{
-						if (row.planeX >= cell.LambdaX && row.planeX <= (cell.LambdaX + cell.LambdaWidth))
+						if (cell.LambdaX <= row.planeX && row.planeX <= (cell.LambdaX + cell.LambdaWidth))
 						{
 							row_cells.Add(cell);
 						}
-						row_cells = row_cells.OrderBy(o => o.LambdaY).ToList();
 					}
 					else if (arrange == WorkspaceRowArrangement.Horizontal)
 					{
-						if (row.planeY >= cell.LambdaY && row.planeY <= (cell.LambdaY + cell.LambdaHeight))
+						if (cell.LambdaY <= row.planeY && row.planeY <= (cell.LambdaY + cell.LambdaHeight))
 						{
 							row_cells.Add(cell);
 						}
-						row_cells = row_cells.OrderBy(o => o.LambdaX).ToList();
 					}
-
-					foreach (var row_cell in row_cells)
-					{
-						text += row_cell.Label.Split(' ').FirstOrDefault() + " ";
-					}
-					text += "\n";
 				}
+
+				if (arrange == WorkspaceRowArrangement.Vertical)
+				{
+					row_cells = row_cells.OrderBy(o => o.LambdaY).ToList();
+				}
+				else if (arrange == WorkspaceRowArrangement.Horizontal)
+				{
+					row_cells = row_cells.OrderBy(o => o.LambdaX).ToList();
+				}
+
+				bool first_item = true;
+				foreach (var row_cell in row_cells)
+				{
+					if (!first_item)
+					{
+						text += ", ";
+					}
+					else
+					{
+						first_item = false;
+					}
+					text += row_cell.Label.Split(' ').FirstOrDefault();
+				}
+
+				text += "\r\n";
 			}
 
 			return text;
@@ -93,7 +108,7 @@ namespace DerouteSharp
 			foreach (var cell in cells)
 			{
 				CoordSize_Pair pair = new CoordSize_Pair();
-				pair.xy = arrange == WorkspaceRowArrangement.Vertical ? cell.LambdaX : cell.LambdaY;
+				pair.xy = arrange == WorkspaceRowArrangement.Vertical ? cell.LambdaX + cell.LambdaWidth/2 : cell.LambdaY + cell.LambdaHeight/2;
 				pair.wh = arrange == WorkspaceRowArrangement.Vertical ? cell.LambdaWidth : cell.LambdaHeight;
 				pairs.Add(pair);
 			}
@@ -115,12 +130,10 @@ namespace DerouteSharp
 
 			for (int i = 1; i < pairs.Count; i++)
 			{
-				CoordSize_Pair pair = pairs[i];
-
-				if (pair.xy >= next.xy &&
-					pair.xy < (next.xy + next.wh))
+				if (pairs[i].xy >= next.xy &&
+					pairs[i].xy < (next.xy + next.wh))
 				{
-					pair.xy = 0;
+					pairs[i].xy = 0;
 				}
 				else
 				{
@@ -152,14 +165,14 @@ namespace DerouteSharp
 			return list;
 		}
 
-		struct RowEntry
+		class RowEntry
 		{
 			public float index;
 			public float planeX;
 			public float planeY;
 		};
 
-		struct CoordSize_Pair
+		class CoordSize_Pair
 		{
 			public float xy;        // X or Y coordinate
 			public float wh;        // Width or Height (size)
