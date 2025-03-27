@@ -61,7 +61,7 @@
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(172, 48);
 			this.label1.TabIndex = 1;
-			this.label1.Text = "Deroute Tool 3.3\r\n© 2025, emu-russia";
+			this.label1.Text = "Deroute Tool 3.4\r\n© 2025, emu-russia";
 			// 
 			// label2
 			// 

@@ -176,6 +176,7 @@
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
 			this.splitContainer4 = new System.Windows.Forms.SplitContainer();
+			this.myTreeView1 = new DerouteSharp.MyTreeView();
 			this.buttonUpdateTree = new System.Windows.Forms.Button();
 			this.checkBoxLiveUpdate = new System.Windows.Forms.CheckBox();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -188,7 +189,7 @@
 			this.saveFileDialog4 = new System.Windows.Forms.SaveFileDialog();
 			this.backgroundWorkerVerilog = new System.ComponentModel.BackgroundWorker();
 			this.backgroundWorkerImageLoad = new System.ComponentModel.BackgroundWorker();
-			this.myTreeView1 = new DerouteSharp.MyTreeView();
+			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -487,34 +488,34 @@
 			// selectAllViasesToolStripMenuItem
 			// 
 			this.selectAllViasesToolStripMenuItem.Name = "selectAllViasesToolStripMenuItem";
-			this.selectAllViasesToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.selectAllViasesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.selectAllViasesToolStripMenuItem.Text = "Select all viases";
 			this.selectAllViasesToolStripMenuItem.Click += new System.EventHandler(this.selectAllViasesToolStripMenuItem_Click);
 			// 
 			// selectAllWiresToolStripMenuItem
 			// 
 			this.selectAllWiresToolStripMenuItem.Name = "selectAllWiresToolStripMenuItem";
-			this.selectAllWiresToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.selectAllWiresToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.selectAllWiresToolStripMenuItem.Text = "Select all wires";
 			this.selectAllWiresToolStripMenuItem.Click += new System.EventHandler(this.selectAllWiresToolStripMenuItem_Click);
 			// 
 			// selectAllCellsToolStripMenuItem
 			// 
 			this.selectAllCellsToolStripMenuItem.Name = "selectAllCellsToolStripMenuItem";
-			this.selectAllCellsToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.selectAllCellsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.selectAllCellsToolStripMenuItem.Text = "Select all cells";
 			this.selectAllCellsToolStripMenuItem.Click += new System.EventHandler(this.selectAllCellsToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator10
 			// 
 			this.toolStripSeparator10.Name = "toolStripSeparator10";
-			this.toolStripSeparator10.Size = new System.Drawing.Size(159, 6);
+			this.toolStripSeparator10.Size = new System.Drawing.Size(177, 6);
 			// 
 			// selectAllToolStripMenuItem
 			// 
 			this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
 			this.selectAllToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
-			this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.selectAllToolStripMenuItem.Text = "Select all";
 			this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.selectAllToolStripMenuItem_Click);
 			// 
@@ -593,14 +594,14 @@
 			// keyBindingsToolStripMenuItem
 			// 
 			this.keyBindingsToolStripMenuItem.Name = "keyBindingsToolStripMenuItem";
-			this.keyBindingsToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+			this.keyBindingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.keyBindingsToolStripMenuItem.Text = "Key Bindings";
 			this.keyBindingsToolStripMenuItem.Click += new System.EventHandler(this.keyBindingsToolStripMenuItem_Click);
 			// 
 			// aboutToolStripMenuItem
 			// 
 			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.aboutToolStripMenuItem.Text = "About";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
 			// 
@@ -855,6 +856,7 @@
 			// 
 			this.toolStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton1,
             this.toolStripDropDownButton1,
             this.toolStripDropDownButton2,
             this.toolStripDropDownButton3,
@@ -900,7 +902,7 @@
 			// 
 			this.toolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem1.Image")));
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(183, 22);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(199, 38);
 			this.toolStripMenuItem1.Text = "Vias Connection (F2)";
 			this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
 			// 
@@ -908,7 +910,7 @@
 			// 
 			this.viasPowerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viasPowerToolStripMenuItem.Image")));
 			this.viasPowerToolStripMenuItem.Name = "viasPowerToolStripMenuItem";
-			this.viasPowerToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.viasPowerToolStripMenuItem.Size = new System.Drawing.Size(199, 38);
 			this.viasPowerToolStripMenuItem.Text = "Vias Power";
 			this.viasPowerToolStripMenuItem.Click += new System.EventHandler(this.viasPowerToolStripMenuItem_Click);
 			// 
@@ -916,7 +918,7 @@
 			// 
 			this.viasGroundToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viasGroundToolStripMenuItem.Image")));
 			this.viasGroundToolStripMenuItem.Name = "viasGroundToolStripMenuItem";
-			this.viasGroundToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.viasGroundToolStripMenuItem.Size = new System.Drawing.Size(199, 38);
 			this.viasGroundToolStripMenuItem.Text = "Vias Ground";
 			this.viasGroundToolStripMenuItem.Click += new System.EventHandler(this.viasGroundToolStripMenuItem_Click);
 			// 
@@ -924,7 +926,7 @@
 			// 
 			this.viasInputToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viasInputToolStripMenuItem.Image")));
 			this.viasInputToolStripMenuItem.Name = "viasInputToolStripMenuItem";
-			this.viasInputToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.viasInputToolStripMenuItem.Size = new System.Drawing.Size(199, 38);
 			this.viasInputToolStripMenuItem.Text = "Vias Input";
 			this.viasInputToolStripMenuItem.Click += new System.EventHandler(this.viasInputToolStripMenuItem_Click);
 			// 
@@ -932,7 +934,7 @@
 			// 
 			this.viasOutputToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viasOutputToolStripMenuItem.Image")));
 			this.viasOutputToolStripMenuItem.Name = "viasOutputToolStripMenuItem";
-			this.viasOutputToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.viasOutputToolStripMenuItem.Size = new System.Drawing.Size(199, 38);
 			this.viasOutputToolStripMenuItem.Text = "Vias Output";
 			this.viasOutputToolStripMenuItem.Click += new System.EventHandler(this.viasOutputToolStripMenuItem_Click);
 			// 
@@ -940,7 +942,7 @@
 			// 
 			this.viasInoutToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viasInoutToolStripMenuItem.Image")));
 			this.viasInoutToolStripMenuItem.Name = "viasInoutToolStripMenuItem";
-			this.viasInoutToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.viasInoutToolStripMenuItem.Size = new System.Drawing.Size(199, 38);
 			this.viasInoutToolStripMenuItem.Text = "Vias Input/Output";
 			this.viasInoutToolStripMenuItem.Click += new System.EventHandler(this.viasInoutToolStripMenuItem_Click);
 			// 
@@ -948,7 +950,7 @@
 			// 
 			this.viasFloatingToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viasFloatingToolStripMenuItem.Image")));
 			this.viasFloatingToolStripMenuItem.Name = "viasFloatingToolStripMenuItem";
-			this.viasFloatingToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.viasFloatingToolStripMenuItem.Size = new System.Drawing.Size(199, 38);
 			this.viasFloatingToolStripMenuItem.Text = "Vias Floating";
 			this.viasFloatingToolStripMenuItem.Click += new System.EventHandler(this.viasFloatingToolStripMenuItem_Click);
 			// 
@@ -969,7 +971,7 @@
 			// 
 			this.wireInterconnectToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("wireInterconnectToolStripMenuItem.Image")));
 			this.wireInterconnectToolStripMenuItem.Name = "wireInterconnectToolStripMenuItem";
-			this.wireInterconnectToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.wireInterconnectToolStripMenuItem.Size = new System.Drawing.Size(207, 38);
 			this.wireInterconnectToolStripMenuItem.Text = "Wire Interconnect (F3)";
 			this.wireInterconnectToolStripMenuItem.Click += new System.EventHandler(this.wireInterconnectToolStripMenuItem_Click);
 			// 
@@ -977,7 +979,7 @@
 			// 
 			this.wirePowerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("wirePowerToolStripMenuItem.Image")));
 			this.wirePowerToolStripMenuItem.Name = "wirePowerToolStripMenuItem";
-			this.wirePowerToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.wirePowerToolStripMenuItem.Size = new System.Drawing.Size(207, 38);
 			this.wirePowerToolStripMenuItem.Text = "Wire Power";
 			this.wirePowerToolStripMenuItem.Click += new System.EventHandler(this.wirePowerToolStripMenuItem_Click);
 			// 
@@ -985,7 +987,7 @@
 			// 
 			this.wireGroundToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("wireGroundToolStripMenuItem.Image")));
 			this.wireGroundToolStripMenuItem.Name = "wireGroundToolStripMenuItem";
-			this.wireGroundToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.wireGroundToolStripMenuItem.Size = new System.Drawing.Size(207, 38);
 			this.wireGroundToolStripMenuItem.Text = "Wire Ground";
 			this.wireGroundToolStripMenuItem.Click += new System.EventHandler(this.wireGroundToolStripMenuItem_Click);
 			// 
@@ -1016,89 +1018,89 @@
 			// cellNotToolStripMenuItem
 			// 
 			this.cellNotToolStripMenuItem.Name = "cellNotToolStripMenuItem";
-			this.cellNotToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.cellNotToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.cellNotToolStripMenuItem.Text = "Cell Not";
 			this.cellNotToolStripMenuItem.Click += new System.EventHandler(this.cellNotToolStripMenuItem_Click);
 			// 
 			// cellBufferToolStripMenuItem
 			// 
 			this.cellBufferToolStripMenuItem.Name = "cellBufferToolStripMenuItem";
-			this.cellBufferToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.cellBufferToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.cellBufferToolStripMenuItem.Text = "Cell Buffer";
 			this.cellBufferToolStripMenuItem.Click += new System.EventHandler(this.cellBufferToolStripMenuItem_Click);
 			// 
 			// cellMuxToolStripMenuItem
 			// 
 			this.cellMuxToolStripMenuItem.Name = "cellMuxToolStripMenuItem";
-			this.cellMuxToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.cellMuxToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.cellMuxToolStripMenuItem.Text = "Cell Mux";
 			this.cellMuxToolStripMenuItem.Click += new System.EventHandler(this.cellMuxToolStripMenuItem_Click);
 			// 
 			// cellLogicToolStripMenuItem
 			// 
 			this.cellLogicToolStripMenuItem.Name = "cellLogicToolStripMenuItem";
-			this.cellLogicToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.cellLogicToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.cellLogicToolStripMenuItem.Text = "Cell Logic";
 			this.cellLogicToolStripMenuItem.Click += new System.EventHandler(this.cellLogicToolStripMenuItem_Click);
 			// 
 			// cellAdderToolStripMenuItem
 			// 
 			this.cellAdderToolStripMenuItem.Name = "cellAdderToolStripMenuItem";
-			this.cellAdderToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.cellAdderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.cellAdderToolStripMenuItem.Text = "Cell Adder";
 			this.cellAdderToolStripMenuItem.Click += new System.EventHandler(this.cellAdderToolStripMenuItem_Click);
 			// 
 			// cellBusSupportToolStripMenuItem
 			// 
 			this.cellBusSupportToolStripMenuItem.Name = "cellBusSupportToolStripMenuItem";
-			this.cellBusSupportToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.cellBusSupportToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.cellBusSupportToolStripMenuItem.Text = "Cell Bus Support";
 			this.cellBusSupportToolStripMenuItem.Click += new System.EventHandler(this.cellBusSupportToolStripMenuItem_Click);
 			// 
 			// cellFlipFlopToolStripMenuItem
 			// 
 			this.cellFlipFlopToolStripMenuItem.Name = "cellFlipFlopToolStripMenuItem";
-			this.cellFlipFlopToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.cellFlipFlopToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.cellFlipFlopToolStripMenuItem.Text = "Cell Flip-Flop";
 			this.cellFlipFlopToolStripMenuItem.Click += new System.EventHandler(this.cellFlipFlopToolStripMenuItem_Click);
 			// 
 			// cellLatchToolStripMenuItem
 			// 
 			this.cellLatchToolStripMenuItem.Name = "cellLatchToolStripMenuItem";
-			this.cellLatchToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.cellLatchToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.cellLatchToolStripMenuItem.Text = "Cell Latch";
 			this.cellLatchToolStripMenuItem.Click += new System.EventHandler(this.cellLatchToolStripMenuItem_Click);
 			// 
 			// cellOtherToolStripMenuItem
 			// 
 			this.cellOtherToolStripMenuItem.Name = "cellOtherToolStripMenuItem";
-			this.cellOtherToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.cellOtherToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.cellOtherToolStripMenuItem.Text = "Cell Other";
 			this.cellOtherToolStripMenuItem.Click += new System.EventHandler(this.cellOtherToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(159, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
 			// 
 			// unitRegisterFileToolStripMenuItem
 			// 
 			this.unitRegisterFileToolStripMenuItem.Name = "unitRegisterFileToolStripMenuItem";
-			this.unitRegisterFileToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.unitRegisterFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.unitRegisterFileToolStripMenuItem.Text = "Unit Register File";
 			this.unitRegisterFileToolStripMenuItem.Click += new System.EventHandler(this.unitRegisterFileToolStripMenuItem_Click);
 			// 
 			// unitMemoryToolStripMenuItem
 			// 
 			this.unitMemoryToolStripMenuItem.Name = "unitMemoryToolStripMenuItem";
-			this.unitMemoryToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.unitMemoryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.unitMemoryToolStripMenuItem.Text = "Unit Memory";
 			this.unitMemoryToolStripMenuItem.Click += new System.EventHandler(this.unitMemoryToolStripMenuItem_Click);
 			// 
 			// unitCustomToolStripMenuItem
 			// 
 			this.unitCustomToolStripMenuItem.Name = "unitCustomToolStripMenuItem";
-			this.unitCustomToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.unitCustomToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.unitCustomToolStripMenuItem.Text = "Unit Custom";
 			this.unitCustomToolStripMenuItem.Click += new System.EventHandler(this.unitCustomToolStripMenuItem_Click);
 			// 
@@ -1574,6 +1576,22 @@
 			this.splitContainer4.SplitterDistance = 507;
 			this.splitContainer4.TabIndex = 1;
 			// 
+			// myTreeView1
+			// 
+			this.myTreeView1.AllowDrop = true;
+			this.myTreeView1.CheckBoxes = true;
+			this.myTreeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.myTreeView1.Location = new System.Drawing.Point(0, 0);
+			this.myTreeView1.Name = "myTreeView1";
+			this.myTreeView1.Size = new System.Drawing.Size(205, 507);
+			this.myTreeView1.TabIndex = 0;
+			this.myTreeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.myTreeView1_AfterCheck);
+			this.myTreeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.myTreeView1_ItemDrag);
+			this.myTreeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.myTreeView1_AfterSelect);
+			this.myTreeView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragDrop);
+			this.myTreeView1.DragEnter += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragEnter);
+			this.myTreeView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.myTreeView1_KeyDown);
+			// 
 			// buttonUpdateTree
 			// 
 			this.buttonUpdateTree.Location = new System.Drawing.Point(127, 6);
@@ -1659,21 +1677,16 @@
 			this.backgroundWorkerImageLoad.WorkerSupportsCancellation = true;
 			this.backgroundWorkerImageLoad.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerImageLoad_DoWork);
 			// 
-			// myTreeView1
+			// toolStripButton1
 			// 
-			this.myTreeView1.AllowDrop = true;
-			this.myTreeView1.CheckBoxes = true;
-			this.myTreeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.myTreeView1.Location = new System.Drawing.Point(0, 0);
-			this.myTreeView1.Name = "myTreeView1";
-			this.myTreeView1.Size = new System.Drawing.Size(205, 507);
-			this.myTreeView1.TabIndex = 0;
-			this.myTreeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.myTreeView1_AfterCheck);
-			this.myTreeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.myTreeView1_ItemDrag);
-			this.myTreeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.myTreeView1_AfterSelect);
-			this.myTreeView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragDrop);
-			this.myTreeView1.DragEnter += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragEnter);
-			this.myTreeView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.myTreeView1_KeyDown);
+			this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton1.Name = "toolStripButton1";
+			this.toolStripButton1.Size = new System.Drawing.Size(36, 36);
+			this.toolStripButton1.Text = "toolStripButton1";
+			this.toolStripButton1.ToolTipText = "Selection Mode (F1)";
+			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
 			// 
 			// FormMain
 			// 
@@ -1885,6 +1898,7 @@
 		private System.Windows.Forms.SplitContainer splitContainer4;
 		private System.Windows.Forms.Button buttonUpdateTree;
 		private System.Windows.Forms.CheckBox checkBoxLiveUpdate;
+		private System.Windows.Forms.ToolStripButton toolStripButton1;
 	}
 }
 
