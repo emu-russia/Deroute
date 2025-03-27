@@ -416,7 +416,7 @@ namespace DerouteSharp
 
 		private void SelectionButtonHighlight()
 		{
-			toolStripButton1.BackColor = SystemColors.ActiveCaption;
+			toolStripButtonSelectMode.BackColor = SystemColors.ActiveCaption;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
@@ -425,7 +425,7 @@ namespace DerouteSharp
 
 		private void ViasButtonHighlight()
 		{
-			toolStripButton1.BackColor = SystemColors.Control;
+			toolStripButtonSelectMode.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.ActiveCaption;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
@@ -434,7 +434,7 @@ namespace DerouteSharp
 
 		private void WiresButtonHighlight()
 		{
-			toolStripButton1.BackColor = SystemColors.Control;
+			toolStripButtonSelectMode.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.ActiveCaption;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
@@ -443,7 +443,7 @@ namespace DerouteSharp
 
 		private void CellsButtonHighlight()
 		{
-			toolStripButton1.BackColor = SystemColors.Control;
+			toolStripButtonSelectMode.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.ActiveCaption;
@@ -452,7 +452,7 @@ namespace DerouteSharp
 
 		private void BeaconButtonHighlight()
 		{
-			toolStripButton1.BackColor = SystemColors.Control;
+			toolStripButtonSelectMode.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
