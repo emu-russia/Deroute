@@ -98,6 +98,12 @@
     <Compile Include="FormCells.Designer.cs">
       <DependentUpon>FormCells.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormCellsMap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCellsMap.Designer.cs">
+      <DependentUpon>FormCellsMap.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormGetVerilogSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -208,6 +214,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormCells.resx">
       <DependentUpon>FormCells.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCellsMap.resx">
+      <DependentUpon>FormCellsMap.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormGetVerilogSettings.resx">
       <DependentUpon>FormGetVerilogSettings.cs</DependentUpon>

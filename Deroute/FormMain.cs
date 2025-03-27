@@ -76,7 +76,7 @@ namespace DerouteSharp
 
 			Text = Text + " " + vernum;
 			savedText = Text;
-			Console.Write(savedText);
+			Console.WriteLine(savedText);
 
 			FormSettings.LoadSettings(entityBox1);
 
@@ -1705,6 +1705,12 @@ namespace DerouteSharp
 			form.ShowDialog();
 		}
 
+		private void toolStripMenuItem2_Click(object sender, EventArgs e)
+		{
+			FormCellsMap formCellsMap = new FormCellsMap(entityBox1);
+			formCellsMap.Show();
+		}
+
 		#endregion "Cells"
 
 		#region "Simulation"
@@ -1775,6 +1781,7 @@ namespace DerouteSharp
 		{
 			sim.Reset();
 		}
+
 
 
 

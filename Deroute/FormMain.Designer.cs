@@ -76,6 +76,7 @@
 			this.addViasAtTheWireEndsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bulkRenameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bulkPortAssignmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.keyBindingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -528,7 +529,8 @@
             this.entityLocatorToolStripMenuItem,
             this.addViasAtTheWireEndsToolStripMenuItem,
             this.bulkRenameToolStripMenuItem,
-            this.bulkPortAssignmentToolStripMenuItem});
+            this.bulkPortAssignmentToolStripMenuItem,
+            this.toolStripMenuItem2});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
 			this.toolsToolStripMenuItem.Text = "Tools";
@@ -581,6 +583,13 @@
 			this.bulkPortAssignmentToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
 			this.bulkPortAssignmentToolStripMenuItem.Text = "Bulk port assignment";
 			this.bulkPortAssignmentToolStripMenuItem.Click += new System.EventHandler(this.bulkPortAssignmentToolStripMenuItem_Click);
+			// 
+			// toolStripMenuItem2
+			// 
+			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(230, 22);
+			this.toolStripMenuItem2.Text = "Get cells map";
+			this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -1899,6 +1908,7 @@
 		private System.Windows.Forms.Button buttonUpdateTree;
 		private System.Windows.Forms.CheckBox checkBoxLiveUpdate;
 		private System.Windows.Forms.ToolStripButton toolStripButtonSelectMode;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
 	}
 }
 
