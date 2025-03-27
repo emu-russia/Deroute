@@ -76,6 +76,7 @@
 			this.addViasAtTheWireEndsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bulkRenameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bulkPortAssignmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.keyBindingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,6 +98,7 @@
 			this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
 			this.saveFileDialog2 = new System.Windows.Forms.SaveFileDialog();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.toolStripButtonSelectMode = new System.Windows.Forms.ToolStripButton();
 			this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.viasPowerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -176,6 +178,7 @@
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
 			this.splitContainer4 = new System.Windows.Forms.SplitContainer();
+			this.myTreeView1 = new DerouteSharp.MyTreeView();
 			this.buttonUpdateTree = new System.Windows.Forms.Button();
 			this.checkBoxLiveUpdate = new System.Windows.Forms.CheckBox();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -188,7 +191,6 @@
 			this.saveFileDialog4 = new System.Windows.Forms.SaveFileDialog();
 			this.backgroundWorkerVerilog = new System.ComponentModel.BackgroundWorker();
 			this.backgroundWorkerImageLoad = new System.ComponentModel.BackgroundWorker();
-			this.myTreeView1 = new DerouteSharp.MyTreeView();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -527,7 +529,8 @@
             this.entityLocatorToolStripMenuItem,
             this.addViasAtTheWireEndsToolStripMenuItem,
             this.bulkRenameToolStripMenuItem,
-            this.bulkPortAssignmentToolStripMenuItem});
+            this.bulkPortAssignmentToolStripMenuItem,
+            this.toolStripMenuItem2});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
 			this.toolsToolStripMenuItem.Text = "Tools";
@@ -580,6 +583,13 @@
 			this.bulkPortAssignmentToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
 			this.bulkPortAssignmentToolStripMenuItem.Text = "Bulk port assignment";
 			this.bulkPortAssignmentToolStripMenuItem.Click += new System.EventHandler(this.bulkPortAssignmentToolStripMenuItem_Click);
+			// 
+			// toolStripMenuItem2
+			// 
+			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(230, 22);
+			this.toolStripMenuItem2.Text = "Get cells map";
+			this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -855,6 +865,7 @@
 			// 
 			this.toolStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButtonSelectMode,
             this.toolStripDropDownButton1,
             this.toolStripDropDownButton2,
             this.toolStripDropDownButton3,
@@ -878,6 +889,17 @@
 			this.toolStrip1.Size = new System.Drawing.Size(1218, 39);
 			this.toolStrip1.TabIndex = 2;
 			this.toolStrip1.Text = "toolStrip1";
+			// 
+			// toolStripButtonSelectMode
+			// 
+			this.toolStripButtonSelectMode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButtonSelectMode.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSelectMode.Image")));
+			this.toolStripButtonSelectMode.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonSelectMode.Name = "toolStripButtonSelectMode";
+			this.toolStripButtonSelectMode.Size = new System.Drawing.Size(36, 36);
+			this.toolStripButtonSelectMode.Text = "Selection Mode (F1)";
+			this.toolStripButtonSelectMode.ToolTipText = "Selection Mode (F1)";
+			this.toolStripButtonSelectMode.Click += new System.EventHandler(this.toolStripButton1_Click);
 			// 
 			// toolStripDropDownButton1
 			// 
@@ -1574,6 +1596,22 @@
 			this.splitContainer4.SplitterDistance = 507;
 			this.splitContainer4.TabIndex = 1;
 			// 
+			// myTreeView1
+			// 
+			this.myTreeView1.AllowDrop = true;
+			this.myTreeView1.CheckBoxes = true;
+			this.myTreeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.myTreeView1.Location = new System.Drawing.Point(0, 0);
+			this.myTreeView1.Name = "myTreeView1";
+			this.myTreeView1.Size = new System.Drawing.Size(205, 507);
+			this.myTreeView1.TabIndex = 0;
+			this.myTreeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.myTreeView1_AfterCheck);
+			this.myTreeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.myTreeView1_ItemDrag);
+			this.myTreeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.myTreeView1_AfterSelect);
+			this.myTreeView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragDrop);
+			this.myTreeView1.DragEnter += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragEnter);
+			this.myTreeView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.myTreeView1_KeyDown);
+			// 
 			// buttonUpdateTree
 			// 
 			this.buttonUpdateTree.Location = new System.Drawing.Point(127, 6);
@@ -1658,22 +1696,6 @@
 			// 
 			this.backgroundWorkerImageLoad.WorkerSupportsCancellation = true;
 			this.backgroundWorkerImageLoad.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerImageLoad_DoWork);
-			// 
-			// myTreeView1
-			// 
-			this.myTreeView1.AllowDrop = true;
-			this.myTreeView1.CheckBoxes = true;
-			this.myTreeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.myTreeView1.Location = new System.Drawing.Point(0, 0);
-			this.myTreeView1.Name = "myTreeView1";
-			this.myTreeView1.Size = new System.Drawing.Size(205, 507);
-			this.myTreeView1.TabIndex = 0;
-			this.myTreeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.myTreeView1_AfterCheck);
-			this.myTreeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.myTreeView1_ItemDrag);
-			this.myTreeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.myTreeView1_AfterSelect);
-			this.myTreeView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragDrop);
-			this.myTreeView1.DragEnter += new System.Windows.Forms.DragEventHandler(this.myTreeView1_DragEnter);
-			this.myTreeView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.myTreeView1_KeyDown);
 			// 
 			// FormMain
 			// 
@@ -1885,6 +1907,8 @@
 		private System.Windows.Forms.SplitContainer splitContainer4;
 		private System.Windows.Forms.Button buttonUpdateTree;
 		private System.Windows.Forms.CheckBox checkBoxLiveUpdate;
+		private System.Windows.Forms.ToolStripButton toolStripButtonSelectMode;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
 	}
 }
 

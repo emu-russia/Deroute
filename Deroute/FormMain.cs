@@ -76,7 +76,7 @@ namespace DerouteSharp
 
 			Text = Text + " " + vernum;
 			savedText = Text;
-			Console.Write(savedText);
+			Console.WriteLine(savedText);
 
 			FormSettings.LoadSettings(entityBox1);
 
@@ -408,8 +408,15 @@ namespace DerouteSharp
 
 		#region "Mode Selection"
 
+		private void toolStripButton1_Click(object sender, EventArgs e)
+		{
+			entityBox1.Mode = EntityMode.Selection;
+			SelectionButtonHighlight();
+		}
+
 		private void SelectionButtonHighlight()
 		{
+			toolStripButtonSelectMode.BackColor = SystemColors.ActiveCaption;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
@@ -418,6 +425,7 @@ namespace DerouteSharp
 
 		private void ViasButtonHighlight()
 		{
+			toolStripButtonSelectMode.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.ActiveCaption;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
@@ -426,6 +434,7 @@ namespace DerouteSharp
 
 		private void WiresButtonHighlight()
 		{
+			toolStripButtonSelectMode.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.ActiveCaption;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
@@ -434,6 +443,7 @@ namespace DerouteSharp
 
 		private void CellsButtonHighlight()
 		{
+			toolStripButtonSelectMode.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.ActiveCaption;
@@ -442,6 +452,7 @@ namespace DerouteSharp
 
 		private void BeaconButtonHighlight()
 		{
+			toolStripButtonSelectMode.BackColor = SystemColors.Control;
 			toolStripDropDownButton1.BackColor = SystemColors.Control;
 			toolStripDropDownButton2.BackColor = SystemColors.Control;
 			toolStripDropDownButton3.BackColor = SystemColors.Control;
@@ -1694,6 +1705,12 @@ namespace DerouteSharp
 			form.ShowDialog();
 		}
 
+		private void toolStripMenuItem2_Click(object sender, EventArgs e)
+		{
+			FormCellsMap formCellsMap = new FormCellsMap(entityBox1);
+			formCellsMap.Show();
+		}
+
 		#endregion "Cells"
 
 		#region "Simulation"
@@ -1764,6 +1781,8 @@ namespace DerouteSharp
 		{
 			sim.Reset();
 		}
+
+
 
 
 
