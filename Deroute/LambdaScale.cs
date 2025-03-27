@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace DerouteSharp
@@ -26,9 +27,12 @@ namespace DerouteSharp
 		private void button1_Click(object sender, EventArgs e)
 		{
 			string value = textBox1.Text;
-			value = value.Replace('.', ',');
-			ScaleValue = Convert.ToSingle(value);
-			Close ();
+			if (value != "")
+			{
+				value = value.Replace(',', '.');
+				ScaleValue = Convert.ToSingle(value, CultureInfo.InvariantCulture);
+				Close();
+			}
 		}
 
 		private void button3_Click(object sender, EventArgs e)
