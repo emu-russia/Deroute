@@ -690,6 +690,8 @@ namespace System.Windows.Forms
 						PointF lambdaCoord = ScreenToLambda(screenCoord.X + e.X - SavedMouseX,
 														  screenCoord.Y + e.Y - SavedMouseY);
 
+						UpdateScrollDirectionAngle(lambdaCoord);
+
 						ScrollX = lambdaCoord.X;
 						ScrollY = lambdaCoord.Y;
 						break;

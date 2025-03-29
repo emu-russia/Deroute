@@ -113,6 +113,37 @@ namespace System.Windows.Forms
 							new Point(LastRMB.X + crossWidth / 2, LastRMB.Y - crossWidth / 2));
 		}
 
+		private void DrawDirectionArrow(Graphics g, int x, int y, int size, Color color, float angleDegrees)
+		{
+			GraphicsState state = g.Save();
+
+			g.TranslateTransform(x, y);
+			g.RotateTransform(angleDegrees);
+
+			float arrowWidth = size;
+			float arrowHeight = size / 3;
+			float tipLength = size / 2.5f;
+
+			using (GraphicsPath path = new GraphicsPath())
+			{
+				path.AddLine(-arrowWidth / 2, 0, arrowWidth / 2 - tipLength, 0);
+
+				PointF[] arrowHead = new PointF[3];
+				arrowHead[0] = new PointF(arrowWidth / 2 - tipLength, -arrowHeight / 2);
+				arrowHead[1] = new PointF(arrowWidth / 2, 0);
+				arrowHead[2] = new PointF(arrowWidth / 2 - tipLength, arrowHeight / 2);
+
+				path.AddPolygon(arrowHead);
+
+				using (Pen pen = new Pen(color, 2))
+				{
+					g.DrawPath(pen, path);
+				}
+			}
+
+			g.Restore(state);
+		}
+
 		private void DrawEntityRecursive(Entity parent, Graphics gr)
 		{
 			if (!parent.Visible)
@@ -870,6 +901,11 @@ namespace System.Windows.Forms
 			Stamp2 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 			if (DrawStats)
 				Console.WriteLine("Grid: " + (Stamp2 - Stamp1).ToString() + " ms");
+
+			// Direction Arrow
+
+			int arrow_size = 16;
+			DrawDirectionArrow(gr, arrow_size, Height - arrow_size, arrow_size, Color.LightGray, direction_arrow_angle);
 
 			// Entities
 
