@@ -140,6 +140,9 @@ namespace System.Windows.Forms
 						break;
 				}
 
+				PointF lambdaCoord = new PointF(ScrollX - deltaX, ScrollY - deltaY);
+				UpdateScrollDirectionAngle(lambdaCoord);
+
 				ScrollX += deltaX;
 				ScrollY += deltaY;
 			}

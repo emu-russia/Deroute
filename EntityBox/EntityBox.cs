@@ -94,6 +94,7 @@ namespace System.Windows.Forms
 		private PointF TopLeftCopied;
 		private bool DrawStats = false;
 		private bool selectCellWithPorts = true;
+		private int direction_arrow_angle = 0;
 
 		public event EntityBoxEventHandler OnScrollChanged = null;
 		public event EntityBoxEventHandler OnZoomChanged = null;
@@ -347,6 +348,18 @@ namespace System.Windows.Forms
 			Invalidate();
 		}
 
+		private void UpdateScrollDirectionAngle(PointF lambdaCoord)
+		{
+			var dist = Math.Sqrt(Math.Pow(lambdaCoord.X - ScrollX, 2) + Math.Pow(lambdaCoord.Y - ScrollY, 2));
+			if (dist > 0.5)
+			{
+				direction_arrow_angle = (int)(Math.Atan2(lambdaCoord.Y - ScrollY, lambdaCoord.X - ScrollX) * 180 / Math.PI);
+
+				direction_arrow_angle = direction_arrow_angle % 360;
+				if (direction_arrow_angle < 0) direction_arrow_angle += 360;
+				direction_arrow_angle = (direction_arrow_angle / 45) * 45;
+			}
+		}
 
 
 	}       // EntityBox
