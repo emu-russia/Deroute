@@ -481,6 +481,7 @@ namespace DerouteSharp
 			{
 				int input_ports = 0;
 				int output_ports = 0;
+				int bidir_ports = 0;
 				foreach (var e in wire.parts)
 				{
 					if (top.ports.Contains(e))
@@ -489,6 +490,8 @@ namespace DerouteSharp
 							input_ports++;
 						if (e.Type == EntityType.ViasInput)
 							output_ports++;
+						if (e.Type == EntityType.ViasInout)
+							bidir_ports++;
 					}
 					else
 					{
@@ -496,15 +499,16 @@ namespace DerouteSharp
 							output_ports++;
 						if (e.Type == EntityType.ViasInput)
 							input_ports++;
+						if (e.Type == EntityType.ViasInout)
+							bidir_ports++;
 					}
-					// ViasInout ??
 				}
 				if (output_ports > 1)
 				{
 					Console.WriteLine("ERROR: conflicting wire {0}!!!", wire.name);
 					text += "// ERROR: conflicting wire " + wire.name + "\n";
 				}
-				if (output_ports == 0 && input_ports > 0)
+				if (bidir_ports == 0 && output_ports == 0 && input_ports > 0)
 				{
 					Console.WriteLine("ERROR: floating wire {0}!!!", wire.name);
 					text += "// ERROR: floating wire " + wire.name + "\n";
