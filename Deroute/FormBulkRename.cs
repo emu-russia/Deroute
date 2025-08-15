@@ -54,6 +54,7 @@ namespace DerouteSharp
 			if (IsEntityMeetRequirements(parent))
 			{
 				bool append = checkBox1.Checked;
+				bool keep_first = checkBox3.Checked;
 
 				if (append)
 				{
@@ -61,7 +62,19 @@ namespace DerouteSharp
 				}
 				else
 				{
-					parent.Label = textBox1.Text + counter.ToString();
+					var first_part = "";
+					if (parent.Label != "")
+					{
+						first_part = parent.Label.Split(' ')[0];
+					}
+					if (keep_first)
+					{
+						parent.Label = first_part + " " + textBox1.Text + counter.ToString();
+					}
+					else
+					{
+						parent.Label = textBox1.Text + counter.ToString();
+					}
 				}
 
 				counter++;
