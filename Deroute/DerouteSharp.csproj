@@ -122,12 +122,7 @@
     <Compile Include="FormBulkRename.Designer.cs">
       <DependentUpon>FormBulkRename.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormCreateMLModel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormCreateMLModel.Designer.cs">
-      <DependentUpon>FormCreateMLModel.cs</DependentUpon>
-    </Compile>
+
     <Compile Include="FormEnterValue.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,24 +147,14 @@
     <Compile Include="FormProgress.Designer.cs">
       <DependentUpon>FormProgress.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormRunMLModel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormRunMLModel.Designer.cs">
-      <DependentUpon>FormRunMLModel.cs</DependentUpon>
-    </Compile>
+
     <Compile Include="FormSettings.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSettings.Designer.cs">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormTrainMLModel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormTrainMLModel.Designer.cs">
-      <DependentUpon>FormTrainMLModel.cs</DependentUpon>
-    </Compile>
+
     <Compile Include="FormWaves.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -227,9 +212,7 @@
     <EmbeddedResource Include="FormBulkRename.resx">
       <DependentUpon>FormBulkRename.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormCreateMLModel.resx">
-      <DependentUpon>FormCreateMLModel.cs</DependentUpon>
-    </EmbeddedResource>
+
     <EmbeddedResource Include="FormEnterValue.resx">
       <DependentUpon>FormEnterValue.cs</DependentUpon>
     </EmbeddedResource>
@@ -242,15 +225,11 @@
     <EmbeddedResource Include="FormProgress.resx">
       <DependentUpon>FormProgress.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormRunMLModel.resx">
-      <DependentUpon>FormRunMLModel.cs</DependentUpon>
-    </EmbeddedResource>
+
     <EmbeddedResource Include="FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormTrainMLModel.resx">
-      <DependentUpon>FormTrainMLModel.cs</DependentUpon>
-    </EmbeddedResource>
+
     <EmbeddedResource Include="FormWaves.resx">
       <DependentUpon>FormWaves.cs</DependentUpon>
     </EmbeddedResource>
@@ -318,10 +297,7 @@
       <Project>{b054bdba-d0a2-4712-bb9f-4368c37be0eb}</Project>
       <Name>EntityBox</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NeuralNetwork\NeuralNetwork.csproj">
-      <Project>{e443218b-b079-4aa4-830d-3b9561f1d6ec}</Project>
-      <Name>NeuralNetwork</Name>
-    </ProjectReference>
+
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
