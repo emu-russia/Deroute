@@ -130,4 +130,19 @@ Tools -> Bulk Rename. Everything is straightforward here.
 
 ![bulk_rename.png](imgstore/bulk_rename.png)
 
-Translated with DeepL.com
+### Traverse Black List
+
+The `TraverseBlackList` property allows you to specify a list of entity types that cannot be traversed to (i.e., selection expansion will not reach them).
+
+This is useful for preventing incorrect connections between entities during selection. For example, you can prevent a wire from connecting to certain types of vias or cells.
+
+To configure:
+- Select an entity in the editor
+- In the Properties window (PropertyGrid), find the `TraverseBlackList` property
+- Click the `...` button to the right of the field
+- A dialog will open where you can add or remove entity types from the blacklist
+- All entity types are available except `Root`
+
+When using traverse (selection expansion), the system will skip entities in the blacklist, preventing incorrect connections.
+
+Example: if you add `ViasPower` to a wire's TraverseBlackList, the wire will not connect to power vias during traverse.
