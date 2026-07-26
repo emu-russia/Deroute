@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Xml.Serialization;
@@ -449,6 +450,8 @@ public class Entity
 
 	[Category("Entity Properties")]
 	[Description("List for prohibiting traverse to specified entity types. It is used when it is necessary, for example, to prevent a wire from going to illegal entities.")]
+	[Editor(typeof(EntityTypeListEditor), typeof(UITypeEditor))]
+	[TypeConverter(typeof(EntityTypeListConverter))]
 	public List<EntityType> TraverseBlackList
 	{
 		get { return _traverseBlackList; }
