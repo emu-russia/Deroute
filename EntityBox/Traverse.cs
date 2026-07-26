@@ -64,11 +64,13 @@ namespace System.Windows.Forms
 
 				foreach (Entity entity in GetEntities())
 				{
-					if (source.TraverseBlackList != null && entity.TraverseBlackList != null)
-					{
-						if (source.TraverseBlackList.Contains(entity.Type) || entity.TraverseBlackList.Contains(source.Type))
-							continue;
-					}
+					bool blocked = false;
+					if (source.TraverseBlackList != null && source.TraverseBlackList.Contains(entity.Type))
+						blocked = true;
+					if (entity.TraverseBlackList != null && entity.TraverseBlackList.Contains(source.Type))
+						blocked = true;
+					if (blocked)
+						continue;
 
 					if (entity.Selected == false)
 					{
@@ -161,11 +163,13 @@ namespace System.Windows.Forms
 
 				foreach (Entity entity in GetEntities())
 				{
-					if (source.TraverseBlackList != null && entity.TraverseBlackList != null)
-					{
-						if (source.TraverseBlackList.Contains(entity.Type) || entity.TraverseBlackList.Contains(source.Type))
-							continue;
-					}
+					bool blocked = false;
+					if (source.TraverseBlackList != null && source.TraverseBlackList.Contains(entity.Type))
+						blocked = true;
+					if (entity.TraverseBlackList != null && entity.TraverseBlackList.Contains(source.Type))
+						blocked = true;
+					if (blocked)
+						continue;
 
 					if (entity.Selected == false)
 					{
@@ -260,11 +264,13 @@ namespace System.Windows.Forms
 
 				foreach (Entity entity in GetEntities())
 				{
-					if (source.TraverseBlackList != null && entity.TraverseBlackList != null)
-					{
-						if (source.TraverseBlackList.Contains(entity.Type) || entity.TraverseBlackList.Contains(source.Type))
-							continue;
-					}
+					bool blocked = false;
+					if (source.TraverseBlackList != null && source.TraverseBlackList.Contains(entity.Type))
+						blocked = true;
+					if (entity.TraverseBlackList != null && entity.TraverseBlackList.Contains(source.Type))
+						blocked = true;
+					if (blocked)
+						continue;
 
 					if (entity.Selected == false &&
 						(entity.Type == EntityType.ViasOutput || entity.Type == EntityType.ViasInout))
