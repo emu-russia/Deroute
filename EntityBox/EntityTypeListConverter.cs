@@ -35,8 +35,8 @@ public class EntityTypeListEditor : UITypeEditor
 			MaximizeBox = false,
 			FormBorderStyle = FormBorderStyle.FixedDialog,
 			ShowInTaskbar = false,
-			Width = 300,
-			Height = 400,
+			Width = 360,
+			Height = 480,
 		};
 
 		var listView = new ListView
@@ -61,15 +61,17 @@ public class EntityTypeListEditor : UITypeEditor
 		var buttonPanel = new FlowLayoutPanel
 		{
 			Dock = DockStyle.Bottom,
-			Height = 40,
+			Height = 45,
 			FlowDirection = FlowDirection.RightToLeft,
 			AutoSizeMode = AutoSizeMode.GrowAndShrink,
+			Padding = new Padding(10, 5, 10, 10),
+			BackColor = System.Drawing.Color.White,
 		};
 
-		var btnAdd = new Button { Text = "Add", Width = 75, DialogResult = DialogResult.None };
-		var btnRemove = new Button { Text = "Remove", Width = 75, DialogResult = DialogResult.None };
-		var btnOk = new Button { Text = "OK", Width = 75 };
-		var btnCancel = new Button { Text = "Cancel", Width = 75 };
+		var btnAdd = new Button { Text = "Add", Width = 60, Height = 25, DialogResult = DialogResult.None };
+		var btnRemove = new Button { Text = "Remove", Width = 60, Height = 25, DialogResult = DialogResult.None };
+		var btnOk = new Button { Text = "OK", Width = 60, Height = 25 };
+		var btnCancel = new Button { Text = "Cancel", Width = 60, Height = 25 };
 
 		buttonPanel.Controls.Add(btnRemove);
 		buttonPanel.Controls.Add(btnAdd);
@@ -92,13 +94,19 @@ public class EntityTypeListEditor : UITypeEditor
 				FormBorderStyle = FormBorderStyle.FixedDialog,
 				ShowInTaskbar = false,
 				Width = 250,
-				Height = 350,
+				Height = 370,
+			};
+
+			var listPanel = new Panel
+			{
+				Dock = DockStyle.Fill,
+				BorderStyle = BorderStyle.FixedSingle,
 			};
 
 			var lb = new ListBox
 			{
 				Dock = DockStyle.Fill,
-				BorderStyle = BorderStyle.FixedSingle,
+				BorderStyle = BorderStyle.None,
 			};
 
 			foreach (EntityType et in Enum.GetValues(typeof(EntityType)))
@@ -107,8 +115,10 @@ public class EntityTypeListEditor : UITypeEditor
 				lb.Items.Add(et);
 			}
 
-			var okBtn = new Button { Text = "OK", DialogResult = DialogResult.OK, Dock = DockStyle.Bottom };
-			dlg.Controls.Add(lb);
+			listPanel.Controls.Add(lb);
+
+			var okBtn = new Button { Text = "OK", DialogResult = DialogResult.OK, Dock = DockStyle.Bottom, Height = 30, Width = 75, Margin = new Padding(10, 5, 10, 10) };
+			dlg.Controls.Add(listPanel);
 			dlg.Controls.Add(okBtn);
 
 			if (dlg.ShowDialog() == DialogResult.OK)
