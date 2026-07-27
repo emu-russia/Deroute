@@ -1412,6 +1412,11 @@ namespace DerouteSharp
 			form.ShowDialog();
 		}
 
+		private void showOverlappedEntitiesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			entityBox1.FindOverlappedEntities();
+		}
+
 		#endregion
 
 

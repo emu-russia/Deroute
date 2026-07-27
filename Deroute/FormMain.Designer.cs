@@ -76,6 +76,7 @@
 			this.bulkRenameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bulkPortAssignmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.showOverlappedEntitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.keyBindingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -517,7 +518,8 @@
             this.addViasAtTheWireEndsToolStripMenuItem,
             this.bulkRenameToolStripMenuItem,
             this.bulkPortAssignmentToolStripMenuItem,
-            this.toolStripMenuItem2});
+            this.toolStripMenuItem2,
+            this.showOverlappedEntitiesToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
 			this.toolsToolStripMenuItem.Text = "Tools";
@@ -577,6 +579,13 @@
 			this.toolStripMenuItem2.Size = new System.Drawing.Size(230, 22);
 			this.toolStripMenuItem2.Text = "Get cells map";
 			this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
+			// 
+			// showOverlappedEntitiesToolStripMenuItem
+			// 
+			this.showOverlappedEntitiesToolStripMenuItem.Name = "showOverlappedEntitiesToolStripMenuItem";
+			this.showOverlappedEntitiesToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+			this.showOverlappedEntitiesToolStripMenuItem.Text = "Show Overlapped Entities";
+			this.showOverlappedEntitiesToolStripMenuItem.Click += new System.EventHandler(this.showOverlappedEntitiesToolStripMenuItem_Click);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -1842,6 +1851,7 @@
 		private System.Windows.Forms.CheckBox checkBoxLiveUpdate;
 		private System.Windows.Forms.ToolStripButton toolStripButtonSelectMode;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+		private System.Windows.Forms.ToolStripMenuItem showOverlappedEntitiesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton7;
 		private System.Windows.Forms.ToolStripMenuItem addEmptyLayerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem groupSelectedEntitiesAsLayerToolStripMenuItem;
