@@ -502,8 +502,6 @@ Deroute can detect and highlight **overlapping entities**:
 4. Review the highlighted entities
 5. Select and remove duplicates or fix overlaps manually
 
-![overlap_detection](imgstore/overlap_detection.png)
-
 ---
 
 ## Verilog Export
@@ -546,8 +544,6 @@ The Verilog export includes **sanity checks**:
 - **Floating wires**: Reports wires with no connections
 
 > **Note:** The script does not perform full connectivity checking. All errors should be verified in your preferred CAD tool after export.
-
-![verilog_export](imgstore/verilog_export.png)
 
 ---
 
