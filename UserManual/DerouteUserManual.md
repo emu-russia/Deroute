@@ -61,3 +61,25 @@ To configure:
 When using traverse (selection expansion), the system will skip entities in the blacklist, preventing incorrect connections.
 
 Example: if you add `ViasPower` to a wire's TraverseBlackList, the wire will not connect to power vias during traverse.
+
+## Highlighting Overlapped Entities
+
+Tools -> Show Overlapped Entities.
+
+The function finds all entities that overlap each other and highlights them (`Selected = true`).
+
+### Types of detected overlaps
+- Cell ↔ Cell (with polygon support)
+- Region ↔ Region
+- Cell ↔ Region
+- Wire ↔ Wire
+- Via ↔ Via
+- Cell/Region contains Via
+- Wire intersects Cell/Region
+- Via on Wire
+
+### How to use
+1. Load XML scene
+2. Tools → **Show Overlapped Entities**
+3. Overlapping entities will be highlighted in green
+4. Select the highlighted entities and remove duplicates
