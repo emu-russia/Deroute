@@ -236,6 +236,26 @@ namespace DerouteSharp
 		{
 			List<Entity> ports = new List<Entity>();
 
+			// Pre-cache cell ports to avoid O(N^3) complexity
+			var cellPortsCache = new Dictionary<Entity, List<Entity>>();
+			foreach (var c in ents)
+			{
+				if (c.IsCell())
+				{
+					cellPortsCache[c] = EntityBox.GetCellPorts(c, ents);
+				}
+			}
+
+			// Build a set of all port coordinates that are inside some cell
+			var internalPorts = new HashSet<(double x, double y)>();
+			foreach (var cellPorts in cellPortsCache.Values)
+			{
+				foreach (var port in cellPorts)
+				{
+					internalPorts.Add((port.LambdaX, port.LambdaY));
+				}
+			}
+
 			foreach (var p in ents)
 			{
 				if (abort)
@@ -246,31 +266,7 @@ namespace DerouteSharp
 
 				if (p.IsPort())
 				{
-					bool foundWithin = false;
-
-					foreach (var c in ents)
-					{
-						if (abort)
-						{
-							Console.WriteLine("GetTopPorts Aborted");
-							return null;
-						}
-
-						if (c.IsCell())
-						{
-							var cell_ports = EntityBox.GetCellPorts(c, ents);
-							foreach (var port in cell_ports)
-							{
-								if (port.LambdaX == p.LambdaX && port.LambdaY == p.LambdaY)
-								{
-									foundWithin = true;
-									break;
-								}
-							}
-						}
-					}
-
-					if (!foundWithin)
+					if (!internalPorts.Contains((p.LambdaX, p.LambdaY)))
 					{
 						ports.Add(p);
 					}
