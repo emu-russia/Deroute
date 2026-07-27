@@ -260,32 +260,21 @@ namespace System.Windows.Forms
 
 			float mapScale = targetRect.Width / Math.Max(imageWidth, imageHeight);
 
-			int x = (int)(topLeftImage.X * mapScale) + targetRect.X;
-			int y = (int)(topLeftImage.Y * mapScale) + targetRect.Y;
+			int x = (int)(topLeftImage.X * mapScale);
+			int y = (int)(topLeftImage.Y * mapScale);
 			int w = (int)((bottomRightImage.X - topLeftImage.X) * mapScale);
 			int h = (int)((bottomRightImage.Y - topLeftImage.Y) * mapScale);
 
 			if (w <= 0) w = 1;
 			if (h <= 0) h = 1;
 
-			int maxX = targetRect.Width - (x - targetRect.X);
-			int maxY = targetRect.Height - (y - targetRect.Y);
+			int rx = Math.Max(0, x);
+			int ry = Math.Max(0, y);
+			int rw = Math.Max(0, Math.Min(x + w, targetRect.Width) - rx);
+			int rh = Math.Max(0, Math.Min(y + h, targetRect.Height) - ry);
 
-			if (w > maxX && maxX > 0)
-			{
-				w = maxX;
-			}
-
-			if (h > maxY && maxY > 0)
-			{
-				h = maxY;
-			}
-
-			x = Math.Max(targetRect.X, x);
-			y = Math.Max(targetRect.Y, y);
-
-			x = Math.Min(x, targetRect.Right - w);
-			y = Math.Min(y, targetRect.Bottom - h);
+			if (rw <= 0 || rh <= 0)
+				return;
 
 			int alpha = Math.Max(0, Math.Min(255, ViewportOpacity));
 			Color vpColor = ViewportColor;
@@ -293,8 +282,8 @@ namespace System.Windows.Forms
 			Brush fillBrush = new SolidBrush(Color.FromArgb(alpha / 2, vpColor));
 			Pen fillPen = new Pen(Color.FromArgb(alpha, vpColor), 1f);
 
-			targetGraphics.FillRectangle(fillBrush, x, y, w, h);
-			targetGraphics.DrawRectangle(fillPen, x, y, w, h);
+			targetGraphics.FillRectangle(fillBrush, rx + targetRect.X, ry + targetRect.Y, rw, rh);
+			targetGraphics.DrawRectangle(fillPen, rx + targetRect.X, ry + targetRect.Y, rw, rh);
 
 			fillBrush.Dispose();
 			fillPen.Dispose();
