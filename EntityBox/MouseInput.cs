@@ -379,6 +379,16 @@ namespace System.Windows.Forms
 			if ((timeStampNow - UnserializeLastStamp) < 500)
 				return;
 
+			if (MinimapEnabled && _hasImage)
+			{
+				Rectangle minimapRect = _minimap.GetTargetRect(this);
+				if (minimapRect.Contains(e.X, e.Y))
+				{
+					base.OnMouseUp(e);
+					return;
+				}
+			}
+
 			if (e.Button == MouseButtons.Right)
 			{
 				LastRMB.X = e.X;
