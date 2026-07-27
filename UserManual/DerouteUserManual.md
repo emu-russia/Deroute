@@ -34,7 +34,8 @@
 17. [Cell Library Management](#cell-library-management)
 18. [Overlap Detection](#overlap-detection)
 19. [Verilog Export](#verilog-export)
-20. [Settings](#settings)
+20. [Minimap](#minimap)
+21. [Settings](#settings)
 21. [Key Bindings](#key-bindings)
 22. [Saving and Loading](#saving-and-loading)
 
@@ -544,6 +545,39 @@ The Verilog export includes **sanity checks**:
 - **Floating wires**: Reports wires with no connections
 
 > **Note:** The script does not perform full connectivity checking. All errors should be verified in your preferred CAD tool after export.
+
+---
+
+## Minimap
+
+The **Minimap** is a viewport overview widget displayed in the corner of the EntityBox canvas. It shows a scaled-down version of the loaded background image (or tilemap) with a rectangle indicating the current visible area.
+
+### Enabling the Minimap
+
+The Minimap can be enabled via the **Settings dialog** or programmatically through the `EntityBoxProperties`:
+
+**Settings dialog:**
+- **Menu:** Tools -> Settings
+
+**EntityBox properties:**
+- `MinimapEnabled` — Enable/disable the minimap
+- `MinimapSizePercent` — Size of the minimap as a fraction of the EntityBox width (0.0 to 1.0, default: 0.15)
+- `MinimapPosition` — Position in the viewport (`TopLeft`, `TopRight`, `BottomLeft`, `BottomRight`, default: `TopRight`)
+- `MinimapViewportColor` — Color of the viewport rectangle on the minimap (default: Red)
+- `MinimapViewportOpacity` — Opacity of the viewport rectangle (0-255, default: 128)
+- `MinimapMinSize` — Minimum size of the minimap in pixels (default: 50)
+
+### Image Mode
+
+When a background image is loaded, the Minimap displays a scaled thumbnail of the entire image. The current viewport is shown as a colored rectangle overlay.
+
+### Tilemap Mode
+
+When `OptimizeTilemap` is enabled, the Minimap switches to tilemap mode, rendering the tilemap at a reduced scale instead of the full image. This is useful for tile-based designs.
+
+### Click Navigation
+
+The Minimap supports **click navigation** — clicking on the minimap area will pan the main view to the clicked location, allowing quick navigation to distant parts of the canvas.
 
 ---
 

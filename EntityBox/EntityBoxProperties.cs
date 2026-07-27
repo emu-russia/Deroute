@@ -23,27 +23,6 @@ namespace System.Windows.Forms
 
 		[Category("Appearance"), DefaultValue(null)]
 		[Browsable(false)]
-		public Image BeaconImage
-		{
-			get { return beaconImage; }
-			set
-			{
-				if (beaconImage != value)
-				{
-					if (beaconImage != null)
-					{
-						beaconImage.Dispose();
-						GC.Collect();
-					}
-
-					beaconImage = new Bitmap(value);
-					Invalidate();
-				}
-			}
-		}
-
-		[Category("Appearance"), DefaultValue(null)]
-		[Browsable(false)]
 		public Image Image
 		{
 			get { return _imageOrig; }
@@ -59,7 +38,32 @@ namespace System.Windows.Forms
 
 					_imageOrig = ToGrayscale(value);
 
+					_hasImage = (_imageOrig != null);
+					_minimap.HasImage = _hasImage;
+					_minimap.InvalidateCache();
+
 					ScrollingBegin = false;
+					Invalidate();
+				}
+			}
+		}
+
+		[Category("Appearance"), DefaultValue(null)]
+		[Browsable(false)]
+		public Image BeaconImage
+		{
+			get { return beaconImage; }
+			set
+			{
+				if (beaconImage != value)
+				{
+					if (beaconImage != null)
+					{
+						beaconImage.Dispose();
+						GC.Collect();
+					}
+
+					beaconImage = new Bitmap(value);
 					Invalidate();
 				}
 			}
@@ -101,7 +105,12 @@ namespace System.Windows.Forms
 		public bool OptimizeTilemap
 		{
 			get { return tilemap_image; }
-			set { tilemap_image = value; }
+			set
+			{
+				tilemap_image = value;
+				_minimap.SetTilemapMode(value);
+				_minimap.InvalidateCache();
+			}
 		}
 
 		[Category("Logic")]
@@ -751,6 +760,106 @@ namespace System.Windows.Forms
 			get { return _viasPowerText; }
 			set { _viasPowerText = value; }
 		}
+
+		//
+		// Minimap properties
+		//
+
+		private bool _minimapEnabled;
+		private float _minimapSizePercent;
+		private MinimapPosition _minimapPosition;
+		private Color _minimapViewportColor;
+		private int _minimapViewportOpacity;
+		private int _minimapMinSize;
+
+		[Category("Minimap")]
+		[DefaultValue(false)]
+		[Description("Enable the minimap in the corner of the viewport.")]
+		public bool MinimapEnabled
+		{
+			get { return _minimapEnabled; }
+			set
+			{
+				_minimapEnabled = value;
+				_minimap.Enabled = value;
+				Invalidate();
+			}
+		}
+
+		[Category("Minimap")]
+		[DefaultValue(0.15f)]
+		[Description("Size of the minimap as a fraction of the EntityBox width (0.0 to 1.0).")]
+		public float MinimapSizePercent
+		{
+			get { return _minimapSizePercent; }
+			set
+			{
+				_minimapSizePercent = Math.Max(0.05f, Math.Min(0.5f, value));
+				Minimap.InvalidateCache();
+				Invalidate();
+			}
+		}
+
+		[Category("Minimap")]
+		[DefaultValue(typeof(MinimapPosition), "TopRight")]
+		[Description("Position of the minimap in the viewport.")]
+		public MinimapPosition MinimapPosition
+		{
+			get { return _minimapPosition; }
+			set
+			{
+				_minimapPosition = value;
+				Minimap.Position = value;
+				Invalidate();
+			}
+		}
+
+		[Category("Minimap")]
+		[DefaultValue(typeof(Color), "Red")]
+		[Description("Color of the viewport rectangle on the minimap.")]
+		public Color MinimapViewportColor
+		{
+			get { return _minimapViewportColor; }
+			set
+			{
+				_minimapViewportColor = value;
+				Minimap.ViewportColor = value;
+				Invalidate();
+			}
+		}
+
+		[Category("Minimap")]
+		[DefaultValue(128)]
+		[Description("Opacity of the viewport rectangle on the minimap (0-255).")]
+		public int MinimapViewportOpacity
+		{
+			get { return _minimapViewportOpacity; }
+			set
+			{
+				_minimapViewportOpacity = Math.Max(0, Math.Min(255, value));
+				Minimap.ViewportOpacity = value;
+				Invalidate();
+			}
+		}
+
+		[Category("Minimap")]
+		[DefaultValue(50)]
+		[Description("Minimum size of the minimap in pixels.")]
+		public int MinimapMinSize
+		{
+			get { return _minimapMinSize; }
+			set
+			{
+				_minimapMinSize = Math.Max(20, value);
+				Minimap.MinSize = value;
+				Invalidate();
+			}
+		}
+
+		private Minimap _minimap = new Minimap();
+
+		[Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+		public Minimap Minimap { get { return _minimap; } }
 
 	}
 }

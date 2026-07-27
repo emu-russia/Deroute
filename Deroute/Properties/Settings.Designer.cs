@@ -706,5 +706,77 @@ namespace DerouteSharp.Properties {
                 this["OptimizeTilemap"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MinimapEnabled {
+            get {
+                return ((bool)(this["MinimapEnabled"]));
+            }
+            set {
+                this["MinimapEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.15")]
+        public float MinimapSizePercent {
+            get {
+                return ((float)(this["MinimapSizePercent"]));
+            }
+            set {
+                this["MinimapSizePercent"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int MinimapPosition {
+            get {
+                return ((int)(this["MinimapPosition"]));
+            }
+            set {
+                this["MinimapPosition"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Red")]
+        public global::System.Drawing.Color MinimapViewportColor {
+            get {
+                return ((global::System.Drawing.Color)(this["MinimapViewportColor"]));
+            }
+            set {
+                this["MinimapViewportColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("128")]
+        public int MinimapViewportOpacity {
+            get {
+                return ((int)(this["MinimapViewportOpacity"]));
+            }
+            set {
+                this["MinimapViewportOpacity"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public int MinimapMinSize {
+            get {
+                return ((int)(this["MinimapMinSize"]));
+            }
+            set {
+                this["MinimapMinSize"] = value;
+            }
+        }
     }
 }

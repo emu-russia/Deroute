@@ -6,6 +6,15 @@ using System.IO;
 
 namespace System.Windows.Forms
 {
+	internal class Tile
+	{
+		public int ofsx;
+		public int ofsy;
+		public int width;
+		public int height;
+		public Image img;
+	}
+
 	public partial class EntityBox : Control
 	{
 		private Image _imageOrig = null;
@@ -13,14 +22,7 @@ namespace System.Windows.Forms
 		private bool grayscale = false;
 		bool tilemap_image = true;
 
-		class Tile
-		{
-			public int ofsx;
-			public int ofsy;
-			public int width;
-			public int height;
-			public Image img;
-		}
+		internal List<Tile> Tilemap { get { return tilemap; } }
 		List<Tile> tilemap = new List<Tile>();
 
 		int next_power_of_two (int x)
@@ -493,6 +495,9 @@ namespace System.Windows.Forms
 				_imageOrig.Dispose();
 				_imageOrig = null;
 			}
+			_hasImage = false;
+			_minimap.HasImage = false;
+			_minimap.InvalidateCache();
 			GC.Collect();
 			Invalidate();
 		}

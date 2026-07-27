@@ -245,6 +245,35 @@ namespace System.Windows.Forms
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
+			if (MinimapEnabled && _hasImage && e.Button == MouseButtons.Left)
+			{
+				Rectangle minimapRect = _minimap.GetTargetRect(this);
+				if (minimapRect.Contains(e.X, e.Y))
+				{
+					float imageWidth = Image.Width;
+					float imageHeight = Image.Height;
+					float maxDim = Math.Max(imageWidth, imageHeight);
+
+					float mapScale = minimapRect.Width / maxDim;
+
+					float clickImageX = (e.X - minimapRect.X) / mapScale;
+					float clickImageY = (e.Y - minimapRect.Y) / mapScale;
+
+					PointF clickLambda = ImageToLambda((int)clickImageX, (int)clickImageY);
+
+					float zf = (float)Zoom / 100.0F;
+					ScrollX = -clickLambda.X + (Width / 2.0F / (zf * Lambda));
+					ScrollY = -clickLambda.Y + (Height / 2.0F / (zf * Lambda));
+
+					Invalidate();
+
+					if (OnScrollChanged != null)
+						OnScrollChanged(this, EventArgs.Empty);
+
+					return;
+				}
+			}
+
 			// Scrolling
 
 			if (e.Button == MouseButtons.Right && ScrollingBegin == false && DrawingBegin == false)
@@ -349,6 +378,16 @@ namespace System.Windows.Forms
 
 			if ((timeStampNow - UnserializeLastStamp) < 500)
 				return;
+
+			if (MinimapEnabled && _hasImage)
+			{
+				Rectangle minimapRect = _minimap.GetTargetRect(this);
+				if (minimapRect.Contains(e.X, e.Y))
+				{
+					base.OnMouseUp(e);
+					return;
+				}
+			}
 
 			if (e.Button == MouseButtons.Right)
 			{
@@ -800,12 +839,58 @@ namespace System.Windows.Forms
 			base.OnMouseMove(e);
 		}
 
+		protected override void OnMouseDoubleClick(MouseEventArgs e)
+		{
+			if (MinimapEnabled && _hasImage)
+			{
+				Rectangle minimapRect = _minimap.GetTargetRect(this);
+				if (minimapRect.Contains(e.X, e.Y))
+				{
+					ScrollX = 0;
+					ScrollY = 0;
+					Zoom = 100;
+
+					Invalidate();
+
+					if (OnScrollChanged != null)
+						OnScrollChanged(this, EventArgs.Empty);
+					if (OnZoomChanged != null)
+						OnZoomChanged(this, EventArgs.Empty);
+
+					return;
+				}
+			}
+
+			base.OnMouseDoubleClick(e);
+		}
+
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			int delta;
 
 			LastRMB.X = -1;
 			LastRMB.Y = -1;
+
+			if (MinimapEnabled && _hasImage)
+			{
+				Rectangle minimapRect = _minimap.GetTargetRect(this);
+				if (minimapRect.Contains(e.X, e.Y))
+				{
+					int newZoom = Zoom + (e.Delta > 0 ? 10 : -10);
+					newZoom = Math.Max(10, Math.Min(400, newZoom));
+
+					if (newZoom != Zoom)
+					{
+						Zoom = newZoom;
+						Invalidate();
+
+						if (OnZoomChanged != null)
+							OnZoomChanged(this, EventArgs.Empty);
+					}
+
+					return;
+				}
+			}
 
 			if (e.Delta > 0)
 				delta = +10;
