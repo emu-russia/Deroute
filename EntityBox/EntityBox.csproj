@@ -105,6 +105,12 @@
     <Compile Include="Overlap.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Minimap.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MinimapPosition.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

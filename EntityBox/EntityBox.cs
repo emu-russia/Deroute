@@ -96,6 +96,8 @@ namespace System.Windows.Forms
 		private bool selectCellWithPorts = true;
 		private int direction_arrow_angle = 0;
 
+		private bool _hasImage;
+
 		public event EntityBoxEventHandler OnScrollChanged = null;
 		public event EntityBoxEventHandler OnZoomChanged = null;
 		public event EntityBoxEventHandler OnEntityCountChanged = null;
@@ -132,9 +134,24 @@ namespace System.Windows.Forms
 			entityGrid = null;
 			SelectEntitiesAfterAdd = true;
 
+			_minimapEnabled = false;
+			_minimapSizePercent = 0.15f;
+			_minimapPosition = MinimapPosition.TopRight;
+			_minimapViewportColor = Color.Red;
+			_minimapViewportOpacity = 128;
+			_minimapMinSize = 50;
+
+			_minimap.Position = _minimapPosition;
+			_minimap.SizePercent = _minimapSizePercent;
+			_minimap.ViewportColor = _minimapViewportColor;
+			_minimap.ViewportOpacity = _minimapViewportOpacity;
+			_minimap.MinSize = _minimapMinSize;
+
 			DefaultEntityAppearance();
 
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
+			OnImageLoad += EntityBox_OnImageLoad;
 		}
 
 		/// <summary>
@@ -366,6 +383,12 @@ namespace System.Windows.Forms
 			Overlap.FindOverlappedEntities(this);
 		}
 
+		private void EntityBox_OnImageLoad(object sender, EventArgs e)
+		{
+            _minimap.InvalidateCache();
+            _hasImage = true;
+			_minimap.HasImage = true;
+		}
 
 	}       // EntityBox
 

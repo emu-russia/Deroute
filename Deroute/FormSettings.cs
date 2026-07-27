@@ -121,6 +121,19 @@ namespace DerouteSharp
 			[Description("Select the cell along with the ports. Works only when selected by mouse click.")]
 			public bool SelectCellWithPorts { get; set; }
 
+			[Description("Enable the minimap showing the current viewport position on the loaded image.")]
+			public bool MinimapEnabled { get; set; }
+			[Description("Size of the minimap as a fraction of the EntityBox width (0.05 to 0.5).")]
+			public float MinimapSizePercent { get; set; }
+			[Description("Position of the minimap (0=TopLeft, 1=TopRight, 2=BottomLeft, 3=BottomRight).")]
+			public int MinimapPosition { get; set; }
+			[XmlElement(Type = typeof(XmlColor))]
+			public Color MinimapViewportColor { get; set; }
+			[Description("Opacity of the viewport rectangle on the minimap (0-255).")]
+			public int MinimapViewportOpacity { get; set; }
+			[Description("Minimum size of the minimap in pixels.")]
+			public int MinimapMinSize { get; set; }
+
 			private EntityBox savedEntityBox;
 			public GlobalSettings() { }
 
@@ -146,6 +159,13 @@ namespace DerouteSharp
 				ViasGroundText = entityBox.ViasGroundText;
 				ViasPowerText = entityBox.ViasPowerText;
 				SelectCellWithPorts = entityBox.SelectCellWithPorts;
+
+				MinimapEnabled = entityBox.MinimapEnabled;
+				MinimapSizePercent = entityBox.MinimapSizePercent;
+				MinimapPosition = (int)entityBox.MinimapPosition;
+				MinimapViewportColor = entityBox.MinimapViewportColor;
+				MinimapViewportOpacity = entityBox.MinimapViewportOpacity;
+				MinimapMinSize = entityBox.MinimapMinSize;
 			}
 
 			public void Save()
@@ -165,6 +185,13 @@ namespace DerouteSharp
 				savedEntityBox.ViasGroundText = ViasGroundText;
 				savedEntityBox.ViasPowerText = ViasPowerText;
 				savedEntityBox.SelectCellWithPorts = SelectCellWithPorts;
+
+				savedEntityBox.MinimapEnabled = MinimapEnabled;
+				savedEntityBox.MinimapSizePercent = MinimapSizePercent;
+				savedEntityBox.MinimapPosition = (MinimapPosition)MinimapPosition;
+				savedEntityBox.MinimapViewportColor = MinimapViewportColor;
+				savedEntityBox.MinimapViewportOpacity = MinimapViewportOpacity;
+				savedEntityBox.MinimapMinSize = MinimapMinSize;
 			}
 		}
 
@@ -468,6 +495,13 @@ namespace DerouteSharp
 			global.ViasPowerText = settings.ViasPowerText;
 			global.SelectCellWithPorts = settings.SelectCellWithPorts;
 
+			global.MinimapEnabled = settings.MinimapEnabled;
+			global.MinimapSizePercent = settings.MinimapSizePercent;
+			global.MinimapPosition = settings.MinimapPosition;
+			global.MinimapViewportColor = settings.MinimapViewportColor;
+			global.MinimapViewportOpacity = settings.MinimapViewportOpacity;
+			global.MinimapMinSize = settings.MinimapMinSize;
+
 			global.Save();
 
 			// Load color settings 
@@ -574,6 +608,13 @@ namespace DerouteSharp
 			settings.ViasPowerText = global.ViasPowerText;
 			settings.SelectCellWithPorts = global.SelectCellWithPorts;
 
+			settings.MinimapEnabled = global.MinimapEnabled;
+			settings.MinimapSizePercent = global.MinimapSizePercent;
+			settings.MinimapPosition = global.MinimapPosition;
+			settings.MinimapViewportColor = global.MinimapViewportColor;
+			settings.MinimapViewportOpacity = global.MinimapViewportOpacity;
+			settings.MinimapMinSize = global.MinimapMinSize;
+
 			// Save color settings
 
 			ColorSettings color = new ColorSettings(entityBox);
@@ -674,6 +715,13 @@ namespace DerouteSharp
 			global.ViasGroundText = settings.globalSettings.ViasGroundText;
 			global.ViasPowerText = settings.globalSettings.ViasPowerText;
 			global.SelectCellWithPorts = settings.globalSettings.SelectCellWithPorts;
+
+			global.MinimapEnabled = settings.globalSettings.MinimapEnabled;
+			global.MinimapSizePercent = settings.globalSettings.MinimapSizePercent;
+			global.MinimapPosition = settings.globalSettings.MinimapPosition;
+			global.MinimapViewportColor = settings.globalSettings.MinimapViewportColor;
+			global.MinimapViewportOpacity = settings.globalSettings.MinimapViewportOpacity;
+			global.MinimapMinSize = settings.globalSettings.MinimapMinSize;
 
 			global.Save();
 
@@ -780,6 +828,13 @@ namespace DerouteSharp
 			settings.globalSettings.ViasGroundText = global.ViasGroundText;
 			settings.globalSettings.ViasPowerText = global.ViasPowerText;
 			settings.globalSettings.SelectCellWithPorts = global.SelectCellWithPorts;
+
+			settings.globalSettings.MinimapEnabled = global.MinimapEnabled;
+			settings.globalSettings.MinimapSizePercent = global.MinimapSizePercent;
+			settings.globalSettings.MinimapPosition = global.MinimapPosition;
+			settings.globalSettings.MinimapViewportColor = new XmlColor(global.MinimapViewportColor);
+			settings.globalSettings.MinimapViewportOpacity = global.MinimapViewportOpacity;
+			settings.globalSettings.MinimapMinSize = global.MinimapMinSize;
 
 			// Save color settings
 

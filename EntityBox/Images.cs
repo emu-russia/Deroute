@@ -493,6 +493,9 @@ namespace System.Windows.Forms
 				_imageOrig.Dispose();
 				_imageOrig = null;
 			}
+			_hasImage = false;
+			_minimap.HasImage = false;
+			_minimap.InvalidateCache();
 			GC.Collect();
 			Invalidate();
 		}

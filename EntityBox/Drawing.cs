@@ -1076,6 +1076,11 @@ namespace System.Windows.Forms
 			Point origin = new Point(0, 0);
 			DrawScene(gfx.Graphics, Width, Height, false, origin);
 
+			if (MinimapEnabled && _hasImage)
+			{
+				_minimap.Draw(gfx.Graphics, this);
+			}
+
 			gfx.Render(e.Graphics);
 
 			long endTime = DateTime.Now.Ticks;
