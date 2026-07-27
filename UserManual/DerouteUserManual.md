@@ -16,7 +16,7 @@
    - [Special Entities](#special-entities)
 5. [Creating Entities](#creating-entities)
 6. [Selection](#selection)
-7. [Image Layers](#image-layers)
+7. [Entity Layers](#entity-layers)
 8. [Hierarchy Tree View](#hierarchy-tree-view)
 9. [Entity Properties](#entity-properties)
 10. [Wire Manipulation](#wire-manipulation)
@@ -32,25 +32,24 @@
 15. [Bulk Rename](#bulk-rename)
 16. [Traverse Black List](#traverse-black-list)
 17. [Cell Library Management](#cell-library-management)
-18. [Logic Simulation](#logic-simulation)
-    - [Waveform Viewer](#waveform-viewer)
-19. [Overlap Detection](#overlap-detection)
-20. [Verilog Export](#verilog-export)
-21. [Settings](#settings)
-22. [Key Bindings](#key-bindings)
-23. [Saving and Loading](#saving-and-loading)
+18. [Overlap Detection](#overlap-detection)
+19. [Verilog Export](#verilog-export)
+20. [Settings](#settings)
+21. [Key Bindings](#key-bindings)
+22. [Saving and Loading](#saving-and-loading)
 
 ---
 
 ## Overview
 
-Deroute is a Windows desktop utility designed for **reverse engineering of integrated circuits (ICs) and printed circuit boards (PCBs)**. It provides a visual editor where users can map out the topology of chip/PCB layouts using entities like wires, vias, and standard cells -- essentially "disassembling" a chip's internal structure into a workable HDL (Hardware Description Language) representation.
+Deroute is a utility for **reverse engineering of integrated circuits (ICs) and printed circuit boards (PCBs)**, built on **.NET Framework 4.8**. Because of this, it can run not only on Windows but also on other platforms with .NET support.
+
+Deroute provides a visual editor where users can map out the topology of chip/PCB layouts using entities like wires, vias, and standard cells -- essentially "disassembling" a chip's internal structure into a workable HDL (Hardware Description Language) representation.
 
 The tool allows you to:
-- Load chip/PCB images as reference backgrounds
-- Draw and annotate wires, vias, and standard cells on top of those images
+- Load a background image (chip/PCB photo) via File -> Load Image
+- Draw and annotate wires, vias, and standard cells on top of that image
 - Traverse and trace connected wire paths
-- Perform logic simulation of the captured design
 - Export the captured topology as **Verilog RTL code**
 
 > **Note:** This manual is being expanded over time. Sections not yet covered are generally self-descriptive -- feel free to explore the menus and buttons.
@@ -60,7 +59,7 @@ The tool allows you to:
 ## Getting Started
 
 1. Launch Deroute
-2. Load a reference image (chip/PCB photo) via the image layer controls
+2. Load a background image (chip/PCB photo) via File -> Load Image
 3. Start creating entities using the mode selector or key bindings
 4. Use the hierarchy tree view to manage your entity structure
 
@@ -167,7 +166,7 @@ Entities are created by selecting the appropriate **mode** from the mode selecto
 
 1. Select the desired entity type mode (e.g., `ViasInput`, `WireInterconnect`, `CellNot`, etc.)
 2. Click on the canvas to place the entity
-3. For wires: click to set each segment point, right-click or press Enter to finish
+3. For wires: drawing is done with the mouse. If you are in `ViasConnect` mode, pressing **Shift + Left Click** draws an additional wire segment from the last selected via
 4. For regions: click on existing vias to define the region boundary
 
 You can also:
@@ -189,38 +188,32 @@ Deroute supports multiple selection modes:
 
 Selected entities are highlighted with the `SelectionColor` (default: green).
 
-The last selected entity is shown with a distinct highlight. You can access it via `GetLastSelected`.
-
 ---
 
-## Image Layers
+## Entity Layers
 
-Deroute supports **3 image layers** for loading chip/PCB reference photos:
+In Deroute, entities can be grouped into **layers** (groups) to organize the project:
 
-### Loading Images
+### Grouping Entities
 
-1. Switch to the desired image layer mode (`ImageLayer0`, `ImageLayer1`, or `ImageLayer2`)
-2. Use the `LoadImage` command to load an image file
+1. Select the entities you want to group into a layer
+2. Press **Group**
+3. The hierarchy is modified -- the parent of all selected entities becomes the new layer
+4. The layer is created at the insertion node position (the current entity for adding new entities, shown in the status bar)
 
-### Image Layer Controls
+### Ungrouping
 
-For each image layer you can control:
+1. Select the layer
+2. Press **Ungroup**
+3. The layer is deleted, and the layer's parent becomes the parent of the layer's entities
 
-| Property | Description |
-|----------|-------------|
-| `ImageOpacity0/1/2` | Transparency (0-255) of the image layer |
-| `LockScroll0/1/2` | Lock/unlock scrolling of the image layer |
-| `LockZoom0/1/2` | Lock/unlock zooming of the image layer |
-| `ScrollImage0/1/2` | Offset of the image relative to origin |
+### Creating an Empty Layer
 
-### Tips
+Creating an empty layer is also available via a button (previously in the Edit menu).
 
-- Use image layers to overlay chip/PCB photos as reference
-- Adjust opacity to make the image more visible or more transparent
-- Lock scroll/zoom to prevent accidental movement of reference images
-- Layer 0 is the topmost image layer (closest to the entity layer)
+> **Tip:** Layers help organize large projects with thousands of entities.
 
-![image_layers](imgstore/image_layers.png)
+![entity_layers](imgstore/entity_layers.png)
 
 ---
 
@@ -482,56 +475,6 @@ Cells are stored as XML with:
 
 ---
 
-## Logic Simulation
-
-Deroute includes a **logic simulator** for testing your captured design:
-
-### Starting Simulation
-
-**Menu:** Simulation -> Run (or press F5)
-
-### Simulation Values
-
-The simulator uses 4 logic values:
-
-| Value | Description |
-|-------|-------------|
-| `X` | Unknown/undefined |
-| `Z` | High impedance |
-| `Zero` | Logic 0 |
-| `One` | Logic 1 |
-
-### Controls
-
-| Control | Action |
-|---------|--------|
-| F5 | Run/Stop simulation |
-| F7 | Step simulation (single step) |
-
-### Scope
-
-Entities can be marked as **"Scope"** to record their values during simulation. This allows you to monitor specific signals.
-
----
-
-### Waveform Viewer
-
-The **Waveform Viewer** displays signal values over time:
-
-**Menu:** View -> Waveform Viewer (or Ctrl+W)
-
-![waveform_viewer](imgstore/waveform_viewer.png)
-
-### Usage
-
-1. Mark entities as "Scope" in their properties
-2. Run the simulation (F5)
-3. Open the Waveform Viewer (Ctrl+W)
-4. The viewer displays the recorded signal values for all scoped entities
-5. Use the waveform viewer to analyze signal timing and behavior
-
----
-
 ## Overlap Detection
 
 Deroute can detect and highlight **overlapping entities**:
@@ -640,7 +583,6 @@ Deroute supports the following **keyboard shortcuts**:
 | **F1** | Selection mode |
 | **F2** | Via Connect mode |
 | **F3** | Wire Interconnect mode |
-| **F4-F9** | Other entity creation modes |
 | **F10** | Traverse tier 1 |
 | **F11** | Traverse tier 2 |
 | **F12** | Traverse tier 3 |
@@ -651,40 +593,32 @@ Deroute supports the following **keyboard shortcuts**:
 | **Ctrl+S** | Save scene |
 | **Ctrl+R** | Rotate cell 90 degrees |
 | **Ctrl+F** | Flip cell horizontally |
-| **Ctrl+W** | Open Waveform Viewer |
-| **F5** | Run/Stop simulation |
-| **F7** | Step simulation |
 | **Delete** | Delete selected entities |
 | **Escape** | Deselect all entities |
 | **Home** | Reset view to origin |
 | **Arrow keys** | Move selected entities by 0.1 lambda |
 | **Ctrl+Up/Down** | Reorder siblings in tree view |
 
-### Custom Key Bindings
-
-Key bindings can be customized via the **Key Bindings dialog** (accessible from Settings).
-
 ---
 
 ## Saving and Loading
 
-### Saving Scenes
+### Saving Entities
 
-Deroute scenes are saved as **XML files**:
+Deroute entities are saved as **XML files**:
 
-1. **Menu:** File -> Save (Ctrl+S)
-2. **Menu:** File -> Save As...
-3. Scenes can also be saved as **compressed XML** (`.xmlz`) to reduce file size
+1. **Menu:** File -> Save entities (Ctrl+S)
+2. Entities can also be saved as **compressed XML** (`.xmlz`) to reduce file size
 
-### Loading Scenes
+### Loading Entities
 
-1. **Menu:** File -> Open
+1. **Menu:** File -> Add entities
 2. Select an XML or .xmlz file
-3. The scene is loaded with all entities, images, and settings
+3. Entities are loaded and added to the current project
 
 ### Cell Library Files
 
-Cell libraries are also saved as XML files and can be loaded/saved independently from scenes.
+Cell libraries are also saved as XML files and can be loaded/saved independently from entities.
 
 ---
 
