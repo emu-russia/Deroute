@@ -361,6 +361,11 @@ namespace System.Windows.Forms
 			}
 		}
 
+		public void FindOverlappedEntities()
+		{
+			Overlap.FindOverlappedEntities(this);
+		}
+
 
 	}       // EntityBox
 
