@@ -61,7 +61,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(172, 48);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Deroute Tool 3.6\r\n© 2026, emu-russia";
+            this.label1.Text = "Deroute Tool 3.7\r\n© 2026, emu-russia";
             // 
             // label2
             // 
@@ -120,10 +120,10 @@
             this.linkLabel1.AutoSize = true;
             this.linkLabel1.Location = new System.Drawing.Point(24, 366);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(163, 13);
+            this.linkLabel1.Size = new System.Drawing.Size(168, 13);
             this.linkLabel1.TabIndex = 7;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "https://discord.gg/WJcvqyCHkh";
+            this.linkLabel1.Text = "https://discord.gg/gZGmE3DQFY";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // backgroundWorker1
