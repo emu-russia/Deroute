@@ -102,9 +102,15 @@ namespace System.Windows.Forms
 			targetGraphics.InterpolationMode = InterpolationMode.NearestNeighbor;
 			targetGraphics.SmoothingMode = SmoothingMode.None;
 
+			targetGraphics.FillRectangle(Brushes.Black, targetRect);
+
 			targetGraphics.DrawImage(sourceBitmap, targetRect, sourceRect, GraphicsUnit.Pixel);
 
 			DrawViewport(targetGraphics, entityBox, targetRect);
+
+			Pen borderPen = new Pen(Color.FromArgb(180, Color.White), 1f);
+			targetGraphics.DrawRectangle(borderPen, targetRect);
+			borderPen.Dispose();
 		}
 
 		private Bitmap GetMinimapBitmap(EntityBox entityBox)
@@ -169,16 +175,16 @@ namespace System.Windows.Forms
 
 			float mapScale = targetRect.Width / Math.Max(imageWidth, imageHeight);
 
-			int x = (int)(topLeftImage.X * mapScale);
-			int y = (int)(topLeftImage.Y * mapScale);
+			int x = (int)(topLeftImage.X * mapScale) + targetRect.X;
+			int y = (int)(topLeftImage.Y * mapScale) + targetRect.Y;
 			int w = (int)((bottomRightImage.X - topLeftImage.X) * mapScale);
 			int h = (int)((bottomRightImage.Y - topLeftImage.Y) * mapScale);
 
 			if (w <= 0) w = 1;
 			if (h <= 0) h = 1;
 
-			int maxX = targetRect.Width - x;
-			int maxY = targetRect.Height - y;
+			int maxX = targetRect.Width - (x - targetRect.X);
+			int maxY = targetRect.Height - (y - targetRect.Y);
 
 			if (w > maxX && maxX > 0)
 			{
@@ -190,8 +196,11 @@ namespace System.Windows.Forms
 				h = maxY;
 			}
 
-			x = Math.Max(0, x);
-			y = Math.Max(0, y);
+			x = Math.Max(targetRect.X, x);
+			y = Math.Max(targetRect.Y, y);
+
+			x = Math.Min(x, targetRect.Right - w);
+			y = Math.Min(y, targetRect.Bottom - h);
 
 			int alpha = Math.Max(0, Math.Min(255, ViewportOpacity));
 			Color vpColor = ViewportColor;
@@ -204,6 +213,12 @@ namespace System.Windows.Forms
 
 			fillBrush.Dispose();
 			fillPen.Dispose();
+		}
+
+		public Rectangle GetTargetRect(EntityBox entityBox)
+		{
+			int size = CalculateSize(entityBox);
+			return CalculatePosition(entityBox, size);
 		}
 	}
 }
