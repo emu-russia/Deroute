@@ -191,5 +191,8 @@
     <Setting Name="MinimapMinSize" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">50</Value>
     </Setting>
+    <Setting Name="ViasNeighborRadius" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">1.5</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

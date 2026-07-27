@@ -133,6 +133,8 @@ namespace DerouteSharp
 			public int MinimapViewportOpacity { get; set; }
 			[Description("Minimum size of the minimap in pixels.")]
 			public int MinimapMinSize { get; set; }
+			[Description("Radius in lambda for checking neighbor viases when adding new vias. Vias within this distance will not be created.")]
+			public float ViasNeighborRadius { get; set; }
 
 			private EntityBox savedEntityBox;
 			public GlobalSettings() { }
@@ -166,6 +168,8 @@ namespace DerouteSharp
 				MinimapViewportColor = entityBox.MinimapViewportColor;
 				MinimapViewportOpacity = entityBox.MinimapViewportOpacity;
 				MinimapMinSize = entityBox.MinimapMinSize;
+
+				ViasNeighborRadius = entityBox.ViasNeighborRadius;
 			}
 
 			public void Save()
@@ -192,6 +196,8 @@ namespace DerouteSharp
 				savedEntityBox.MinimapViewportColor = MinimapViewportColor;
 				savedEntityBox.MinimapViewportOpacity = MinimapViewportOpacity;
 				savedEntityBox.MinimapMinSize = MinimapMinSize;
+
+				savedEntityBox.ViasNeighborRadius = ViasNeighborRadius;
 			}
 		}
 
@@ -501,6 +507,7 @@ namespace DerouteSharp
 			global.MinimapViewportColor = settings.MinimapViewportColor;
 			global.MinimapViewportOpacity = settings.MinimapViewportOpacity;
 			global.MinimapMinSize = settings.MinimapMinSize;
+			global.ViasNeighborRadius = settings.ViasNeighborRadius;
 
 			global.Save();
 
@@ -614,6 +621,7 @@ namespace DerouteSharp
 			settings.MinimapViewportColor = global.MinimapViewportColor;
 			settings.MinimapViewportOpacity = global.MinimapViewportOpacity;
 			settings.MinimapMinSize = global.MinimapMinSize;
+			settings.ViasNeighborRadius = global.ViasNeighborRadius;
 
 			// Save color settings
 
@@ -722,6 +730,7 @@ namespace DerouteSharp
 			global.MinimapViewportColor = settings.globalSettings.MinimapViewportColor;
 			global.MinimapViewportOpacity = settings.globalSettings.MinimapViewportOpacity;
 			global.MinimapMinSize = settings.globalSettings.MinimapMinSize;
+			global.ViasNeighborRadius = settings.globalSettings.ViasNeighborRadius;
 
 			global.Save();
 
@@ -835,6 +844,7 @@ namespace DerouteSharp
 			settings.globalSettings.MinimapViewportColor = new XmlColor(global.MinimapViewportColor);
 			settings.globalSettings.MinimapViewportOpacity = global.MinimapViewportOpacity;
 			settings.globalSettings.MinimapMinSize = global.MinimapMinSize;
+			settings.globalSettings.ViasNeighborRadius = global.ViasNeighborRadius;
 
 			// Save color settings
 

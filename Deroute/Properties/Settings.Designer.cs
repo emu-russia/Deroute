@@ -778,5 +778,20 @@ namespace DerouteSharp.Properties {
                 this["MinimapMinSize"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.5")]
+        public float ViasNeighborRadius
+        {
+            get
+            {
+                return ((float)(this["ViasNeighborRadius"]));
+            }
+            set
+            {
+                this["ViasNeighborRadius"] = value;
+            }
+        }
     }
 }
