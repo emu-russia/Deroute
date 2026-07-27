@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Collections.Generic;
 
 namespace System.Windows.Forms
 {
@@ -7,6 +8,7 @@ namespace System.Windows.Forms
 	{
 		private Bitmap _cachedBitmap;
 		private bool _hasImage;
+		private bool _isTilemap;
 
 		public bool Enabled { get; set; }
 		public float SizePercent { get; set; }
@@ -35,29 +37,56 @@ namespace System.Windows.Forms
 				_cachedBitmap = null;
 			}
 			_hasImage = false;
+			_isTilemap = false;
 		}
 
 		public bool HasImage { get => _hasImage; set => _hasImage = value; }
+
+		public void SetTilemapMode(bool isTilemap)
+		{
+			_isTilemap = isTilemap;
+			InvalidateCache();
+		}
 
 		public void Draw(Graphics targetGraphics, EntityBox entityBox)
 		{
 			if (!Enabled || !HasImage || entityBox.Image == null)
 				return;
 
-			int size = CalculateSize(entityBox);
-			Rectangle targetRect = CalculatePosition(entityBox, size);
+			Rectangle targetRect = CalculatePosition(entityBox);
 
-			DrawMinimap(targetGraphics, entityBox, targetRect, size);
+			if (_isTilemap)
+			{
+				DrawMinimapTilemap(targetGraphics, entityBox, targetRect);
+			}
+			else
+			{
+				Bitmap sourceBitmap = GetMinimapBitmap(entityBox);
+				if (sourceBitmap == null)
+					return;
+
+				Rectangle sourceRect = new Rectangle(0, 0, sourceBitmap.Width, sourceBitmap.Height);
+
+				targetGraphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+				targetGraphics.SmoothingMode = SmoothingMode.None;
+
+				targetGraphics.FillRectangle(Brushes.Black, targetRect);
+
+				targetGraphics.DrawImage(sourceBitmap, targetRect, sourceRect, GraphicsUnit.Pixel);
+
+				DrawViewport(targetGraphics, entityBox, targetRect);
+
+				Pen borderPen = new Pen(Color.FromArgb(180, Color.White), 1f);
+				targetGraphics.DrawRectangle(borderPen, targetRect);
+				borderPen.Dispose();
+			}
 		}
 
-		private int CalculateSize(EntityBox entityBox)
+		private Rectangle CalculatePosition(EntityBox entityBox)
 		{
-			int calculatedSize = (int)(entityBox.Width * SizePercent);
-			return Math.Max(calculatedSize, MinSize);
-		}
+			int width = CalculateWidth(entityBox);
+			int height = CalculateHeight(entityBox);
 
-		private Rectangle CalculatePosition(EntityBox entityBox, int size)
-		{
 			int x, y;
 
 			switch (Position)
@@ -67,19 +96,19 @@ namespace System.Windows.Forms
 					y = Margin;
 					break;
 				case MinimapPosition.TopRight:
-					x = entityBox.Width - size - Margin;
+					x = entityBox.Width - width - Margin;
 					y = Margin;
 					break;
 				case MinimapPosition.BottomLeft:
 					x = Margin;
-					y = entityBox.Height - size - Margin;
+					y = entityBox.Height - height - Margin;
 					break;
 				case MinimapPosition.BottomRight:
-					x = entityBox.Width - size - Margin;
-					y = entityBox.Height - size - Margin;
+					x = entityBox.Width - width - Margin;
+					y = entityBox.Height - height - Margin;
 					break;
 				default:
-					x = entityBox.Width - size - Margin;
+					x = entityBox.Width - width - Margin;
 					y = Margin;
 					break;
 			}
@@ -87,31 +116,35 @@ namespace System.Windows.Forms
 			x = Math.Max(Margin, x);
 			y = Math.Max(Margin, y);
 
-			return new Rectangle(x, y, size, size);
+			return new Rectangle(x, y, width, height);
 		}
 
-		private void DrawMinimap(Graphics targetGraphics, EntityBox entityBox, Rectangle targetRect, int size)
+		private int CalculateWidth(EntityBox entityBox)
 		{
-			Bitmap sourceBitmap = GetMinimapBitmap(entityBox);
-
-			if (sourceBitmap == null)
-				return;
-
-			Rectangle sourceRect = new Rectangle(0, 0, sourceBitmap.Width, sourceBitmap.Height);
-
-			targetGraphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-			targetGraphics.SmoothingMode = SmoothingMode.None;
-
-			targetGraphics.FillRectangle(Brushes.Black, targetRect);
-
-			targetGraphics.DrawImage(sourceBitmap, targetRect, sourceRect, GraphicsUnit.Pixel);
-
-			DrawViewport(targetGraphics, entityBox, targetRect);
-
-			Pen borderPen = new Pen(Color.FromArgb(180, Color.White), 1f);
-			targetGraphics.DrawRectangle(borderPen, targetRect);
-			borderPen.Dispose();
+			int calculatedSize = (int)(entityBox.Width * SizePercent);
+			return Math.Max(calculatedSize, MinSize);
 		}
+
+		private int CalculateHeight(EntityBox entityBox)
+		{
+			if (!_hasImage || entityBox.Image == null)
+			{
+				return CalculateWidth(entityBox);
+			}
+
+			int width = CalculateWidth(entityBox);
+
+			float imageWidth = entityBox.Image.Width;
+			float imageHeight = entityBox.Image.Height;
+
+			if (imageWidth <= 0 || imageHeight <= 0)
+				return width;
+
+			float aspectRatio = imageHeight / imageWidth;
+			int height = (int)(width * aspectRatio);
+
+			return Math.Max(height, MinSize);
+	 }
 
 		private Bitmap GetMinimapBitmap(EntityBox entityBox)
 		{
@@ -130,33 +163,85 @@ namespace System.Windows.Forms
 			if (origImage == null)
 				return null;
 
-			int targetSize = (int)(entityBox.Width * SizePercent);
-			targetSize = Math.Max(targetSize, MinSize);
+			int width = CalculateWidth(entityBox);
+			int height = CalculateHeight(entityBox);
 
-			Bitmap bitmap = new Bitmap(targetSize, targetSize);
+			float imageWidth = origImage.Width;
+			float imageHeight = origImage.Height;
+			float maxDim = Math.Max(imageWidth, imageHeight);
+
+			float scale = width / maxDim;
+
+			int drawWidth = (int)(imageWidth * scale);
+			int drawHeight = (int)(imageHeight * scale);
+
+			Bitmap bitmap = new Bitmap(width, height);
 
 			using (Graphics g = Graphics.FromImage(bitmap))
 			{
 				g.InterpolationMode = InterpolationMode.NearestNeighbor;
 				g.SmoothingMode = SmoothingMode.None;
 
-				float imageWidth = origImage.Width;
-				float imageHeight = origImage.Height;
-				float maxDim = Math.Max(imageWidth, imageHeight);
+				int x = (width - drawWidth) / 2;
+				int y = (height - drawHeight) / 2;
 
-				float scale = targetSize / maxDim;
-
-				int drawWidth = (int)(imageWidth * scale);
-				int drawHeight = (int)(imageHeight * scale);
-
-				int x = (targetSize - drawWidth) / 2;
-				int y = (targetSize - drawHeight) / 2;
-
-				g.FillRectangle(Brushes.Black, 0, 0, targetSize, targetSize);
+				g.FillRectangle(Brushes.Black, 0, 0, width, height);
 				g.DrawImage(origImage, x, y, drawWidth, drawHeight);
 			}
 
 			return bitmap;
+		}
+
+		private void DrawMinimapTilemap(Graphics targetGraphics, EntityBox entityBox, Rectangle targetRect)
+		{
+			if (entityBox.OptimizeTilemap == false)
+				return;
+
+			var tilemap = entityBox.Tilemap;
+			if (tilemap == null || tilemap.Count == 0)
+				return;
+
+			int width = targetRect.Width;
+			int height = targetRect.Height;
+
+			Bitmap bitmap = new Bitmap(width, height);
+
+			using (Graphics g = Graphics.FromImage(bitmap))
+			{
+				g.InterpolationMode = InterpolationMode.NearestNeighbor;
+				g.SmoothingMode = SmoothingMode.None;
+				g.FillRectangle(Brushes.Black, 0, 0, width, height);
+
+				float imageWidth = entityBox.Image.Width;
+				float imageHeight = entityBox.Image.Height;
+				float maxDim = Math.Max(imageWidth, imageHeight);
+				float scale = width / maxDim;
+
+				foreach (Tile tile in tilemap)
+				{
+					if (tile.img == null)
+						continue;
+
+					int drawX = (int)(tile.ofsx * scale);
+					int drawY = (int)(tile.ofsy * scale);
+					int drawW = (int)(tile.width * scale);
+					int drawH = (int)(tile.height * scale);
+
+					g.DrawImage(tile.img, drawX, drawY, drawW, drawH);
+				}
+			}
+
+			targetGraphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+			targetGraphics.SmoothingMode = SmoothingMode.None;
+
+			targetGraphics.DrawImage(bitmap, targetRect);
+			bitmap.Dispose();
+
+			DrawViewport(targetGraphics, entityBox, targetRect);
+
+			Pen borderPen = new Pen(Color.FromArgb(180, Color.White), 1f);
+			targetGraphics.DrawRectangle(borderPen, targetRect);
+			borderPen.Dispose();
 		}
 
 		private void DrawViewport(Graphics targetGraphics, EntityBox entityBox, Rectangle targetRect)
@@ -217,8 +302,7 @@ namespace System.Windows.Forms
 
 		public Rectangle GetTargetRect(EntityBox entityBox)
 		{
-			int size = CalculateSize(entityBox);
-			return CalculatePosition(entityBox, size);
+			return CalculatePosition(entityBox);
 		}
 	}
 }

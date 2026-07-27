@@ -105,7 +105,12 @@ namespace System.Windows.Forms
 		public bool OptimizeTilemap
 		{
 			get { return tilemap_image; }
-			set { tilemap_image = value; }
+			set
+			{
+				tilemap_image = value;
+				_minimap.SetTilemapMode(value);
+				_minimap.InvalidateCache();
+			}
 		}
 
 		[Category("Logic")]
