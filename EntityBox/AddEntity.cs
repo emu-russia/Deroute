@@ -70,7 +70,7 @@ namespace System.Windows.Forms
 						float dist = (float)Math.Sqrt(Math.Pow(entity.LambdaX - point.X, 2) +
 													   Math.Pow(entity.LambdaY - point.Y, 2));
 
-						if (dist <= 1.5F)
+						if (dist <= ViasNeighborRadius)
 							return null;
 					}
 				}

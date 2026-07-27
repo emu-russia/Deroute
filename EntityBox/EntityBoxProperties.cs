@@ -320,6 +320,7 @@ namespace System.Windows.Forms
 		private bool _AutoPriority;
 		private string _viasGroundText;
 		private string _viasPowerText;
+		private float _viasNeighborRadius;
 
 		private void DefaultEntityAppearance()
 		{
@@ -382,6 +383,7 @@ namespace System.Windows.Forms
 			_viasGroundText = "1'b0";
 			_viasPowerText = "1'b1";
 			selectCellWithPorts = true;
+			_viasNeighborRadius = 1.5f;
 		}
 
 		[Category("Entity Appearance")]
@@ -759,6 +761,15 @@ namespace System.Windows.Forms
 		{
 			get { return _viasPowerText; }
 			set { _viasPowerText = value; }
+		}
+
+		[Category("Entity Appearance")]
+		[DefaultValue(1.5f)]
+		[Description("Radius in lambda for checking neighbor viases when adding new vias. Vias within this distance will not be created.")]
+		public float ViasNeighborRadius
+		{
+			get { return _viasNeighborRadius; }
+			set { _viasNeighborRadius = value; }
 		}
 
 		//
