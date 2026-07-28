@@ -1,0 +1,6 @@
+@CollabMCP.Server_HostAddress = http://localhost:5186
+
+GET {{CollabMCP.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

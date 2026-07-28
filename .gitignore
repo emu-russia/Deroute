@@ -3,3 +3,6 @@ Deroute/obj
 Deroute/.vs
 *.iobj
 *.suo
+CollabMCP.Server/bin
+CollabMCP.Server/obj
+CollabMCP.Server/Logs
