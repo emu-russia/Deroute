@@ -3,6 +3,7 @@ using CollabMCP.Server.Hubs;
 using CollabMCP.Server.Middleware;
 using CollabMCP.Server.Services;
 using Serilog;
+using Mcp = CollabMCP.Server.Mcp;
 
 var config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -42,9 +43,18 @@ try
     builder.Services.AddSingleton<SessionManager>();
     builder.Services.AddSignalR();
 
+    // MCP services
+    builder.Services.AddSingleton<Mcp.McpSessionManager>();
+    builder.Services.AddSingleton<Mcp.McpResources>();
+    builder.Services.AddSingleton<Mcp.McpPrompts>();
+    builder.Services.AddSingleton<Mcp.McpTools>();
+
     var app = builder.Build();
 
     app.UseMiddleware<ApiKeyAuthMiddleware>();
+
+    // MCP endpoint - handles all /mcp routes internally
+    app.UseMiddleware<Mcp.McpEndpoint>();
 
     app.MapHub<CollabHub>("/collabhub");
 
