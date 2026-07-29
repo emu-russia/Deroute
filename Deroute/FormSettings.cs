@@ -563,9 +563,21 @@ namespace DerouteSharp
 		}
 
 
-		public static void LoadSettings (EntityBox entityBox)
+		public static void LoadSettings (EntityBox entityBox, CollabMcpSettings collabMcpSettings = null)
 		{
 			Properties.Settings settings = Properties.Settings.Default;
+
+			if (collabMcpSettings != null)
+			{
+				collabMcpSettings.Enabled = settings.CollabEnabled;
+				collabMcpSettings.ServerUrl = settings.CollabServerUrl;
+				collabMcpSettings.ApiKey = settings.CollabApiKey;
+				collabMcpSettings.UserId = settings.CollabUserId;
+				collabMcpSettings.SessionId = settings.CollabSessionId;
+				collabMcpSettings.Username = settings.CollabUsername;
+				collabMcpSettings.ReconnectDelayMs = settings.CollabReconnectDelayMs;
+				collabMcpSettings.MaxReconnectAttempts = settings.CollabMaxReconnectAttempts;
+			}
 
 			// Load global settings
 
@@ -677,9 +689,21 @@ namespace DerouteSharp
 			entityBox.Invalidate();
 		}
 
-		public static void SaveSettings (EntityBox entityBox)
+		public static void SaveSettings (EntityBox entityBox, CollabMcpSettings collabMcpSettings = null)
 		{
 			Properties.Settings settings = Properties.Settings.Default;
+
+			if (collabMcpSettings != null)
+			{
+				settings.CollabEnabled = collabMcpSettings.Enabled;
+				settings.CollabServerUrl = collabMcpSettings.ServerUrl;
+				settings.CollabApiKey = collabMcpSettings.ApiKey;
+				settings.CollabUserId = collabMcpSettings.UserId;
+				settings.CollabSessionId = collabMcpSettings.SessionId;
+				settings.CollabUsername = collabMcpSettings.Username;
+				settings.CollabReconnectDelayMs = collabMcpSettings.ReconnectDelayMs;
+				settings.CollabMaxReconnectAttempts = collabMcpSettings.MaxReconnectAttempts;
+			}
 
 			// Save global settings
 

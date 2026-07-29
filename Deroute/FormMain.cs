@@ -36,6 +36,7 @@ namespace DerouteSharp
 		public FormMain()
 		{
 			InitializeComponent();
+			this.FormClosing += FormMain_FormClosing;
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
@@ -76,7 +77,9 @@ namespace DerouteSharp
 			savedText = Text;
 			Console.WriteLine(savedText);
 
-			FormSettings.LoadSettings(entityBox1);
+			var collabMcpSettings = new FormSettings.CollabMcpSettings(_collabSettings);
+			FormSettings.LoadSettings(entityBox1, collabMcpSettings);
+			collabMcpSettings.Save();
 
 			PopulateTree();
 
@@ -90,6 +93,12 @@ namespace DerouteSharp
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
+		}
+
+		private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			var collabMcpSettings = new FormSettings.CollabMcpSettings(_collabSettings);
+			FormSettings.SaveSettings(entityBox1, collabMcpSettings);
 		}
 
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -884,6 +893,8 @@ namespace DerouteSharp
 
 			if (settings.DialogResult == DialogResult.OK)
 			{
+				var collabMcpSettings = new FormSettings.CollabMcpSettings(_collabSettings);
+				FormSettings.SaveSettings(entityBox1, collabMcpSettings);
 				entityBox1.Invalidate();
 			}
 		}
