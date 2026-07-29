@@ -257,7 +257,7 @@ namespace DerouteSharp
 		{
 			if (e.Button == MouseButtons.Right && e.X > 0 && e.X < statusStrip1.Items.Count * 100)
 			{
-				collabStatusContextMenu.Show(statusStrip1, e);
+				collabStatusContextMenu.Show(statusStrip1, e.Location);
 			}
 		}
 
