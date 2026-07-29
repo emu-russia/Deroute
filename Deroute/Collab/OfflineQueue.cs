@@ -36,13 +36,20 @@ namespace DerouteSharp.Collab
 
     public class OfflineChange
     {
-        public string Type { get; set; }
+        public string ChangeType { get; set; }
         public string PrimitiveId { get; set; }
         public string SessionId { get; set; }
+        public string EntityType { get; set; }
+        public string EntityLabel { get; set; }
         public List<float> Points { get; set; }
         public string StrokeColor { get; set; }
         public float StrokeWidth { get; set; }
         public string FillColor { get; set; }
+        public float LambdaX { get; set; }
+        public float LambdaY { get; set; }
+        public float LambdaEndX { get; set; }
+        public float LambdaEndY { get; set; }
+        public List<float> PathPoints { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     }
 

@@ -29,6 +29,7 @@ namespace DerouteSharp
 				InvokeOnUiThread(() =>
 				{
 					UpdateCollabStatus("Connected", _collabUserCount);
+					FlushOfflineChanges();
 				});
 			};
 
@@ -206,6 +207,9 @@ namespace DerouteSharp
 			};
 
 			_offlineQueue = new OfflineChangeQueue();
+
+			entityBox1.OnEntityAdd += EntityBox_OnEntityAdd;
+			entityBox1.OnEntityRemove += EntityBox_OnEntityRemove;
 
 			if (_collabSettings.Enabled && !string.IsNullOrEmpty(_collabSettings.ApiKey))
 			{
@@ -401,28 +405,107 @@ namespace DerouteSharp
 
 		private async Task FlushOfflineChanges()
 		{
+			if (_offlineQueue == null || _offlineQueue.Count == 0 || _collabClient == null || !_collabClient.IsConnected)
+				return;
+
 			var changes = _offlineQueue.Flush();
 			foreach (var change in changes)
 			{
-				if (change.Type == "created")
+				if (change.ChangeType == "created")
 				{
+					var entityType = !string.IsNullOrEmpty(change.EntityType)
+						? change.EntityType.ToLower()
+						: "polyline";
+
+					string primitiveType;
+					switch (entityType)
+					{
+						case "region":
+						case "rectangle":
+						case "polygon":
+						case "ellipse":
+							primitiveType = "rectangle";
+							break;
+						case "wireinterconnect":
+						case "line":
+						case "polyline":
+							primitiveType = "polyline";
+							break;
+						default:
+							primitiveType = "polyline";
+							break;
+					}
+
 					await _collabClient.SendPrimitiveCreatedAsync(
-						change.Points != null ? "polyline" : "line",
-						change.Points,
-						change.StrokeColor,
+						primitiveType,
+						change.Points ?? new List<float>(),
+						change.StrokeColor ?? "#000000",
 						change.StrokeWidth,
-						change.FillColor);
+						change.FillColor ?? "transparent");
 				}
-				else if (change.Type == "updated")
+				else if (change.ChangeType == "updated")
 				{
 					await _collabClient.SendPrimitiveUpdatedAsync(
 						change.PrimitiveId,
-						change.Points,
-						change.StrokeColor,
+						change.Points ?? new List<float>(),
+						change.StrokeColor ?? "#000000",
 						change.StrokeWidth,
-						change.FillColor);
+						change.FillColor ?? "transparent");
 				}
 			}
+		}
+
+		private void EntityBox_OnEntityAdd(object sender, Entity entity, EventArgs e)
+		{
+			if (_collabClient == null || _collabClient.IsConnected)
+				return;
+
+			var primData = EntityConverter.ToPrimitiveData(entity, _collabSettings.UserId);
+
+			var change = new OfflineChange
+			{
+				ChangeType = "created",
+				PrimitiveId = primData.Id,
+				SessionId = _collabSettings.SessionId,
+				EntityType = entity.Type.ToString(),
+				EntityLabel = entity.Label,
+				Points = primData.Points,
+				StrokeColor = primData.StrokeColor,
+				StrokeWidth = primData.StrokeWidth,
+				FillColor = primData.FillColor ?? "transparent",
+				LambdaX = entity.LambdaX,
+				LambdaY = entity.LambdaY,
+				LambdaEndX = entity.LambdaEndX,
+				LambdaEndY = entity.LambdaEndY,
+				PathPoints = entity.PathPoints != null
+					? entity.PathPoints.Select(p => (float)p.X).ToList()
+					: null
+			};
+
+			InvokeOnUiThread(() =>
+			{
+				QueueOfflineChange(change);
+			});
+		}
+
+		private void EntityBox_OnEntityRemove(object sender, Entity entity, EventArgs e)
+		{
+			if (_collabClient == null || _collabClient.IsConnected)
+				return;
+
+			var change = new OfflineChange
+			{
+				ChangeType = "deleted",
+				PrimitiveId = entity.Label ?? Guid.NewGuid().ToString(),
+				SessionId = _collabSettings.SessionId,
+				EntityType = entity.Type.ToString(),
+				EntityLabel = entity.Label
+			};
+
+			InvokeOnUiThread(() =>
+			{
+				QueueOfflineChange(change);
+			});
 		}
 	}
 }
