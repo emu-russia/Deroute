@@ -218,13 +218,23 @@ namespace DerouteSharp
 
 		private void UpdateCollabStatus(string status, int userCount)
 		{
+			collabStatusValueLabel.Text = status;
 			if (userCount > 0)
 			{
-				toolStripStatusLabel1.Text = $"CollabMCP: {status} ({userCount} user{(userCount != 1 ? "s" : "")})";
+				collabStatusValueLabel.Text = $"{status} ({userCount} user{(userCount != 1 ? "s" : "")})";
+			}
+
+			if (status.Contains("Connected"))
+			{
+				collabStatusValueLabel.ForeColor = Color.Green;
+			}
+			else if (status.Contains("Error") || status.Contains("Disconnected"))
+			{
+				collabStatusValueLabel.ForeColor = Color.Red;
 			}
 			else
 			{
-				toolStripStatusLabel1.Text = $"CollabMCP: {status}";
+				collabStatusValueLabel.ForeColor = Color.Orange;
 			}
 		}
 
@@ -242,10 +252,10 @@ namespace DerouteSharp
 					? _collabSettings.SessionId.Substring(0, 8) + "..."
 					: _collabSettings.SessionId;
 
-				if (_collabClient.IsConnected)
-				{
-					toolStripStatusLabel1.Text = $"CollabMCP: Connected ({_collabUserCount} users, session: {sessionShort})";
-				}
+			if (_collabClient.IsConnected)
+			{
+				collabStatusValueLabel.Text = $"Connected ({_collabUserCount} users, session: {sessionShort})";
+			}
 			}
 			catch
 			{

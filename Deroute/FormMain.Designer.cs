@@ -171,6 +171,8 @@
 
 			this.toolStripStatusLabel15 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabelTimeSpent = new System.Windows.Forms.ToolStripStatusLabel();
+			this.collabStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.collabStatusValueLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.collabStatusContextMenu = new System.Windows.Forms.ContextMenuStrip();
 			this.collabReconnectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitContainer3 = new System.Windows.Forms.SplitContainer();
@@ -1382,13 +1384,29 @@
             this.toolStripStatusLabel13,
 			this.toolStripStatusLabel14,
             this.toolStripStatusLabel15,
-            this.toolStripStatusLabelTimeSpent});
+            this.toolStripStatusLabelTimeSpent,
+            this.collabStatusLabel,
+            this.collabStatusValueLabel});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 644);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.ShowItemToolTips = true;
 			this.statusStrip1.Size = new System.Drawing.Size(1218, 24);
 			this.statusStrip1.TabIndex = 3;
 			this.statusStrip1.Text = "statusStrip1";
+			// 
+			// collabStatusLabel
+			// 
+			this.collabStatusLabel.Name = "collabStatusLabel";
+			this.collabStatusLabel.Size = new System.Drawing.Size(87, 19);
+			this.collabStatusLabel.Text = "CollabMCP:";
+			this.collabStatusLabel.Spring = true;
+			// 
+			// collabStatusValueLabel
+			// 
+			this.collabStatusValueLabel.Name = "collabStatusValueLabel";
+			this.collabStatusValueLabel.Size = new System.Drawing.Size(73, 19);
+			this.collabStatusValueLabel.Text = "Disabled";
+			this.collabStatusValueLabel.ToolTipText = "CollabMCP connection status";
 			// 
 			// collabStatusContextMenu
 			// 
@@ -1826,6 +1844,8 @@
 		private System.Windows.Forms.ToolStripMenuItem removeNotOrthogonalWiresToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel15;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelTimeSpent;
+		private System.Windows.Forms.ToolStripStatusLabel collabStatusLabel;
+		private System.Windows.Forms.ToolStripStatusLabel collabStatusValueLabel;
 		private System.Windows.Forms.ContextMenuStrip collabStatusContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem collabReconnectMenuItem;
 		private System.ComponentModel.BackgroundWorker backgroundWorkerTimeSpent;
