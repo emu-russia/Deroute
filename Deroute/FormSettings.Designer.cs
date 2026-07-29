@@ -38,7 +38,9 @@
 			this.tabPage5 = new System.Windows.Forms.TabPage();
 			this.tabPage6 = new System.Windows.Forms.TabPage();
 			this.tabPage7 = new System.Windows.Forms.TabPage();
+			this.tabPage8 = new System.Windows.Forms.TabPage();
 			this.propertyGridEntityBox = new System.Windows.Forms.PropertyGrid();
+			this.propertyGridCollabMcp = new System.Windows.Forms.PropertyGrid();
 			this.button2 = new System.Windows.Forms.Button();
 			this.button1 = new System.Windows.Forms.Button();
 			this.propertyGridColors = new System.Windows.Forms.PropertyGrid();
@@ -59,6 +61,7 @@
 			this.tabPage5.SuspendLayout();
 			this.tabPage6.SuspendLayout();
 			this.tabPage7.SuspendLayout();
+			this.tabPage8.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// splitContainer1
@@ -90,6 +93,7 @@
 			this.tabControl1.Controls.Add(this.tabPage5);
 			this.tabControl1.Controls.Add(this.tabPage6);
 			this.tabControl1.Controls.Add(this.tabPage7);
+			this.tabControl1.Controls.Add(this.tabPage8);
 			this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabControl1.Location = new System.Drawing.Point(0, 0);
 			this.tabControl1.Name = "tabControl1";
@@ -169,6 +173,17 @@
 			this.tabPage7.Text = "Developer";
 			this.tabPage7.UseVisualStyleBackColor = true;
 			// 
+			// tabPage8
+			// 
+			this.tabPage8.Controls.Add(this.propertyGridCollabMcp);
+			this.tabPage8.Location = new System.Drawing.Point(4, 22);
+			this.tabPage8.Name = "tabPage8";
+			this.tabPage8.Size = new System.Drawing.Size(825, 415);
+			this.tabPage8.TabIndex = 7;
+			this.tabPage8.Text = "CollabMCP";
+			this.tabPage8.UseVisualStyleBackColor = true;
+			this.tabPage8.ResumeLayout(false);
+			// 
 			// propertyGridEntityBox
 			// 
 			this.propertyGridEntityBox.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -239,6 +254,14 @@
 			this.propertyGridShape.Size = new System.Drawing.Size(825, 415);
 			this.propertyGridShape.TabIndex = 0;
 			// 
+			// propertyGridCollabMcp
+			// 
+			this.propertyGridCollabMcp.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.propertyGridCollabMcp.Location = new System.Drawing.Point(0, 0);
+			this.propertyGridCollabMcp.Name = "propertyGridCollabMcp";
+			this.propertyGridCollabMcp.Size = new System.Drawing.Size(825, 415);
+			this.propertyGridCollabMcp.TabIndex = 0;
+			// 
 			// propertyGridGlobal
 			// 
 			this.propertyGridGlobal.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -271,6 +294,7 @@
 			this.tabPage5.ResumeLayout(false);
 			this.tabPage6.ResumeLayout(false);
 			this.tabPage7.ResumeLayout(false);
+			this.tabPage8.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -288,7 +312,9 @@
 		private System.Windows.Forms.TabPage tabPage5;
 		private System.Windows.Forms.TabPage tabPage6;
 		private System.Windows.Forms.TabPage tabPage7;
+		private System.Windows.Forms.TabPage tabPage8;
 		private System.Windows.Forms.PropertyGrid propertyGridEntityBox;
+		private System.Windows.Forms.PropertyGrid propertyGridCollabMcp;
 		private System.Windows.Forms.PropertyGrid propertyGridColors;
 		private System.Windows.Forms.PropertyGrid propertyGridPriority;
 		private System.Windows.Forms.PropertyGrid propertyGridGlobal;

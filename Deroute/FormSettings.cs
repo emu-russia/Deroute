@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using DerouteSharp.Collab;
 
 namespace DerouteSharp
 {
@@ -16,6 +17,7 @@ namespace DerouteSharp
 		private OpacitySettings opacitySettings;
 		private SizeSettings sizeSettings;
 		private ShapeSettings shapeSettings;
+		private CollabMcpSettings collabMcpSettings;
 
 		[Serializable()]
 		public class SerializedSettings
@@ -30,7 +32,7 @@ namespace DerouteSharp
 
 		private EntityBox savedEntityBox;
 
-		public FormSettings(EntityBox entityBox)
+		public FormSettings(EntityBox entityBox, CollabSettings collabSettings = null)
 		{
 			InitializeComponent();
 
@@ -55,6 +57,12 @@ namespace DerouteSharp
 
 			shapeSettings = new ShapeSettings(entityBox);
 			propertyGridShape.SelectedObject = shapeSettings;
+
+			if (collabSettings != null)
+			{
+				collabMcpSettings = new CollabMcpSettings(collabSettings);
+				propertyGridCollabMcp.SelectedObject = collabMcpSettings;
+			}
 		}
 
 		private void FormSettings_KeyDown(object sender, KeyEventArgs e)
@@ -74,6 +82,11 @@ namespace DerouteSharp
 			opacitySettings.Save();
 			sizeSettings.Save();
 			shapeSettings.Save();
+
+			if (collabMcpSettings != null)
+			{
+				collabMcpSettings.Save();
+			}
 
 			SaveSettings(savedEntityBox);
 
@@ -474,6 +487,60 @@ namespace DerouteSharp
 			public void Save()
 			{
 				savedEntityBox.ViasShape = ViasShape;
+			}
+		}
+
+
+		[Serializable()]
+		public class CollabMcpSettings
+		{
+			[Description("Enable collaboration via CollabMCP")]
+			public bool Enabled { get; set; }
+			[Description("URL of the CollabMCP server")]
+			public string ServerUrl { get; set; } = "http://localhost:5000";
+			[Description("API key for authentication with the CollabMCP server")]
+			public string ApiKey { get; set; } = string.Empty;
+			[Description("Unique identifier for the current user")]
+			public string UserId { get; set; }
+			[Description("Display name shown to other collaborators")]
+			public string Username { get; set; }
+			[Description("Delay in milliseconds before attempting to reconnect after a connection loss")]
+			public int ReconnectDelayMs { get; set; } = 2000;
+			[Description("Maximum number of reconnection attempts before giving up")]
+			public int MaxReconnectAttempts { get; set; } = 50;
+
+			private CollabSettings _collabSettings;
+
+			public CollabMcpSettings() { }
+
+			public CollabMcpSettings(CollabSettings collabSettings)
+			{
+				if (collabSettings == null)
+					return;
+
+				_collabSettings = collabSettings;
+
+				Enabled = collabSettings.Enabled;
+				ServerUrl = collabSettings.ServerUrl;
+				ApiKey = collabSettings.ApiKey;
+				UserId = collabSettings.UserId;
+				Username = collabSettings.Username;
+				ReconnectDelayMs = collabSettings.ReconnectDelayMs;
+				MaxReconnectAttempts = collabSettings.MaxReconnectAttempts;
+			}
+
+			public void Save()
+			{
+				if (_collabSettings == null)
+					return;
+
+				_collabSettings.Enabled = Enabled;
+				_collabSettings.ServerUrl = ServerUrl;
+				_collabSettings.ApiKey = ApiKey;
+				_collabSettings.UserId = UserId;
+				_collabSettings.Username = Username;
+				_collabSettings.ReconnectDelayMs = ReconnectDelayMs;
+				_collabSettings.MaxReconnectAttempts = MaxReconnectAttempts;
 			}
 		}
 

@@ -77,19 +77,7 @@ namespace DerouteSharp.Collab.UI
             };
             reconnectBtn.Click += ReconnectBtn_Click;
 
-            settingsBtn = new Button
-            {
-                Location = new Point(530, 5),
-                Size = new Size(75, 22),
-                Text = "Settings",
-                FlatStyle = FlatStyle.Flat,
-                BackColor = SystemColors.Control,
-                ForeColor = SystemColors.ControlText,
-                Cursor = Cursors.Hand
-            };
-            settingsBtn.Click += SettingsBtn_Click;
-
-            Controls.AddRange(new Control[] { statusLabel, userCountLabel, sessionIdLabel, reconnectBtn, settingsBtn });
+            Controls.AddRange(new Control[] { statusLabel, userCountLabel, sessionIdLabel, reconnectBtn });
             ResumeLayout(false);
             PerformLayout();
         }
@@ -148,12 +136,6 @@ namespace DerouteSharp.Collab.UI
             reconnectBtn.Text = "Reconnect";
         }
 
-        private void SettingsBtn_Click(object sender, EventArgs e)
-        {
-            var form = new CollabSettingsForm(_settings);
-            form.ShowDialog();
-        }
-
         private void ShowError(string error)
         {
             statusLabel.ForeColor = Color.Red;
@@ -181,6 +163,5 @@ namespace DerouteSharp.Collab.UI
         private Label userCountLabel;
         private Label sessionIdLabel;
         private Button reconnectBtn;
-        private Button settingsBtn;
     }
 }

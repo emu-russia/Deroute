@@ -123,7 +123,6 @@
     <Compile Include="FormBulkRename.Designer.cs">
       <DependentUpon>FormBulkRename.cs</DependentUpon>
     </Compile>
-
     <Compile Include="FormEnterValue.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -148,14 +147,12 @@
     <Compile Include="FormProgress.Designer.cs">
       <DependentUpon>FormProgress.cs</DependentUpon>
     </Compile>
-
     <Compile Include="FormSettings.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSettings.Designer.cs">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </Compile>
-
     <Compile Include="FormWaves.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -196,9 +193,6 @@
     <Compile Include="Collab\UI\CollabStatusPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Collab\UI\CollabSettingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <EmbeddedResource Include="FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
@@ -223,7 +217,6 @@
     <EmbeddedResource Include="FormBulkRename.resx">
       <DependentUpon>FormBulkRename.cs</DependentUpon>
     </EmbeddedResource>
-
     <EmbeddedResource Include="FormEnterValue.resx">
       <DependentUpon>FormEnterValue.cs</DependentUpon>
     </EmbeddedResource>
@@ -236,11 +229,9 @@
     <EmbeddedResource Include="FormProgress.resx">
       <DependentUpon>FormProgress.cs</DependentUpon>
     </EmbeddedResource>
-
     <EmbeddedResource Include="FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </EmbeddedResource>
-
     <EmbeddedResource Include="FormWaves.resx">
       <DependentUpon>FormWaves.cs</DependentUpon>
     </EmbeddedResource>
@@ -308,7 +299,6 @@
       <Project>{b054bdba-d0a2-4712-bb9f-4368c37be0eb}</Project>
       <Name>EntityBox</Name>
     </ProjectReference>
-
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">

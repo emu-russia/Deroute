@@ -1066,7 +1066,7 @@ namespace DerouteSharp
 
 		private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			FormSettings settings = new FormSettings(entityBox1);
+			FormSettings settings = new FormSettings(entityBox1, _collabSettings);
 
 			settings.FormClosed += Settings_FormClosed;
 			settings.ShowDialog();
