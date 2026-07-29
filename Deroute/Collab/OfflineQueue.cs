@@ -15,6 +15,9 @@ namespace DerouteSharp.Collab
         public void Add(OfflineChange change)
         {
             _queue.Enqueue(change);
+#if DEBUG && (!__MonoCS__)
+            Console.WriteLine($"[OfflineQueue] Add: type={change.ChangeType}, primitiveId={change.PrimitiveId}, count={_queue.Count}");
+#endif
         }
 
         public List<OfflineChange> Flush()
@@ -25,11 +28,17 @@ namespace DerouteSharp.Collab
                 result = _queue.ToList();
                 while (_queue.TryDequeue(out _)) { }
             }
+#if DEBUG && (!__MonoCS__)
+            Console.WriteLine($"[OfflineQueue] Flush: {result.Count} changes, queue empty={result.Count == 0}");
+#endif
             return result;
         }
 
         public void Clear()
         {
+#if DEBUG && (!__MonoCS__)
+            Console.WriteLine($"[OfflineQueue] Clear: {Count} changes removed");
+#endif
             while (_queue.TryDequeue(out _)) { }
         }
     }
@@ -69,6 +78,9 @@ namespace DerouteSharp.Collab
             _timer.Interval = _intervalMs;
             _timer.Tick += Timer_Tick;
             _timer.Start();
+#if DEBUG && (!__MonoCS__)
+            Console.WriteLine($"[CoordinateThrottler] Created: interval={_intervalMs}ms");
+#endif
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -82,6 +94,9 @@ namespace DerouteSharp.Collab
 
             if (updates.Count > 0)
             {
+#if DEBUG && (!__MonoCS__)
+                Console.WriteLine($"[CoordinateThrottler] Flush: {updates.Count} updates");
+#endif
                 OnFlush?.Invoke(updates);
             }
         }
@@ -93,14 +108,23 @@ namespace DerouteSharp.Collab
                 var existing = _pendingUpdates.FirstOrDefault(u => u.PrimitiveId == primitiveId);
                 if (existing != null)
                 {
+#if DEBUG && (!__MonoCS__)
+                    Console.WriteLine($"[CoordinateThrottler] Dedup: primitiveId={primitiveId}, replacing update");
+#endif
                     _pendingUpdates.Remove(existing);
                 }
                 _pendingUpdates.Add(new PositionUpdate { PrimitiveId = primitiveId, Points = points, Timestamp = DateTime.UtcNow });
+#if DEBUG && (!__MonoCS__)
+                Console.WriteLine($"[CoordinateThrottler] AddUpdate: primitiveId={primitiveId}, pendingCount={_pendingUpdates.Count}");
+#endif
             }
         }
 
         public void Stop()
         {
+#if DEBUG && (!__MonoCS__)
+            Console.WriteLine("[CoordinateThrottler] Stop");
+#endif
             _timer?.Stop();
             _timer?.Dispose();
         }

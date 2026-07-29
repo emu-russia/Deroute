@@ -22,10 +22,17 @@ namespace DerouteSharp
 
 		private void InitializeCollab()
 		{
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine("[Collab] InitializeCollab: starting, enabled=" + _collabSettings.Enabled);
+			Console.WriteLine("[Collab] InitializeCollab: serverUrl=" + _collabSettings.ServerUrl + ", sessionId=" + _collabSettings.SessionId + ", userId=" + _collabSettings.UserId);
+#endif
 			_collabClient = new CollabClient(_collabSettings);
 
 			_collabClient.OnConnected += (s, e) =>
 			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine("[Collab] OnConnected event fired");
+#endif
 				InvokeOnUiThread(() =>
 				{
 					UpdateCollabStatus("Connected", _collabUserCount);
@@ -35,6 +42,9 @@ namespace DerouteSharp
 
 			_collabClient.OnDisconnected += (s, e) =>
 			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine("[Collab] OnDisconnected event fired");
+#endif
 				InvokeOnUiThread(() =>
 				{
 					_collabUserCount = 0;
@@ -44,6 +54,9 @@ namespace DerouteSharp
 
 			_collabClient.OnUserJoined += (s, userId) =>
 			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine($"[Collab UI] OnUserJoined: userId={userId}");
+#endif
 				InvokeOnUiThread(() =>
 				{
 					_collabUserCount = _collabClient.GetConnectedUsersAsync().Result.Count;
@@ -55,6 +68,9 @@ namespace DerouteSharp
 
 			_collabClient.OnUserLeft += (s, userId) =>
 			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine($"[Collab UI] OnUserLeft: userId={userId}");
+#endif
 				InvokeOnUiThread(() =>
 				{
 					_collabUserCount = Math.Max(0, _collabUserCount - 1);
@@ -64,31 +80,49 @@ namespace DerouteSharp
 
 			_collabClient.OnPrimitiveCreated += (s, data) =>
 			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine($"[Collab UI] OnPrimitiveCreated: id={data.Id}, type={data.Type}, createdBy={data.CreatedBy}");
+#endif
 				InvokeOnUiThread(() => ApplyRemotePrimitive(data));
 			};
 
 			_collabClient.OnPrimitiveUpdated += (s, data) =>
 			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine($"[Collab UI] OnPrimitiveUpdated: id={data.Id}, points={data.Points?.Count ?? 0}");
+#endif
 				InvokeOnUiThread(() => ApplyRemoteUpdate(data));
 			};
 
 			_collabClient.OnPrimitiveLocked += (s, lockData) =>
 			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine($"[Collab UI] OnPrimitiveLocked: primitiveId={lockData.PrimitiveId}, lockedBy={lockData.LockedBy}");
+#endif
 				InvokeOnUiThread(() => ApplyRemoteLock(lockData));
 			};
 
 			_collabClient.OnPrimitiveUnlocked += (s, lockData) =>
 			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine($"[Collab UI] OnPrimitiveUnlocked: primitiveId={lockData.PrimitiveId}");
+#endif
 				InvokeOnUiThread(() => ApplyRemoteUnlock(lockData));
 			};
 
 			_collabClient.OnPrimitiveDeleted += (s, data) =>
 			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine($"[Collab UI] OnPrimitiveDeleted: id={data.Id}");
+#endif
 				InvokeOnUiThread(() => ApplyRemoteDelete(data));
 			};
 
 			_collabClient.OnCanvasCleared += (s, e) =>
 			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine("[Collab UI] OnCanvasCleared");
+#endif
 				InvokeOnUiThread(() =>
 				{
 					if (entityBox1.root != null)
@@ -104,6 +138,9 @@ namespace DerouteSharp
 
 			_collabClient.OnSnapshotReceived += (s, e) =>
 			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine("[Collab UI] OnSnapshotReceived");
+#endif
 				InvokeOnUiThread(() =>
 				{
 					_isSyncing = true;
@@ -213,10 +250,19 @@ namespace DerouteSharp
 
 			if (_collabSettings.Enabled && !string.IsNullOrEmpty(_collabSettings.ApiKey))
 			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine("[Collab] Auto-connect enabled, starting connection...");
+#endif
 				Task.Run(async () =>
 				{
 					await _collabClient.ConnectAsync();
 				});
+			}
+			else
+			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine("[Collab] Auto-connect skipped: enabled=" + _collabSettings.Enabled + ", hasKey=" + !string.IsNullOrEmpty(_collabSettings.ApiKey));
+#endif
 			}
 		}
 
@@ -277,6 +323,9 @@ namespace DerouteSharp
 
 		private void CollabReconnectMenuItem_Click(object sender, EventArgs e)
 		{
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine("[Collab UI] CollabReconnectMenuItem_Click");
+#endif
 			if (_collabClient != null)
 			{
 				Task.Run(async () =>
@@ -290,6 +339,9 @@ namespace DerouteSharp
 		{
 			if (_isSyncing) return;
 
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine($"[Collab Apply] ApplyRemotePrimitive: id={data.Id}, type={data.Type}, color={data.StrokeColor}, createdBy={data.CreatedBy}, lockedBy={data.LockedBy}");
+#endif
 			var color = ColorTranslator.FromHtml(data.StrokeColor ?? "#000000");
 			var entity = EntityConverter.ToEntity(data, _collabSettings.UserId);
 
@@ -308,6 +360,9 @@ namespace DerouteSharp
 		{
 			if (_isSyncing) return;
 
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine($"[Collab Apply] ApplyRemoteUpdate: id={data.Id}, points={data.Points?.Count ?? 0}, color={data.StrokeColor}");
+#endif
 			var entity = entityBox1.root.Children.FirstOrDefault(e => e.Label == data.Id);
 			if (entity != null)
 			{
@@ -336,10 +391,19 @@ namespace DerouteSharp
 
 				entityBox1.Invalidate();
 			}
+			else
+			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine($"[Collab Apply] ApplyRemoteUpdate: entity not found for id={data.Id}");
+#endif
+			}
 		}
 
 		private void ApplyRemoteLock(LockData data)
 		{
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine($"[Collab Apply] ApplyRemoteLock: primitiveId={data.PrimitiveId}, lockedBy={data.LockedBy}, isLocked={data.IsLocked}");
+#endif
 			var entity = entityBox1.root.Children.FirstOrDefault(e => e.Label == data.PrimitiveId);
 			if (entity != null)
 			{
@@ -362,6 +426,9 @@ namespace DerouteSharp
 
 		private void ApplyRemoteUnlock(LockData data)
 		{
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine($"[Collab Apply] ApplyRemoteUnlock: primitiveId={data.PrimitiveId}");
+#endif
 			var entity = entityBox1.root.Children.FirstOrDefault(e => e.Label == data.PrimitiveId);
 			if (entity != null)
 			{
@@ -376,6 +443,9 @@ namespace DerouteSharp
 
 		private void ApplyRemoteDelete(VectorPrimitiveData data)
 		{
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine($"[Collab Apply] ApplyRemoteDelete: id={data.Id}");
+#endif
 			var entity = entityBox1.root.Children.FirstOrDefault(e => e.Label == data.Id);
 			if (entity != null)
 			{
@@ -383,6 +453,12 @@ namespace DerouteSharp
 				_entityOriginalColors.Remove(data.Id);
 				_entityLockOwners.Remove(data.Id);
 				entityBox1.Invalidate();
+			}
+			else
+			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine($"[Collab Apply] ApplyRemoteDelete: entity not found for id={data.Id}");
+#endif
 			}
 		}
 
@@ -400,6 +476,9 @@ namespace DerouteSharp
 
 		private void QueueOfflineChange(OfflineChange change)
 		{
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine($"[Collab Offline] QueueOfflineChange: type={change.ChangeType}, primitiveId={change.PrimitiveId}, entityType={change.EntityType}");
+#endif
 			_offlineQueue.Add(change);
 		}
 
@@ -408,9 +487,18 @@ namespace DerouteSharp
 			if (_offlineQueue == null || _offlineQueue.Count == 0 || _collabClient == null || !_collabClient.IsConnected)
 				return;
 
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine($"[Collab Offline] FlushOfflineChanges: starting, queueCount={_offlineQueue.Count}, isConnected={_collabClient.IsConnected}");
+#endif
 			var changes = _offlineQueue.Flush();
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine($"[Collab Offline] FlushOfflineChanges: {changes.Count} changes to flush");
+#endif
 			foreach (var change in changes)
 			{
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine($"[Collab Offline] Sending change: type={change.ChangeType}, primitiveId={change.PrimitiveId}");
+#endif
 				if (change.ChangeType == "created")
 				{
 					var entityType = !string.IsNullOrEmpty(change.EntityType)
@@ -460,6 +548,9 @@ namespace DerouteSharp
 			if (_collabClient == null || _collabClient.IsConnected)
 				return;
 
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine($"[Collab Offline] EntityBox_OnEntityAdd: entityType={entity.Type}, label={entity.Label}, isConnected={_collabClient.IsConnected}");
+#endif
 			var primData = EntityConverter.ToPrimitiveData(entity, _collabSettings.UserId);
 
 			var change = new OfflineChange
@@ -493,6 +584,9 @@ namespace DerouteSharp
 			if (_collabClient == null || _collabClient.IsConnected)
 				return;
 
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine($"[Collab Offline] EntityBox_OnEntityRemove: entityType={entity.Type}, label={entity.Label}, isConnected={_collabClient.IsConnected}");
+#endif
 			var change = new OfflineChange
 			{
 				ChangeType = "deleted",
