@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using DerouteSharp.Collab;
-using DerouteSharp.Collab.UI;
 
 namespace DerouteSharp
 {
@@ -14,7 +13,8 @@ namespace DerouteSharp
 		private CollabClient _collabClient;
 		private CoordinateThrottler _positionThrottler;
 		private OfflineChangeQueue _offlineQueue;
-		private CollabStatusPanel _collabStatusPanel;
+		private Timer _collabStatusTimer;
+		private int _collabUserCount = 0;
 		private bool _isSyncing = false;
 		private Dictionary<string, Color> _entityOriginalColors = new Dictionary<string, Color>();
 		private Dictionary<string, string> _entityLockOwners = new Dictionary<string, string>();
@@ -27,7 +27,7 @@ namespace DerouteSharp
 			{
 				InvokeOnUiThread(() =>
 				{
-					toolStripStatusLabel1.Text = "CollabMCP: Connected";
+					UpdateCollabStatus("Connected", _collabUserCount);
 				});
 			};
 
@@ -35,7 +35,8 @@ namespace DerouteSharp
 			{
 				InvokeOnUiThread(() =>
 				{
-					toolStripStatusLabel1.Text = "CollabMCP: Disconnected";
+					_collabUserCount = 0;
+					UpdateCollabStatus("Disconnected", 0);
 				});
 			};
 
@@ -43,6 +44,7 @@ namespace DerouteSharp
 			{
 				InvokeOnUiThread(() =>
 				{
+					_collabUserCount = _collabClient.GetConnectedUsersAsync().Result.Count;
 					var color = _collabClient.GetUserColor(userId);
 					var msg = $"User {userId} joined (color: {color})";
 					toolStripStatusLabel1.Text = msg;
@@ -53,6 +55,7 @@ namespace DerouteSharp
 			{
 				InvokeOnUiThread(() =>
 				{
+					_collabUserCount = Math.Max(0, _collabUserCount - 1);
 					toolStripStatusLabel1.Text = $"User {userId} left";
 				});
 			};
@@ -178,9 +181,19 @@ namespace DerouteSharp
 			{
 				InvokeOnUiThread(() =>
 				{
-					toolStripStatusLabel1.Text = $"CollabMCP Error: {error}";
+					UpdateCollabStatus($"Error: {error.Substring(0, Math.Min(30, error.Length))}", _collabUserCount);
 				});
 			};
+
+			_collabStatusTimer = new Timer();
+			_collabStatusTimer.Interval = 5000;
+			_collabStatusTimer.Tick += (s, e) =>
+			{
+				InvokeOnUiThread(() => RefreshCollabStatus());
+			};
+			_collabStatusTimer.Start();
+
+			statusStrip1.MouseDown += StatusStripMouseDown;
 
 			_positionThrottler = new CoordinateThrottler(this, 33);
 			_positionThrottler.OnFlush += (updates) =>
@@ -200,10 +213,62 @@ namespace DerouteSharp
 					await _collabClient.ConnectAsync();
 				});
 			}
+		}
 
-			_collabStatusPanel = new CollabStatusPanel(_collabClient, _collabSettings);
-			this.Controls.Add(_collabStatusPanel);
-			_collabStatusPanel.BringToFront();
+		private void UpdateCollabStatus(string status, int userCount)
+		{
+			if (userCount > 0)
+			{
+				toolStripStatusLabel1.Text = $"CollabMCP: {status} ({userCount} user{(userCount != 1 ? "s" : "")})";
+			}
+			else
+			{
+				toolStripStatusLabel1.Text = $"CollabMCP: {status}";
+			}
+		}
+
+		private async void RefreshCollabStatus()
+		{
+			if (!_collabClient.IsConnected || string.IsNullOrEmpty(_collabSettings.SessionId))
+				return;
+
+			try
+			{
+				var users = await _collabClient.GetConnectedUsersAsync();
+				_collabUserCount = users.Count;
+
+				var sessionShort = _collabSettings.SessionId.Length > 8
+					? _collabSettings.SessionId.Substring(0, 8) + "..."
+					: _collabSettings.SessionId;
+
+				if (_collabClient.IsConnected)
+				{
+					toolStripStatusLabel1.Text = $"CollabMCP: Connected ({_collabUserCount} users, session: {sessionShort})";
+				}
+			}
+			catch
+			{
+				// Ignore errors during status refresh
+			}
+		}
+
+		private void StatusStripMouseDown(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Right && e.X > 0 && e.X < statusStrip1.Items.Count * 100)
+			{
+				collabStatusContextMenu.Show(statusStrip1, e);
+			}
+		}
+
+		private void CollabReconnectMenuItem_Click(object sender, EventArgs e)
+		{
+			if (_collabClient != null)
+			{
+				Task.Run(async () =>
+				{
+					await _collabClient.ConnectAsync();
+				});
+			}
 		}
 
 		private void ApplyRemotePrimitive(VectorPrimitiveData data)

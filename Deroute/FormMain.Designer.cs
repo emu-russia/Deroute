@@ -186,6 +186,8 @@
 			this.saveFileDialog4 = new System.Windows.Forms.SaveFileDialog();
 			this.backgroundWorkerVerilog = new System.ComponentModel.BackgroundWorker();
 			this.backgroundWorkerImageLoad = new System.ComponentModel.BackgroundWorker();
+			this.collabStatusContextMenu = new System.Windows.Forms.ContextMenuStrip();
+			this.collabReconnectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.myTreeView1 = new DerouteSharp.MyTreeView();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -1387,6 +1389,19 @@
 			this.statusStrip1.Size = new System.Drawing.Size(1218, 24);
 			this.statusStrip1.TabIndex = 3;
 			this.statusStrip1.Text = "statusStrip1";
+			// 
+			// collabStatusContextMenu
+			// 
+			this.collabStatusContextMenu.Name = "collabStatusContextMenu";
+			this.collabStatusContextMenu.Size = new System.Drawing.Size(137, 28);
+			this.collabStatusContextMenu.Items.Add(this.collabReconnectMenuItem);
+			// 
+			// collabReconnectMenuItem
+			// 
+			this.collabReconnectMenuItem.Name = "collabReconnectMenuItem";
+			this.collabReconnectMenuItem.Size = new System.Drawing.Size(136, 24);
+			this.collabReconnectMenuItem.Text = "Reconnect";
+			this.collabReconnectMenuItem.Click += CollabReconnectMenuItem_Click;
 			// 
 			// toolStripStatusLabel1
 			// 

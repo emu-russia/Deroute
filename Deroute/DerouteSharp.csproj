@@ -194,9 +194,6 @@
     <Compile Include="Collab\CollabClient.cs" />
     <Compile Include="Collab\OfflineQueue.cs" />
     <Compile Include="Collab\EntityConverter.cs" />
-    <Compile Include="Collab\UI\CollabStatusPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <EmbeddedResource Include="FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
@@ -311,6 +308,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
