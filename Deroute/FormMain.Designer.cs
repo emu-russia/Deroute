@@ -171,6 +171,8 @@
 
 			this.toolStripStatusLabel15 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabelTimeSpent = new System.Windows.Forms.ToolStripStatusLabel();
+			this.collabStatusContextMenu = new System.Windows.Forms.ContextMenuStrip();
+			this.collabReconnectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitContainer3 = new System.Windows.Forms.SplitContainer();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
@@ -186,8 +188,6 @@
 			this.saveFileDialog4 = new System.Windows.Forms.SaveFileDialog();
 			this.backgroundWorkerVerilog = new System.ComponentModel.BackgroundWorker();
 			this.backgroundWorkerImageLoad = new System.ComponentModel.BackgroundWorker();
-			this.collabStatusContextMenu = new System.Windows.Forms.ContextMenuStrip();
-			this.collabReconnectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.myTreeView1 = new DerouteSharp.MyTreeView();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -1826,6 +1826,8 @@
 		private System.Windows.Forms.ToolStripMenuItem removeNotOrthogonalWiresToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel15;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelTimeSpent;
+		private System.Windows.Forms.ContextMenuStrip collabStatusContextMenu;
+		private System.Windows.Forms.ToolStripMenuItem collabReconnectMenuItem;
 		private System.ComponentModel.BackgroundWorker backgroundWorkerTimeSpent;
 		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
