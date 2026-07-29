@@ -20,6 +20,19 @@ namespace DerouteSharp
 		private CollabMcpSettings collabMcpSettings;
 
 		[Serializable()]
+		public class SerializedCollabMcpSettings
+		{
+			public bool Enabled = false;
+			public string ServerUrl = "http://localhost:5000";
+			public string ApiKey = string.Empty;
+			public string UserId = string.Empty;
+			public string SessionId = string.Empty;
+			public string Username = string.Empty;
+			public int ReconnectDelayMs = 2000;
+			public int MaxReconnectAttempts = 50;
+		}
+
+		[Serializable()]
 		public class SerializedSettings
 		{
 			public GlobalSettings globalSettings = new GlobalSettings(null);
@@ -28,6 +41,7 @@ namespace DerouteSharp
 			public OpacitySettings opacitySettings = new OpacitySettings(null);
 			public SizeSettings sizeSettings = new SizeSettings(null);
 			public ShapeSettings shapeSettings = new ShapeSettings(null);
+			public SerializedCollabMcpSettings collabMcpSettings = new SerializedCollabMcpSettings();
 		}
 
 		private EntityBox savedEntityBox;
@@ -502,6 +516,8 @@ namespace DerouteSharp
 			public string ApiKey { get; set; } = string.Empty;
 			[Description("Unique identifier for the current user")]
 			public string UserId { get; set; }
+			[Description("Session ID for the current collaboration session")]
+			public string SessionId { get; set; }
 			[Description("Display name shown to other collaborators")]
 			public string Username { get; set; }
 			[Description("Delay in milliseconds before attempting to reconnect after a connection loss")]
@@ -524,6 +540,7 @@ namespace DerouteSharp
 				ServerUrl = collabSettings.ServerUrl;
 				ApiKey = collabSettings.ApiKey;
 				UserId = collabSettings.UserId;
+				SessionId = collabSettings.SessionId;
 				Username = collabSettings.Username;
 				ReconnectDelayMs = collabSettings.ReconnectDelayMs;
 				MaxReconnectAttempts = collabSettings.MaxReconnectAttempts;
@@ -538,6 +555,7 @@ namespace DerouteSharp
 				_collabSettings.ServerUrl = ServerUrl;
 				_collabSettings.ApiKey = ApiKey;
 				_collabSettings.UserId = UserId;
+				_collabSettings.SessionId = SessionId;
 				_collabSettings.Username = Username;
 				_collabSettings.ReconnectDelayMs = ReconnectDelayMs;
 				_collabSettings.MaxReconnectAttempts = MaxReconnectAttempts;
@@ -761,7 +779,7 @@ namespace DerouteSharp
 			settings.Save();
 		}
 
-		public static void LoadSettingsFromFile(string filename, EntityBox entityBox)
+		public static void LoadSettingsFromFile(string filename, EntityBox entityBox, CollabMcpSettings collabMcpSettings = null)
 		{
 			SerializedSettings settings = new SerializedSettings();
 
@@ -800,6 +818,20 @@ namespace DerouteSharp
 			global.ViasNeighborRadius = settings.globalSettings.ViasNeighborRadius;
 
 			global.Save();
+
+			// Load CollabMCP settings
+
+			if (collabMcpSettings != null)
+			{
+				collabMcpSettings.Enabled = settings.collabMcpSettings.Enabled;
+				collabMcpSettings.ServerUrl = settings.collabMcpSettings.ServerUrl;
+				collabMcpSettings.ApiKey = settings.collabMcpSettings.ApiKey;
+				collabMcpSettings.UserId = settings.collabMcpSettings.UserId;
+				collabMcpSettings.SessionId = settings.collabMcpSettings.SessionId;
+				collabMcpSettings.Username = settings.collabMcpSettings.Username;
+				collabMcpSettings.ReconnectDelayMs = settings.collabMcpSettings.ReconnectDelayMs;
+				collabMcpSettings.MaxReconnectAttempts = settings.collabMcpSettings.MaxReconnectAttempts;
+			}
 
 			// Load color settings 
 
@@ -882,7 +914,7 @@ namespace DerouteSharp
 			entityBox.Invalidate();
 		}
 
-		public static void SaveSettingsToFile(string filename, EntityBox entityBox)
+		public static void SaveSettingsToFile(string filename, EntityBox entityBox, CollabMcpSettings collabMcpSettings = null)
 		{
 			SerializedSettings settings = new SerializedSettings();
 
@@ -912,6 +944,17 @@ namespace DerouteSharp
 			settings.globalSettings.MinimapViewportOpacity = global.MinimapViewportOpacity;
 			settings.globalSettings.MinimapMinSize = global.MinimapMinSize;
 			settings.globalSettings.ViasNeighborRadius = global.ViasNeighborRadius;
+
+			// Save CollabMCP settings
+
+			settings.collabMcpSettings.Enabled = collabMcpSettings?.Enabled ?? false;
+			settings.collabMcpSettings.ServerUrl = collabMcpSettings?.ServerUrl ?? "http://localhost:5000";
+			settings.collabMcpSettings.ApiKey = collabMcpSettings?.ApiKey ?? string.Empty;
+			settings.collabMcpSettings.UserId = collabMcpSettings?.UserId ?? string.Empty;
+			settings.collabMcpSettings.SessionId = collabMcpSettings?.SessionId ?? string.Empty;
+			settings.collabMcpSettings.Username = collabMcpSettings?.Username ?? string.Empty;
+			settings.collabMcpSettings.ReconnectDelayMs = collabMcpSettings?.ReconnectDelayMs ?? 2000;
+			settings.collabMcpSettings.MaxReconnectAttempts = collabMcpSettings?.MaxReconnectAttempts ?? 50;
 
 			// Save color settings
 

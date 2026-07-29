@@ -284,6 +284,8 @@ namespace DerouteSharp
 				var filename = openFileDialog2.FileName;
 				Text = savedText + " - " + filename;
 
+				var collabMcpSettings = new FormSettings.CollabMcpSettings(_collabSettings);
+
 				if (Path.GetExtension(filename).ToLower() == ".xmlz")
 				{
 					string temp_xml_dir = GetTemporaryDirectory();
@@ -294,7 +296,8 @@ namespace DerouteSharp
 					{
 						if (file.FullName.Contains("deroute_settings.xml"))
 						{
-							FormSettings.LoadSettingsFromFile(file.FullName, entityBox1);
+							FormSettings.LoadSettingsFromFile(file.FullName, entityBox1, collabMcpSettings);
+							collabMcpSettings.Save();
 							file.Delete();
 							continue;
 						}
@@ -335,13 +338,16 @@ namespace DerouteSharp
 				var filename = saveFileDialog2.FileName;
 				Text = savedText + " - " + filename;
 
+				var collabMcpSettings = new FormSettings.CollabMcpSettings(_collabSettings);
+				collabMcpSettings.Save();
+
 				if (Path.GetExtension(filename).ToLower() == ".xmlz")
 				{
 					string temp_xml_dir = GetTemporaryDirectory();
 					string temp_xml_filename = temp_xml_dir + "/" + Path.GetFileNameWithoutExtension(filename) + ".xml";
 					entityBox1.Serialize(temp_xml_filename);
 					string temp_settings_filename = temp_xml_dir + "/deroute_settings.xml";
-					FormSettings.SaveSettingsToFile(temp_settings_filename, entityBox1);
+					FormSettings.SaveSettingsToFile(temp_settings_filename, entityBox1, collabMcpSettings);
 					if (File.Exists(filename))
 					{
 						File.Delete(filename);
@@ -886,7 +892,9 @@ namespace DerouteSharp
 		{
 			if (openFileDialog3.ShowDialog() == DialogResult.OK)
 			{
-				FormSettings.LoadSettingsFromFile(openFileDialog3.FileName, entityBox1);
+				var collabMcpSettings = new FormSettings.CollabMcpSettings(_collabSettings);
+				FormSettings.LoadSettingsFromFile(openFileDialog3.FileName, entityBox1, collabMcpSettings);
+				collabMcpSettings.Save();
 			}
 		}
 
@@ -894,7 +902,9 @@ namespace DerouteSharp
 		{
 			if (saveFileDialog4.ShowDialog() == DialogResult.OK)
 			{
-				FormSettings.SaveSettingsToFile(saveFileDialog4.FileName, entityBox1);
+				var collabMcpSettings = new FormSettings.CollabMcpSettings(_collabSettings);
+				collabMcpSettings.Save();
+				FormSettings.SaveSettingsToFile(saveFileDialog4.FileName, entityBox1, collabMcpSettings);
 			}
 		}
 
