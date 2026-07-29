@@ -172,7 +172,7 @@
 			this.toolStripStatusLabel15 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabelTimeSpent = new System.Windows.Forms.ToolStripStatusLabel();
 			this.collabStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.collabStatusValueLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.collabStatusComboBox = new System.Windows.Forms.ToolStripComboBox();
 			this.collabStatusContextMenu = new System.Windows.Forms.ContextMenuStrip();
 			this.collabReconnectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitContainer3 = new System.Windows.Forms.SplitContainer();
@@ -1386,7 +1386,7 @@
             this.toolStripStatusLabel15,
             this.toolStripStatusLabelTimeSpent,
             this.collabStatusLabel,
-            this.collabStatusValueLabel});
+            this.collabStatusComboBox});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 644);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.ShowItemToolTips = true;
@@ -1396,17 +1396,24 @@
 			// 
 			// collabStatusLabel
 			// 
-			this.collabStatusLabel.Name = "collabStatusLabel";
-			this.collabStatusLabel.Size = new System.Drawing.Size(87, 19);
-			this.collabStatusLabel.Text = "CollabMCP:";
-			this.collabStatusLabel.Spring = true;
-			// 
-			// collabStatusValueLabel
-			// 
-			this.collabStatusValueLabel.Name = "collabStatusValueLabel";
-			this.collabStatusValueLabel.Size = new System.Drawing.Size(73, 19);
-			this.collabStatusValueLabel.Text = "Disabled";
-			this.collabStatusValueLabel.ToolTipText = "CollabMCP connection status";
+		this.collabStatusLabel.Name = "collabStatusLabel";
+		this.collabStatusLabel.Size = new System.Drawing.Size(87, 19);
+		this.collabStatusLabel.Text = "CollabMCP:";
+		// 
+		// collabStatusComboBox
+		// 
+		this.collabStatusComboBox.Name = "collabStatusComboBox";
+		this.collabStatusComboBox.Size = new System.Drawing.Size(120, 25);
+		this.collabStatusComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+		this.collabStatusComboBox.Items.AddRange(new object[] {
+            "Disabled",
+            "Connected",
+            "Connecting...",
+            "Disconnected",
+            "Error",
+            "Reconnect"});
+		this.collabStatusComboBox.SelectedIndex = 0;
+		this.collabStatusComboBox.SelectedIndexChanged += CollabStatusComboBox_SelectedIndexChanged;
 			// 
 			// collabStatusContextMenu
 			// 
@@ -1845,7 +1852,7 @@
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel15;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelTimeSpent;
 		private System.Windows.Forms.ToolStripStatusLabel collabStatusLabel;
-		private System.Windows.Forms.ToolStripStatusLabel collabStatusValueLabel;
+		private System.Windows.Forms.ToolStripComboBox collabStatusComboBox;
 		private System.Windows.Forms.ContextMenuStrip collabStatusContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem collabReconnectMenuItem;
 		private System.ComponentModel.BackgroundWorker backgroundWorkerTimeSpent;

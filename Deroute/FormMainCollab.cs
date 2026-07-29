@@ -268,23 +268,54 @@ namespace DerouteSharp
 
 		private void UpdateCollabStatus(string status, int userCount)
 		{
-			collabStatusValueLabel.Text = status;
-			if (userCount > 0)
-			{
-				collabStatusValueLabel.Text = $"{status} ({userCount} user{(userCount != 1 ? "s" : "")})";
-			}
+			string comboBoxText;
+			int selectedIndex = 0;
 
-			if (status.Contains("Connected"))
+			if (status.Contains("Error"))
 			{
-				collabStatusValueLabel.ForeColor = Color.Green;
+				comboBoxText = $"Error: {status.Substring(6)}";
+				selectedIndex = 4;
 			}
-			else if (status.Contains("Error") || status.Contains("Disconnected"))
+			else if (status.Contains("Connected"))
 			{
-				collabStatusValueLabel.ForeColor = Color.Red;
+				if (userCount > 0)
+				{
+					comboBoxText = $"Connected ({userCount} users)";
+				}
+				else
+				{
+					comboBoxText = "Connected";
+				}
+				selectedIndex = 1;
+			}
+			else if (status.Contains("Disconnected"))
+			{
+				comboBoxText = "Disconnected";
+				selectedIndex = 3;
+			}
+			else if (status.Contains("Connecting"))
+			{
+				comboBoxText = "Connecting...";
+				selectedIndex = 2;
 			}
 			else
 			{
-				collabStatusValueLabel.ForeColor = Color.Orange;
+				comboBoxText = "Disabled";
+				selectedIndex = 0;
+			}
+
+			if (InvokeRequired)
+			{
+				Invoke(new Action(() =>
+				{
+					collabStatusComboBox.SelectedIndex = selectedIndex;
+					collabStatusComboBox.Text = comboBoxText;
+				}));
+			}
+			else
+			{
+				collabStatusComboBox.SelectedIndex = selectedIndex;
+				collabStatusComboBox.Text = comboBoxText;
 			}
 		}
 
@@ -302,10 +333,23 @@ namespace DerouteSharp
 					? _collabSettings.SessionId.Substring(0, 8) + "..."
 					: _collabSettings.SessionId;
 
-			if (_collabClient.IsConnected)
-			{
-				collabStatusValueLabel.Text = $"Connected ({_collabUserCount} users, session: {sessionShort})";
-			}
+				if (_collabClient.IsConnected)
+				{
+					var newText = $"Connected ({_collabUserCount} users, session: {sessionShort})";
+					if (InvokeRequired)
+					{
+						Invoke(new Action(() =>
+						{
+							collabStatusComboBox.SelectedIndex = 1;
+							collabStatusComboBox.Text = newText;
+						}));
+					}
+					else
+					{
+						collabStatusComboBox.SelectedIndex = 1;
+						collabStatusComboBox.Text = newText;
+					}
+				}
 			}
 			catch
 			{
@@ -332,6 +376,23 @@ namespace DerouteSharp
 				{
 					await _collabClient.ConnectAsync();
 				});
+			}
+		}
+
+		private void CollabStatusComboBox_SelectedIndexChanged(object sender, EventArgs e)
+		{
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine($"[Collab UI] CollabStatusComboBox_SelectedIndexChanged: {collabStatusComboBox.SelectedItem}");
+#endif
+			if (collabStatusComboBox.SelectedItem != null && collabStatusComboBox.SelectedItem.ToString() == "Reconnect")
+			{
+				if (_collabClient != null)
+				{
+					Task.Run(async () =>
+					{
+						await _collabClient.ConnectAsync();
+					});
+				}
 			}
 		}
 
