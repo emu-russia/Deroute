@@ -136,6 +136,9 @@
     <Compile Include="FormEntityLocator.Designer.cs">
       <DependentUpon>FormEntityLocator.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormMainCollab.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormMiniEntityBox.cs">
       <SubType>Form</SubType>
     </Compile>
