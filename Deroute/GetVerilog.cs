@@ -478,8 +478,14 @@ namespace DerouteSharp
 				int input_ports = 0;
 				int output_ports = 0;
 				int bidir_ports = 0;
+				bool is_pwrgnd = false;
 				foreach (var e in wire.parts)
 				{
+					if (e.Type == EntityType.ViasPower || e.Type == EntityType.ViasGround)
+					{
+						is_pwrgnd = true;
+						continue;
+					}
 					if (top.ports.Contains(e))
 					{
 						if (e.Type == EntityType.ViasOutput)
@@ -504,12 +510,12 @@ namespace DerouteSharp
 					Console.WriteLine("ERROR: conflicting wire {0}!!!", wire.name);
 					text += "// ERROR: conflicting wire " + wire.name + "\n";
 				}
-				if (bidir_ports == 0 && output_ports == 0 && input_ports > 0)
+				if (bidir_ports == 0 && output_ports == 0 && input_ports > 0 && !is_pwrgnd)
 				{
 					Console.WriteLine("ERROR: floating wire {0}!!!", wire.name);
 					text += "// ERROR: floating wire " + wire.name + "\n";
 				}
-				if (output_ports == 1 && input_ports == 0)
+				if (output_ports == 1 && input_ports == 0 && !is_pwrgnd)
 				{
 					Console.WriteLine("WARNING: wire not driving anything {0}!!!", wire.name);
 					text += "// WARNING: wire not driving anything " + wire.name + "\n";
