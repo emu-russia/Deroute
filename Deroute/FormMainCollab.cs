@@ -243,22 +243,22 @@ namespace DerouteSharp
 			entityBox1.OnEntityAdd += EntityBox_OnEntityAdd;
 			entityBox1.OnEntityRemove += EntityBox_OnEntityRemove;
 
+			// No automatic connection on startup: the user connects manually via the
+			// status-bar menu (Connect) so settings can be changed freely first.
 			if (_collabSettings.Enabled && !string.IsNullOrEmpty(_collabSettings.ApiKey))
 			{
 #if DEBUG && (!__MonoCS__)
-				Console.WriteLine("[Collab] Auto-connect enabled, starting connection...");
+				Console.WriteLine("[Collab] Enabled with API key, waiting for manual connect");
 #endif
-				UpdateCollabStatus("Connecting", 0);
-				Task.Run(async () =>
-				{
-					await _collabClient.ConnectAsync();
-				});
+				UpdateCollabStatus("Ready", 0);
 			}
 			else
 			{
 #if DEBUG && (!__MonoCS__)
 				Console.WriteLine("[Collab] Auto-connect skipped: enabled=" + _collabSettings.Enabled + ", hasKey=" + !string.IsNullOrEmpty(_collabSettings.ApiKey));
 #endif
+				if (_collabSettings.Enabled)
+					SetStatusMessage("CollabMCP is enabled, but no API key is set — enter it in Settings -> CollabMCP.");
 				UpdateCollabStatus("Disabled", 0);
 			}
 		}
@@ -288,6 +288,12 @@ namespace DerouteSharp
 			{
 				text = "Collab: Disconnected";
 				color = System.Drawing.Color.Red;
+			}
+			else if (status.Contains("Ready"))
+			{
+				// Enabled and configured, but not connected yet (connect via the menu)
+				text = "Collab: Ready";
+				color = System.Drawing.Color.SteelBlue;
 			}
 			else
 			{

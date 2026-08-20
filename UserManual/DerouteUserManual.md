@@ -779,13 +779,15 @@ You can also type the session id directly in the settings dialog instead.
 
 #### Step 4 — Connect
 
-Right-click the **CollabMCP:** indicator in the status bar and choose **Connect**
-(or enable auto-connect — if *Enable collaboration* is checked, the client connects on startup).
+Right-click the **CollabMCP:** indicator in the status bar and choose **Connect**. There is
+**no automatic connection**: the client starts in the *Ready* state (when collaboration is
+enabled and the API key is set) or *Disabled*, and connects only when you choose Connect.
 The indicator shows the state with a color:
 
 | State | Color | Meaning |
 |-------|-------|---------|
 | `Collab: Disabled` | gray | Collaboration is off |
+| `Collab: Ready` | steel blue | Enabled and configured, not connected yet |
 | `Collab: Connecting...` | orange | Connecting / reconnecting |
 | `Collab: Connected (N users, session: ...)` | green | Connected, N participants |
 | `Collab: Disconnected` / `Collab: Error` | red | Connection lost / error |
