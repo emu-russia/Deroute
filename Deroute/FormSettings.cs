@@ -592,7 +592,10 @@ namespace DerouteSharp
 				collabMcpSettings.Enabled = settings.CollabEnabled;
 				collabMcpSettings.ServerUrl = settings.CollabServerUrl;
 				collabMcpSettings.ApiKey = settings.CollabApiKey;
-				collabMcpSettings.UserId = settings.CollabUserId;
+				// Keep the auto-generated UserId when nothing was persisted yet
+				// (the default stored value is an empty string).
+				if (!string.IsNullOrEmpty(settings.CollabUserId))
+					collabMcpSettings.UserId = settings.CollabUserId;
 				collabMcpSettings.SessionId = settings.CollabSessionId;
 				collabMcpSettings.Username = settings.CollabUsername;
 				collabMcpSettings.ReconnectDelayMs = settings.CollabReconnectDelayMs;
@@ -870,7 +873,9 @@ namespace DerouteSharp
 				collabMcpSettings.Enabled = settings.collabMcpSettings.Enabled;
 				collabMcpSettings.ServerUrl = settings.collabMcpSettings.ServerUrl;
 				collabMcpSettings.ApiKey = settings.collabMcpSettings.ApiKey;
-				collabMcpSettings.UserId = settings.collabMcpSettings.UserId;
+				// Keep the auto-generated UserId when the file has none
+				if (!string.IsNullOrEmpty(settings.collabMcpSettings.UserId))
+					collabMcpSettings.UserId = settings.collabMcpSettings.UserId;
 				collabMcpSettings.SessionId = settings.collabMcpSettings.SessionId;
 				collabMcpSettings.Username = settings.collabMcpSettings.Username;
 				collabMcpSettings.ReconnectDelayMs = settings.collabMcpSettings.ReconnectDelayMs;

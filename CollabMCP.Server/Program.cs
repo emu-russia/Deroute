@@ -37,6 +37,10 @@ try
     var builder = WebApplication.CreateBuilder(args);
     builder.Configuration.AddConfiguration(config);
 
+    // Route all Microsoft.Extensions.Logging events (hubs, middleware, hosting)
+    // through Serilog so they reach the console AND the daily rolling file sink.
+    builder.Logging.AddSerilog(Log.Logger);
+
     builder.Services.Configure<ServerConfig>(config.GetSection("Server"));
     builder.Services.AddSingleton<IConfiguration>(config);
     builder.Services.AddSingleton<XmlSessionStore>();

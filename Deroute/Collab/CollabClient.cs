@@ -141,6 +141,11 @@ namespace DerouteSharp.Collab
 
                 if (!string.IsNullOrEmpty(_settings.SessionId))
                 {
+                    // The server identifies users by this id (join + lock ownership);
+                    // never send an empty one.
+                    if (string.IsNullOrEmpty(_settings.UserId))
+                        _settings.UserId = Guid.NewGuid().ToString("N").Substring(0, 8);
+
                     CollabDebug.LogOut($"JoinSession (sessionId={_settings.SessionId})");
                     await SendInvocationAsync("JoinSession", new object[] { _settings.SessionId, _settings.UserId });
                 }
