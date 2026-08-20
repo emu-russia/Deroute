@@ -1,4 +1,4 @@
-﻿namespace DerouteSharp
+namespace DerouteSharp
 {
 	partial class FormSettings
 	{
@@ -40,7 +40,8 @@
 			this.tabPage7 = new System.Windows.Forms.TabPage();
 			this.tabPage8 = new System.Windows.Forms.TabPage();
 			this.propertyGridEntityBox = new System.Windows.Forms.PropertyGrid();
-			this.propertyGridCollabMcp = new System.Windows.Forms.PropertyGrid();
+			this.btnOpenCollabSettings = new System.Windows.Forms.Button();
+			this.lblCollabHelp = new System.Windows.Forms.Label();
 			this.button2 = new System.Windows.Forms.Button();
 			this.button1 = new System.Windows.Forms.Button();
 			this.propertyGridColors = new System.Windows.Forms.PropertyGrid();
@@ -175,7 +176,8 @@
 			// 
 			// tabPage8
 			// 
-			this.tabPage8.Controls.Add(this.propertyGridCollabMcp);
+			this.tabPage8.Controls.Add(this.lblCollabHelp);
+			this.tabPage8.Controls.Add(this.btnOpenCollabSettings);
 			this.tabPage8.Location = new System.Drawing.Point(4, 22);
 			this.tabPage8.Name = "tabPage8";
 			this.tabPage8.Size = new System.Drawing.Size(825, 415);
@@ -183,6 +185,25 @@
 			this.tabPage8.Text = "CollabMCP";
 			this.tabPage8.UseVisualStyleBackColor = true;
 			this.tabPage8.ResumeLayout(false);
+			this.tabPage8.PerformLayout();
+			// 
+			// btnOpenCollabSettings
+			// 
+			this.btnOpenCollabSettings.Location = new System.Drawing.Point(16, 16);
+			this.btnOpenCollabSettings.Name = "btnOpenCollabSettings";
+			this.btnOpenCollabSettings.Size = new System.Drawing.Size(220, 30);
+			this.btnOpenCollabSettings.TabIndex = 0;
+			this.btnOpenCollabSettings.Text = "Open CollabMCP settings...";
+			this.btnOpenCollabSettings.UseVisualStyleBackColor = true;
+			this.btnOpenCollabSettings.Click += new System.EventHandler(this.btnOpenCollabSettings_Click);
+			// 
+			// lblCollabHelp
+			// 
+			this.lblCollabHelp.Location = new System.Drawing.Point(16, 56);
+			this.lblCollabHelp.Name = "lblCollabHelp";
+			this.lblCollabHelp.Size = new System.Drawing.Size(700, 60);
+			this.lblCollabHelp.TabIndex = 1;
+			this.lblCollabHelp.Text = "Connection settings (server URL, API key, session, reconnect) are edited in the \r\nCollabMCP settings dialog. The API key is masked there.";
 			// 
 			// propertyGridEntityBox
 			// 
@@ -254,14 +275,6 @@
 			this.propertyGridShape.Size = new System.Drawing.Size(825, 415);
 			this.propertyGridShape.TabIndex = 0;
 			// 
-			// propertyGridCollabMcp
-			// 
-			this.propertyGridCollabMcp.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.propertyGridCollabMcp.Location = new System.Drawing.Point(0, 0);
-			this.propertyGridCollabMcp.Name = "propertyGridCollabMcp";
-			this.propertyGridCollabMcp.Size = new System.Drawing.Size(825, 415);
-			this.propertyGridCollabMcp.TabIndex = 0;
-			// 
 			// propertyGridGlobal
 			// 
 			this.propertyGridGlobal.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -314,7 +327,8 @@
 		private System.Windows.Forms.TabPage tabPage7;
 		private System.Windows.Forms.TabPage tabPage8;
 		private System.Windows.Forms.PropertyGrid propertyGridEntityBox;
-		private System.Windows.Forms.PropertyGrid propertyGridCollabMcp;
+		private System.Windows.Forms.Button btnOpenCollabSettings;
+		private System.Windows.Forms.Label lblCollabHelp;
 		private System.Windows.Forms.PropertyGrid propertyGridColors;
 		private System.Windows.Forms.PropertyGrid propertyGridPriority;
 		private System.Windows.Forms.PropertyGrid propertyGridGlobal;

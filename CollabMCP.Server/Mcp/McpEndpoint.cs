@@ -141,7 +141,6 @@ public class McpEndpoint
 
         var connected = true;
 
-        context.Response.Body.Flush();
         await context.Response.Body.FlushAsync();
 
         while (connected)
@@ -320,7 +319,7 @@ public class McpEndpoint
         {
             foreach (var prop in argsEl.EnumerateObject())
             {
-                arguments[prop.Name] = prop.Value;
+                arguments[prop.Name] = ConvertJsonValue(prop.Value);
             }
         }
 
@@ -364,7 +363,7 @@ public class McpEndpoint
         {
             foreach (var prop in argsEl.EnumerateObject())
             {
-                arguments[prop.Name] = prop.Value;
+                arguments[prop.Name] = ConvertJsonValue(prop.Value);
             }
         }
 
@@ -374,8 +373,11 @@ public class McpEndpoint
         try
         {
             var result = await _tools.CallTool(name, arguments, callingUserId);
-            var contentObj = JsonSerializer.Deserialize<JsonElement>(result);
-            return new McpResponse(request.GetId(), new { content = contentObj });
+            return new McpResponse(request.GetId(), new
+            {
+                content = new[] { new { type = "text", text = result.Text } },
+                isError = result.IsError
+            });
         }
         catch (Exception ex)
         {
@@ -386,6 +388,26 @@ public class McpEndpoint
                 isError = true
             });
         }
+    }
+
+    /// <summary>
+    /// Converts a JSON element into plain CLR values (string, double, bool, null,
+    /// List&lt;object&gt;, Dictionary&lt;string, object&gt;) so tool/prompt handlers
+    /// can use normal type checks instead of dealing with JsonElement.
+    /// </summary>
+    private static object? ConvertJsonValue(JsonElement el)
+    {
+        return el.ValueKind switch
+        {
+            JsonValueKind.String => el.GetString() ?? string.Empty,
+            JsonValueKind.Number => el.TryGetInt64(out var l) ? (object)l : el.GetDouble(),
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            JsonValueKind.Null => null,
+            JsonValueKind.Array => el.EnumerateArray().Select(ConvertJsonValue).ToList(),
+            JsonValueKind.Object => el.EnumerateObject().ToDictionary(p => p.Name, p => ConvertJsonValue(p.Value)),
+            _ => null
+        };
     }
 
     private async Task HandleListResources(HttpContext context)

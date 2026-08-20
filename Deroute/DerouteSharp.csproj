@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -12,6 +12,9 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <!-- packages.config restore (Newtonsoft.Json). CLI: msbuild DerouteSharp.sln /t:Restore /p:RestorePackagesConfig=true
+         (Visual Studio restores packages.config automatically on build). -->
+    <RestorePackagesConfig>true</RestorePackagesConfig>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
@@ -70,10 +73,12 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CellSupport.cs" />
-    <Compile Include="Collab\MiniJson.cs" />
     <Compile Include="FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,6 +116,15 @@
     </Compile>
     <Compile Include="FormGetVerilogSettings.Designer.cs">
       <DependentUpon>FormGetVerilogSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCollabSession.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCollabSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCollabUsers.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>

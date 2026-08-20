@@ -6,3 +6,6 @@ Deroute/.vs
 CollabMCP.Server/bin
 CollabMCP.Server/obj
 CollabMCP.Server/Logs
+CollabMCP.Server/sessions
+packages/
+Deroute/lib/

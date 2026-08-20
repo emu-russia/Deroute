@@ -304,11 +304,12 @@
 | Метод | Параметры | Описание |
 |-------|-----------|----------|
 | `JoinSession` | `sessionId`, `userId` | Присоединение к сессии; получение полного снимка холста |
-| `SendPrimitiveCreated` | `sessionId`, `primitiveId`, `type`, `points`, `strokeColor`, `strokeWidth`, `fillColor`, `userId` | Создание нового примитива |
-| `SendPrimitiveUpdated` | `sessionId`, `primitiveId`, `type`, `points`, `strokeColor`, `strokeWidth`, `fillColor`, `userId` | Обновление существующего примитива |
-| `SendPositionUpdate` | `sessionId`, `primitiveId`, `points`, `userId` | Обновление позиции в реальном времени (с буферизацией дельт) |
-| `LockPrimitive` | `sessionId`, `primitiveId` | Блокировка примитива для эксклюзивного редактирования |
-| `UnlockPrimitive` | `sessionId`, `primitiveId` | Разблокировка заблокированного примитива |
+| `SendEntityCreated` | `sessionId`, `entity` (EntityDto), `userId`, `parentId` | Создание новой сущности (полная модель Entity приложения) |
+| `SendEntityUpdated` | `sessionId`, `entity` (EntityDto), `userId` | Обновление существующей сущности |
+| `SendEntityDeleted` | `sessionId`, `entityId` | Удаление сущности (broadcast `OnEntityDeleted`) |
+| `SendPositionUpdate` | `sessionId`, `entityId`, `points`, `userId` | Обновление позиции в реальном времени (с буферизацией дельт) |
+| `LockEntity` | `sessionId`, `entityId` | Блокировка сущности для эксклюзивного редактирования |
+| `UnlockEntity` | `sessionId`, `entityId` | Разблокировка заблокированной сущности |
 | `GetSessionState` | `sessionId` | Получение текущего состояния сессии |
 | `GetHistory` | `sessionId`, `count` (по умолч. 50) | Получение журнала операций |
 | `GetConnectedUsers` | `sessionId` | Список подключённых пользователей |
@@ -552,12 +553,13 @@
 
 | Пакет | Версия | Назначение |
 |-------|--------|------------|
-| Microsoft.AspNetCore.SignalR | 1.2.0 | WebSocket-коммуникация в реальном времени |
-| Newtonsoft.Json | 13.0.4 | JSON-сериализация |
+| Newtonsoft.Json | 13.0.4 | JSON-сериализация (заявлен; в рантайме используется System.Text.Json) |
 | Serilog | 4.2.0 | Структурированное логирование |
 | Serilog.Sinks.File | 6.0.0 | Файловый sink для логов |
 | Serilog.Sinks.Console | 6.0.0 | Консольный sink для логов |
 | Microsoft.AspNetCore.OpenApi | 10.0.10 | Поддержка OpenAPI/Swagger |
+
+> Примечание: SignalR предоставляется общим фреймворком ASP.NET Core 10, отдельная ссылка на пакет не требуется.
 
 ---
 

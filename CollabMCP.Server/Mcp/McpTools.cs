@@ -1,11 +1,20 @@
-using System.Text.Json;
 using CollabMCP.Server.Hubs;
 using CollabMCP.Server.Models;
 using CollabMCP.Server.Services;
 using Microsoft.AspNetCore.SignalR;
-using ILogger = Serilog.ILogger;
 
 namespace CollabMCP.Server.Mcp;
+
+public class McpToolResult
+{
+    public bool IsError { get; set; }
+    public string Text { get; set; } = string.Empty;
+
+    public static McpToolResult Ok(object data) => new() { Text = System.Text.Json.JsonSerializer.Serialize(data, JsonOptions) };
+    public static McpToolResult Error(string message) => new() { IsError = true, Text = message };
+
+    private static readonly System.Text.Json.JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+}
 
 public class McpTools
 {
@@ -27,7 +36,7 @@ public class McpTools
             new ToolInfo
             {
                 Name = "add_primitive",
-                Description = "Add a new vector primitive to the canvas",
+                Description = "Add a new entity to the canvas",
                 Schema = new
                 {
                     type = "object",
@@ -35,47 +44,31 @@ public class McpTools
                     properties = new
                     {
                         sessionId = new { type = "string", description = "Session ID" },
-                        type = new { type = "string", description = "Primitive type (rectangle, polygon, line, ellipse, polyline)" },
+                        type = new { type = "string", description = "EntityType name (ViasInput, ViasOutput, WireInterconnect, CellNot, Region, Layer, ...)" },
                         points = new
                         {
                             type = "array",
-                            description = "Array of [x1, y1, x2, y2, ...] coordinate pairs",
+                            description = "Flat coordinate pairs [x1, y1, x2, y2, ...]",
                             items = new { type = "number" }
                         },
-                        strokeColor = new { type = "string", description = "Hex color code, default #000000" },
-                        strokeWidth = new { type = "number", description = "Line width, default 1" },
-                        fillColor = new { type = "string", description = "Fill color, default transparent" }
+                        parentId = new { type = "string", description = "Optional parent entity id (e.g. a Layer) to attach under" },
+                        label = new { type = "string", description = "Display label" },
+                        priority = new { type = "number", description = "Z-order priority" },
+                        widthOverride = new { type = "number", description = "Line/entity width override" },
+                        colorOverride = new { type = "string", description = "Hex color code, e.g. #FF0000" },
+                        fontOverride = new { type = "string", description = "Font override (FontXmlConverter string)" },
+                        labelAlignment = new { type = "string", description = "TextAlignment name (GlobalSettings, Top, ...)" },
+                        traverseBlackList = new { type = "array", description = "Prohibited entity types for traverse", items = new { type = "string" } },
+                        module = new { type = "string", description = "Shared Verilog module name" },
+                        visible = new { type = "boolean", description = "Visibility, default true" },
+                        children = new { type = "array", description = "Nested entities (same schema)", items = new { type = "object" } }
                     }
                 }
             },
             new ToolInfo
             {
                 Name = "update_primitive",
-                Description = "Update an existing vector primitive",
-                Schema = new
-                {
-                    type = "object",
-                    required = new[] { "sessionId", "primitiveId", "points" },
-                    properties = new
-                    {
-                        sessionId = new { type = "string", description = "Session ID" },
-                        primitiveId = new { type = "string", description = "Primitive ID to update" },
-                        points = new
-                        {
-                            type = "array",
-                            description = "Array of [x1, y1, x2, y2, ...] coordinate pairs",
-                            items = new { type = "number" }
-                        },
-                        strokeColor = new { type = "string", description = "Hex color code" },
-                        strokeWidth = new { type = "number", description = "Line width" },
-                        fillColor = new { type = "string", description = "Fill color" }
-                    }
-                }
-            },
-            new ToolInfo
-            {
-                Name = "delete_primitive",
-                Description = "Delete a vector primitive from the canvas",
+                Description = "Update an existing entity's properties",
                 Schema = new
                 {
                     type = "object",
@@ -83,14 +76,44 @@ public class McpTools
                     properties = new
                     {
                         sessionId = new { type = "string", description = "Session ID" },
-                        primitiveId = new { type = "string", description = "Primitive ID to delete" }
+                        primitiveId = new { type = "string", description = "Entity ID to update" },
+                        type = new { type = "string", description = "New EntityType name" },
+                        points = new
+                        {
+                            type = "array",
+                            description = "Flat coordinate pairs [x1, y1, x2, y2, ...]",
+                            items = new { type = "number" }
+                        },
+                        label = new { type = "string", description = "Display label" },
+                        priority = new { type = "number", description = "Z-order priority" },
+                        widthOverride = new { type = "number", description = "Line/entity width override" },
+                        colorOverride = new { type = "string", description = "Hex color code" },
+                        fontOverride = new { type = "string", description = "Font override" },
+                        labelAlignment = new { type = "string", description = "TextAlignment name" },
+                        module = new { type = "string", description = "Shared Verilog module name" },
+                        visible = new { type = "boolean", description = "Visibility" }
+                    }
+                }
+            },
+            new ToolInfo
+            {
+                Name = "delete_primitive",
+                Description = "Delete an entity (with its subtree) from the canvas",
+                Schema = new
+                {
+                    type = "object",
+                    required = new[] { "sessionId", "primitiveId" },
+                    properties = new
+                    {
+                        sessionId = new { type = "string", description = "Session ID" },
+                        primitiveId = new { type = "string", description = "Entity ID to delete" }
                     }
                 }
             },
             new ToolInfo
             {
                 Name = "clear_canvas",
-                Description = "Remove all primitives from the canvas",
+                Description = "Remove all entities from the canvas",
                 Schema = new
                 {
                     type = "object",
@@ -104,7 +127,7 @@ public class McpTools
             new ToolInfo
             {
                 Name = "get_canvas_state",
-                Description = "Get the current full state of the canvas",
+                Description = "Get the current full state of the canvas (full entity model)",
                 Schema = new
                 {
                     type = "object",
@@ -124,7 +147,7 @@ public class McpTools
         };
     }
 
-    public async Task<string> CallTool(string name, Dictionary<string, object> arguments, string callingUserId)
+    public async Task<McpToolResult> CallTool(string name, Dictionary<string, object> arguments, string callingUserId)
     {
         return name switch
         {
@@ -134,203 +157,221 @@ public class McpTools
             "clear_canvas" => ClearCanvas(arguments, callingUserId),
             "get_canvas_state" => GetCanvasState(arguments),
             "list_sessions" => ListSessions(),
-            _ => JsonSerializer.Serialize(new { error = $"Unknown tool: {name}" })
+            _ => McpToolResult.Error($"Unknown tool: {name}")
         };
     }
 
-    private async Task<string> AddPrimitive(Dictionary<string, object> args, string userId)
+    private async Task<McpToolResult> AddPrimitive(Dictionary<string, object> args, string userId)
     {
-        if (!args.TryGetValue("sessionId", out var sidObj) || sidObj is not string sessionId)
-            return SerializeError("sessionId is required");
+        if (!args.TryGetValue("sessionId", out var sidObj) || sidObj is not string sessionId || string.IsNullOrEmpty(sessionId))
+            return McpToolResult.Error("sessionId is required");
 
-        if (!args.TryGetValue("type", out var typeObj) || typeObj is not string type)
-            return SerializeError("type is required");
+        if (!args.TryGetValue("type", out var typeObj) || typeObj is not string type || string.IsNullOrEmpty(type))
+            return McpToolResult.Error("type is required");
 
-        if (!args.TryGetValue("points", out var pointsObj) || pointsObj is not JsonElement pointsEl)
-            return SerializeError("points is required");
+        if (!TryGetPoints(args, out var pointsList))
+            return McpToolResult.Error("points is required and must be an array of numbers");
 
-        var pointsList = new List<double>();
-        foreach (var element in pointsEl.EnumerateArray())
-        {
-            pointsList.Add(element.GetDouble());
-        }
+        var dto = BuildDtoFromArgs(args, type, pointsList);
 
-        var prim = new VectorPrimitive
-        {
-            Id = Guid.NewGuid().ToString(),
-            Type = type,
-            Points = new List<Point>(),
-            StrokeColor = args.TryGetValue("strokeColor", out var sc) && sc is string ? (string)sc : "#000000",
-            StrokeWidth = args.TryGetValue("strokeWidth", out var sw) ? Convert.ToDouble(sw) : 1.0,
-            FillColor = args.TryGetValue("fillColor", out var fc) && fc is string ? (string)fc : "transparent"
-        };
+        var node = EntityDtoConverter.ToNode(dto);
+        var parentId = args.TryGetValue("parentId", out var pid) && pid is string pidStr ? pidStr : null;
 
-        for (int i = 0; i < pointsList.Count; i += 2)
-        {
-            prim.Points.Add(new Point
-            {
-                X = pointsList[i],
-                Y = i + 1 < pointsList.Count ? pointsList[i + 1] : 0
-            });
-        }
-
-        var result = _sessionManager.AddPrimitive(sessionId, prim, userId);
+        var result = _sessionManager.AddEntity(sessionId, node, userId, parentId);
 
         if (result.Error != null)
-            return SerializeError(result.Error);
+            return McpToolResult.Error(result.Error);
 
-        await _hubContext.Clients.Group(sessionId).SendAsync("OnPrimitiveCreated", SerializePrimitive(result.Primitive!));
+        await _hubContext.Clients.Group(sessionId).SendAsync("OnEntityCreated", EntityDtoConverter.ToDto(result.Entity!));
 
-        _logger.LogInformation("MCP: Primitive {PrimitiveId} added by AI (user {UserId})", prim.Id, userId);
-        return SerializeSuccess(new
+        _logger.LogInformation("MCP: Entity {EntityId} added by AI (user {UserId})", node.Id, userId);
+        return McpToolResult.Ok(new
         {
-            prim.Id,
-            prim.Type,
-            prim.Points,
-            prim.StrokeColor,
-            prim.StrokeWidth,
-            prim.FillColor,
-            message = "Primitive created successfully"
+            result.Entity!.Id,
+            result.Entity.Type,
+            result.Entity.Label,
+            result.Entity.PathPoints,
+            result.Entity.ColorOverride,
+            result.Entity.WidthOverride,
+            message = "Entity created successfully"
         });
     }
 
-    private string UpdatePrimitive(Dictionary<string, object> args, string userId)
+    private McpToolResult UpdatePrimitive(Dictionary<string, object> args, string userId)
     {
-        if (!args.TryGetValue("sessionId", out var sidObj) || sidObj is not string sessionId)
-            return SerializeError("sessionId is required");
+        if (!args.TryGetValue("sessionId", out var sidObj) || sidObj is not string sessionId || string.IsNullOrEmpty(sessionId))
+            return McpToolResult.Error("sessionId is required");
 
-        if (!args.TryGetValue("primitiveId", out var pidObj) || pidObj is not string primitiveId)
-            return SerializeError("primitiveId is required");
+        if (!args.TryGetValue("primitiveId", out var pidObj) || pidObj is not string primitiveId || string.IsNullOrEmpty(primitiveId))
+            return McpToolResult.Error("primitiveId is required");
 
-        var existing = _sessionManager.GetPrimitive(sessionId, primitiveId);
+        var existing = _sessionManager.GetEntity(sessionId, primitiveId);
         if (existing == null)
-            return SerializeError("Primitive not found");
+            return McpToolResult.Error("Entity not found");
 
-        var updated = new VectorPrimitive
-        {
-            Id = primitiveId,
-            Type = args.TryGetValue("type", out var typeObj) && typeObj is string t ? t : existing.Type,
-            Points = new List<Point>(),
-            StrokeColor = args.TryGetValue("strokeColor", out var sc) && sc is string ? (string)sc : existing.StrokeColor,
-            StrokeWidth = args.TryGetValue("strokeWidth", out var sw) ? Convert.ToDouble(sw) : existing.StrokeWidth,
-            FillColor = args.TryGetValue("fillColor", out var fc) && fc is string ? (string)fc : existing.FillColor
-        };
+        var dto = EntityDtoConverter.ToDto(existing);
+        ApplyDtoOverrides(dto, args);
 
-        if (args.TryGetValue("points", out var pointsObj) && pointsObj is JsonElement pointsEl)
-        {
-            var pointsList = new List<double>();
-            foreach (var element in pointsEl.EnumerateArray())
-                pointsList.Add(element.GetDouble());
-
-            for (int i = 0; i < pointsList.Count; i += 2)
-            {
-                updated.Points.Add(new Point
-                {
-                    X = pointsList[i],
-                    Y = i + 1 < pointsList.Count ? pointsList[i + 1] : 0
-                });
-            }
-        }
-
-        var result = _sessionManager.UpdatePrimitive(sessionId, primitiveId, updated, userId);
+        var node = EntityDtoConverter.ToNode(dto);
+        var result = _sessionManager.UpdateEntity(sessionId, primitiveId, node, userId);
 
         if (result.Error != null)
-            return SerializeError(result.Error);
+            return McpToolResult.Error(result.Error);
 
-        _hubContext.Clients.Group(sessionId).SendAsync("OnPrimitiveUpdated", SerializePrimitive(result.Primitive!));
+        _hubContext.Clients.Group(sessionId).SendAsync("OnEntityUpdated", EntityDtoConverter.ToDto(result.Entity!));
 
-        _logger.LogInformation("MCP: Primitive {PrimitiveId} updated by AI (user {UserId})", primitiveId, userId);
-        return SerializeSuccess(new { message = "Primitive updated successfully" });
+        _logger.LogInformation("MCP: Entity {EntityId} updated by AI (user {UserId})", primitiveId, userId);
+        return McpToolResult.Ok(new { message = "Entity updated successfully" });
     }
 
-    private string DeletePrimitive(Dictionary<string, object> args, string userId)
+    private McpToolResult DeletePrimitive(Dictionary<string, object> args, string userId)
     {
-        if (!args.TryGetValue("sessionId", out var sidObj) || sidObj is not string sessionId)
-            return SerializeError("sessionId is required");
+        if (!args.TryGetValue("sessionId", out var sidObj) || sidObj is not string sessionId || string.IsNullOrEmpty(sessionId))
+            return McpToolResult.Error("sessionId is required");
 
-        if (!args.TryGetValue("primitiveId", out var pidObj) || pidObj is not string primitiveId)
-            return SerializeError("primitiveId is required");
+        if (!args.TryGetValue("primitiveId", out var pidObj) || pidObj is not string primitiveId || string.IsNullOrEmpty(primitiveId))
+            return McpToolResult.Error("primitiveId is required");
 
-        var result = _sessionManager.DeletePrimitive(sessionId, primitiveId, userId);
+        var result = _sessionManager.DeleteEntity(sessionId, primitiveId, userId);
 
         if (!result.Success)
-            return SerializeError(result.Error);
+            return McpToolResult.Error(result.Error!);
 
-        _hubContext.Clients.Group(sessionId).SendAsync("OnPrimitiveDeleted", primitiveId);
+        _hubContext.Clients.Group(sessionId).SendAsync("OnEntityDeleted", primitiveId);
 
-        _logger.LogInformation("MCP: Primitive {PrimitiveId} deleted by AI (user {UserId})", primitiveId, userId);
-        return SerializeSuccess(new { message = "Primitive deleted successfully" });
+        _logger.LogInformation("MCP: Entity {EntityId} deleted by AI (user {UserId})", primitiveId, userId);
+        return McpToolResult.Ok(new { message = "Entity deleted successfully" });
     }
 
-    private string ClearCanvas(Dictionary<string, object> args, string userId)
+    private McpToolResult ClearCanvas(Dictionary<string, object> args, string userId)
     {
-        if (!args.TryGetValue("sessionId", out var sidObj) || sidObj is not string sessionId)
-            return SerializeError("sessionId is required");
+        if (!args.TryGetValue("sessionId", out var sidObj) || sidObj is not string sessionId || string.IsNullOrEmpty(sessionId))
+            return McpToolResult.Error("sessionId is required");
 
         var result = _sessionManager.ClearCanvas(sessionId, userId);
 
         if (!result.Success)
-            return SerializeError(result.Error);
+            return McpToolResult.Error(result.Error!);
 
         _hubContext.Clients.Group(sessionId).SendAsync("OnCanvasCleared", new { });
 
         _logger.LogInformation("MCP: Canvas cleared by AI (user {UserId})", userId);
-        return SerializeSuccess(new { message = "Canvas cleared successfully" });
+        return McpToolResult.Ok(new { message = "Canvas cleared successfully" });
     }
 
-    private string GetCanvasState(Dictionary<string, object> args)
+    private McpToolResult GetCanvasState(Dictionary<string, object> args)
     {
-        if (!args.TryGetValue("sessionId", out var sidObj) || sidObj is not string sessionId)
-            return SerializeError("sessionId is required");
+        if (!args.TryGetValue("sessionId", out var sidObj) || sidObj is not string sessionId || string.IsNullOrEmpty(sessionId))
+            return McpToolResult.Error("sessionId is required");
 
-        if (!_sessionManager.TryGetSession(sessionId, out var state))
-            return SerializeError("Session not found");
+        if (!_sessionManager.TryLoadSession(sessionId, out var state) || state == null)
+            return McpToolResult.Error("Session not found");
 
         var canvas = new
         {
             Metadata = state.Metadata,
-            Primitives = state.Primitives.Values.Select(SerializePrimitive).ToList(),
+            Entities = state.Entities.Select(EntityDtoConverter.ToDto).ToList(),
             ConnectedUsers = state.ConnectedUsers.ToList(),
             Timestamp = DateTime.UtcNow.ToString("o")
         };
 
-        return SerializeSuccess(canvas);
+        return McpToolResult.Ok(canvas);
     }
 
-    private string ListSessions()
+    private McpToolResult ListSessions()
     {
-        var sessionIds = _sessionManager.GetSessionIds();
-        return SerializeSuccess(new { sessions = sessionIds, count = sessionIds.Count });
+        var sessionIds = _sessionManager.GetAllSessionIds();
+        return McpToolResult.Ok(new { sessions = sessionIds, count = sessionIds.Count });
     }
 
-    private Dictionary<string, object> SerializePrimitive(VectorPrimitive prim)
+    // ---------------------------------------------------------------- arg parsing
+
+    /// <summary>Builds an EntityDto from MCP arguments.</summary>
+    private static EntityDto BuildDtoFromArgs(Dictionary<string, object> args, string type, List<double> points)
     {
-        return new Dictionary<string, object>
+        var dto = new EntityDto
         {
-            ["id"] = prim.Id,
-            ["type"] = prim.Type,
-            ["points"] = prim.Points.Select(p => new { p.X, p.Y }).ToList(),
-            ["strokeColor"] = prim.StrokeColor,
-            ["strokeWidth"] = prim.StrokeWidth,
-            ["fillColor"] = prim.FillColor,
-            ["createdBy"] = prim.CreatedBy,
-            ["lockedBy"] = prim.LockedBy ?? "none",
-            ["lockedAt"] = prim.LockedAt?.ToString("o") ?? "",
-            ["version"] = prim.Version,
-            ["createdAt"] = prim.CreatedAt.ToString("o"),
-            ["updatedAt"] = prim.UpdatedAt.ToString("o")
+            Id = Guid.NewGuid().ToString(),
+            Type = type,
+            Points = points
         };
+        ApplyDtoOverrides(dto, args);
+        return dto;
     }
 
-    private string SerializeSuccess(object data)
+    /// <summary>Applies optional MCP arguments onto an EntityDto (keeps unspecified fields).</summary>
+    private static void ApplyDtoOverrides(EntityDto dto, Dictionary<string, object> args)
     {
-        var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-        return JsonSerializer.Serialize(new { content = new[] { new { type = "text", text = json } } });
+        if (args.TryGetValue("type", out var t) && t is string typeStr)
+            dto.Type = typeStr;
+        if (args.TryGetValue("label", out var l) && l is string label)
+            dto.Label = label;
+        if (args.TryGetValue("priority", out var pr))
+            dto.Priority = Convert.ToInt32(pr);
+        if (args.TryGetValue("widthOverride", out var wo))
+            dto.WidthOverride = Convert.ToInt32(wo);
+        if (args.TryGetValue("colorOverride", out var co) && co is string color)
+            dto.ColorOverride = color;
+        if (args.TryGetValue("fontOverride", out var fo) && fo is string font)
+            dto.FontOverride = font;
+        if (args.TryGetValue("labelAlignment", out var la) && la is string align)
+            dto.LabelAlignment = align;
+        if (args.TryGetValue("module", out var mo) && mo is string module)
+            dto.Module = module;
+        if (args.TryGetValue("visible", out var vi))
+            dto.Visible = Convert.ToBoolean(vi);
+        if (args.TryGetValue("points", out var pts) && TryGetPoints(args, out var flat))
+            dto.Points = flat;
+        if (args.TryGetValue("traverseBlackList", out var bl) && bl is List<object> blList)
+            dto.TraverseBlackList = blList.OfType<string>().ToList();
     }
 
-    private string SerializeError(string message)
+    /// <summary>Parses the "points" argument as a flat list of coordinates. Accepts both
+    /// converted values (List&lt;object&gt; of numbers) and raw JsonElement arrays.</summary>
+    private static bool TryGetPoints(Dictionary<string, object> args, out List<double> points)
     {
-        return JsonSerializer.Serialize(new { error = message });
+        points = new List<double>();
+        if (!args.TryGetValue("points", out var pointsObj) || pointsObj == null)
+            return false;
+
+        switch (pointsObj)
+        {
+            case List<object> list:
+                foreach (var item in list)
+                {
+                    if (!TryToDouble(item, out var d))
+                        return false;
+                    points.Add(d);
+                }
+                return true;
+            case List<double> dlist:
+                points = dlist;
+                return true;
+            case System.Text.Json.JsonElement el when el.ValueKind == System.Text.Json.JsonValueKind.Array:
+                foreach (var element in el.EnumerateArray())
+                {
+                    if (!element.TryGetDouble(out var d))
+                        return false;
+                    points.Add(d);
+                }
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static bool TryToDouble(object value, out double result)
+    {
+        switch (value)
+        {
+            case double d: result = d; return true;
+            case long l: result = l; return true;
+            case int i: result = i; return true;
+            case float f: result = f; return true;
+            case decimal m: result = (double)m; return true;
+            default:
+                result = 0; return false;
+        }
     }
 }
 

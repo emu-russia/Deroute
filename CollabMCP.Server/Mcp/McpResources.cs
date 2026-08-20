@@ -36,7 +36,7 @@ public class McpResources
 
     private (bool, string, string?) GetCanvas(string sessionId)
     {
-        if (!_sessionManager.TryGetSession(sessionId, out var state))
+        if (!_sessionManager.TryLoadSession(sessionId, out var state) || state == null)
         {
             return (false, JsonSerializer.Serialize(new { error = "Session not found" }), "application/json");
         }
@@ -44,21 +44,7 @@ public class McpResources
         var canvas = new
         {
             session = state.Metadata,
-            primitives = state.Primitives.Values.Select(p => new
-            {
-                p.Id,
-                p.Type,
-                p.Points,
-                p.StrokeColor,
-                p.StrokeWidth,
-                p.FillColor,
-                p.CreatedBy,
-                LockedBy = p.LockedBy ?? "none",
-                LockedAt = p.LockedAt?.ToString("o") ?? "",
-                p.Version,
-                p.CreatedAt,
-                p.UpdatedAt
-            }).ToList(),
+            entities = state.Entities.Select(EntityDtoConverter.ToDto).ToList(),
             connectedUsers = state.ConnectedUsers.ToList(),
             timestamp = DateTime.UtcNow.ToString("o")
         };
@@ -68,7 +54,7 @@ public class McpResources
 
     private (bool, string, string?) GetHistory(string sessionId)
     {
-        if (!_sessionManager.TryGetSession(sessionId, out var state))
+        if (!_sessionManager.TryLoadSession(sessionId, out var state) || state == null)
         {
             return (false, JsonSerializer.Serialize(new { error = "Session not found" }), "application/json");
         }
@@ -95,7 +81,7 @@ public class McpResources
 
     public List<(string Uri, string Name, string Description, string MimeType)> ListResources()
     {
-        var sessionIds = _sessionManager.GetSessionIds();
+        var sessionIds = _sessionManager.GetAllSessionIds();
         var resources = new List<(string, string, string, string)>();
 
         foreach (var sessionId in sessionIds)

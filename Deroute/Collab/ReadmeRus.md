@@ -7,7 +7,7 @@
 **Технологический стек:**
 - **Язык:** C# (.NET Framework / .NET Core)
 - **Протокол:** WebSocket (SignalR Protocol)
-- **Формат данных:** JSON (MiniJson парсер)
+- **Формат данных:** JSON (Newtonsoft.Json / Json.NET)
 - **UI:** Windows Forms
 - **Конвертация:** Entity ↔ VectorPrimitiveData
 
@@ -285,58 +285,81 @@
 
 ---
 
-## Протокол обмена (JSON-команды)
+## Протокол обмена (SignalR JSON Protocol)
 
-### Клиент → Сервер
+Клиент подключается к SignalR-хабу сервера на `/collabhub` по «сырому» WebSocket и говорит на
+**SignalR JSON-протоколе**:
 
-| Команда | Параметры | Описание |
+1. **Handshake:** первое сообщение — `{"protocol":"json","version":1}` с завершающим байтом `0x1E`.
+   Сервер отвечает `{}` при успехе.
+2. **Фрейминг:** каждая JSON-запись завершается байтом-разделителем `0x1E`. В одном WebSocket-фрейме
+   может прийти несколько записей.
+3. **Вызовы клиент → сервер** — это инвокации `type: 1`:
+   `{"type":1,"invocationId":"N","target":"<Метод>","arguments":[...]}`. Пустые методы получают
+   completion `type: 3`; методы с результатом (например, `GetSessionState`) возвращают его в completion.
+4. **События сервер → клиент** — это сообщения `type: 1` с `target`, равным имени события.
+5. **Ping:** сервер шлёт `{"type":6}` keep-alive; клиент отвечает `{"type":6}`.
+6. **Закрытие:** `{"type":7}` — корректное завершение соединения.
+
+### Клиент → Сервер (методы хаба, инвокации `type:1`)
+
+| Target | Аргументы | Описание |
 |----------|-----------|----------|
-| `JoinSession` | `sessionId`, `userId` | Присоединиться к сессии |
-| `SendPrimitiveCreated` | `sessionId`, `primitiveId`, `type`, `points`, `strokeColor`, `strokeWidth`, `fillColor`, `userId` | Создать примитив |
-| `SendPrimitiveUpdated` | `sessionId`, `primitiveId`, `points`, `strokeColor`, `strokeWidth`, `fillColor`, `userId` | Обновить примитив |
-| `SendPositionUpdate` | `sessionId`, `primitiveId`, `points`, `userId` | Обновить позицию |
-| `LockPrimitive` | `sessionId`, `primitiveId` | Заблокировать примитив |
-| `UnlockPrimitive` | `sessionId`, `primitiveId` | Разблокировать примитив |
-| `GetConnectedUsers` | `sessionId` | Запросить список пользователей |
-| `GetSessionState` | `sessionId` | Запросить состояние сессии |
+| `JoinSession` | `[sessionId, userId]` | Присоединиться к сессии |
+| `SendPrimitiveCreated` | `[sessionId, primitiveId, type, points, strokeColor, strokeWidth, fillColor, userId]` | Создать примитив (`points` — плоский массив чисел) |
+| `SendPrimitiveUpdated` | `[sessionId, primitiveId, type, points, strokeColor, strokeWidth, fillColor, userId]` | Обновить примитив |
+| `SendPositionUpdate` | `[sessionId, primitiveId, points, userId]` | Обновление позиции в реальном времени |
+| `SendPrimitiveDeleted` | `[sessionId, primitiveId]` | Удалить примитив |
+| `LockPrimitive` | `[sessionId, primitiveId]` | Заблокировать примитив |
+| `UnlockPrimitive` | `[sessionId, primitiveId]` | Разблокировать примитив |
+| `GetConnectedUsers` | `[sessionId]` | Возвращает `List<string>` в результате completion |
+| `GetSessionState` | `[sessionId]` | Возвращает состояние сессии в результате completion |
+| `GetHistory` | `[sessionId, count]` | Возвращает историю операций |
 
-### Сервер → Клиент
+### Сервер → Клиент (события, `type:1` с target)
 
-| Команда | Параметры | Описание |
+| Событие | Аргументы[0] | Описание |
 |----------|-----------|----------|
-| `OnUserJoined` | `userId`, `snapshot` | Пользователь присоединился (с snapshot) |
+| `OnUserJoined` | `{userId, snapshot}` (присоединившемуся) или `userId` (broadcast в группу) | Пользователь присоединился; присоединившийся получает полный snapshot |
 | `OnUserLeft` | `userId` | Пользователь покинул сессию |
-| `OnPrimitiveCreated` | `primitive` | Создан новый примитив |
-| `OnPrimitiveUpdated` | `primitive` | Обновлён примитив |
-| `OnPrimitiveLocked` | `primitive` | Примитив заблокирован |
-| `OnPrimitiveUnlocked` | `primitive` | Примитив разблокирован |
+| `OnPrimitiveCreated` | объект примитива | Создан новый примитив |
+| `OnPrimitiveUpdated` | объект примитива | Обновлён примитив |
+| `OnPrimitiveLocked` | объект примитива | Примитив заблокирован (`lockedBy` установлен) |
+| `OnPrimitiveUnlocked` | объект примитива | Примитив разблокирован |
 | `OnPrimitiveDeleted` | `primitiveId` | Примитив удалён |
 | `OnCanvasCleared` | — | Canvas очищен |
-| `OnPositionUpdated` | `primitiveId`, `points` | Обновление позиции |
-| `OnSnapshot` | — | Полный снимок состояния |
-| `OnError` | `error` | Ошибка |
+| `OnPositionUpdated` | `{primitiveId, points}` | Обновление позиции в реальном времени |
+| `OnPrimitiveError` | `error` | Ошибка операции с примитивом |
+| `OnLockError` | `{primitiveId, error}` | Ошибка блокировки |
+| `OnSessionError` | `error` | Ошибка уровня сессии |
+
+При получении `OnUserJoined` со snapshot клиент генерирует `OnSnapshotReceived`; UI затем запрашивает
+полное состояние через `GetSessionStateAsync()` (теперь с корреляцией запрос-ответ по `invocationId`).
 
 ---
 
-## Формат данных примитива (JSON)
+## Формат данных примитива (JSON, wire-формат сервера)
+
+Сервер сериализует примитивы ключами в нижнем регистре, точки — массивом объектов `{x,y}`
+(клиент читает регистронезависимо):
 
 ```json
 {
-  "Id": "a1b2c3d4-e5f6-...",
-  "Type": "rectangle",
-  "Points": [
-    { "X": 100.0, "Y": 50.0 },
-    { "X": 300.0, "Y": 200.0 }
+  "id": "a1b2c3d4-e5f6-...",
+  "type": "rectangle",
+  "points": [
+    { "x": 100.0, "y": 50.0 },
+    { "x": 300.0, "y": 200.0 }
   ],
-  "StrokeColor": "#FF6B6B",
-  "StrokeWidth": 2.0,
-  "FillColor": "transparent",
-  "CreatedBy": "user_a",
-  "LockedBy": "user_b",
-  "LockedAt": "2025-01-15T10:30:00.0000000Z",
-  "Version": 5,
-  "CreatedAt": "2025-01-15T10:00:00.0000000Z",
-  "UpdatedAt": "2025-01-15T10:30:00.0000000Z"
+  "strokeColor": "#FF6B6B",
+  "strokeWidth": 2.0,
+  "fillColor": "transparent",
+  "createdBy": "user_a",
+  "lockedBy": "user_b",
+  "lockedAt": "2025-01-15T10:30:00.0000000Z",
+  "version": 5,
+  "createdAt": "2025-01-15T10:00:00.0000000Z",
+  "updatedAt": "2025-01-15T10:30:00.0000000Z"
 }
 ```
 
@@ -385,21 +408,24 @@
 
 ## Механизм переподключения
 
-1. При разрыве соединения клиент генерирует событие `OnError`
-2. `FormMainCollab` обновляет статус в UI (красный цвет)
-3. Пользователь может нажать правую кнопку мыши на статусной панели → "Reconnect"
-4. Вызывается `ConnectAsync()` для повторного подключения
-5. После подключения автоматически запрашивается `GetSessionStateAsync()` для синхронизации
-6. Полученный snapshot применяется к canvas через `ApplyRemotePrimitive`
+1. При разрыве соединения цикл приёма завершается и генерируется событие `OnDisconnected`
+2. `CollabClient` автоматически повторяет попытки: до `MaxReconnectAttempts` раз с задержкой
+   `ReconnectDelayMs` между попытками (только при `Enabled` и без ручного отключения)
+3. Во время переподключения `OnError` сообщает номер попытки (`Reconnecting 2/50...`)
+4. Пользователь также может переподключиться вручную через статусную панель "Reconnect" → `ConnectAsync()`
+5. При успешном переподключении сервер отправляет snapshot сессии внутри `OnUserJoined`;
+   генерируется `OnSnapshotReceived`, и `GetSessionStateAsync()` (запрос-ответ коррелируется по
+   `invocationId`) возвращает полное состояние, которое применяется к canvas
 
 ---
 
 ## Механизм offline-изменений
 
-1. При отключении от сервера пользователь продолжает работать с canvas
-2. Все изменения (создание, обновление примитивов) добавляются в `_offlineQueue`
-3. При переподключении `FlushOfflineChanges()` отправляет накопленные изменения на сервер
-4. Каждое изменение отправляется как соответствующая команда (`SendPrimitiveCreatedAsync` / `SendPrimitiveUpdatedAsync`)
+1. Пока соединение отсутствует (и коллаб включён), локальные изменения canvas добавляются в `_offlineQueue`
+2. При переподключении (`OnConnected`) `FlushOfflineChanges()` отправляет накопленные изменения:
+   `created` → `SendPrimitiveCreatedAsync`, `updated` → `SendPrimitiveUpdatedAsync`,
+   `deleted` → `SendPrimitiveDeletedAsync`
+3. При активном соединении локальные добавления/удаления публикуются на сервер немедленно
 
 ---
 
@@ -419,7 +445,7 @@
 | Зависимость | Назначение |
 |-------------|-----------|
 | `System.Net.WebSockets` | WebSocket-клиент |
-| `MiniJson` | Парсинг JSON |
+| `Newtonsoft.Json` | Парсинг JSON (Json.NET) |
 | `System.Drawing` | Работа с цветами (`ColorTranslator`) |
 | `System.Windows.Forms.Timer` | Таймеры UI |
 | `System.Collections.Concurrent` | Потокобезопасные коллекции |

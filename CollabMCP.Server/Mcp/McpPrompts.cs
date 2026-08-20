@@ -40,7 +40,7 @@ public class McpPrompts
                 "Error: sessionId is required", null);
         }
 
-        if (!_sessionManager.TryGetSession(sessionId, out var state))
+        if (!_sessionManager.TryLoadSession(sessionId, out var state) || state == null)
         {
             return (false, "AnalyzeCanvas", "Analyze the current canvas state and provide insights about the vector primitives",
                 $"Session '{sessionId}' not found", null);
@@ -49,24 +49,36 @@ public class McpPrompts
         var analysis = new
         {
             sessionId,
-            primitiveCount = state.Primitives.Count,
-            primitivesByType = state.Primitives.Values.GroupBy(p => p.Type)
+            entityCount = state.Entities.Count,
+            entitiesByType = Flatten(state.Entities)
+                .GroupBy(e => e.Type)
                 .ToDictionary(g => g.Key, g => g.Count()),
             connectedUsers = state.ConnectedUsers.ToList(),
-            lockedPrimitives = state.Primitives.Values.Where(p => p.LockedBy != null)
-                .Select(p => new { p.Id, p.Type, p.LockedBy, p.LockedAt })
+            lockedEntities = Flatten(state.Entities)
+                .Where(e => e.LockedBy != null)
+                .Select(e => new { e.Id, e.Type, e.LockedBy, e.LockedAt })
                 .ToList(),
             backgroundImage = state.Metadata.BackgroundImageUrl ?? state.Metadata.BackgroundImageId,
             imageDimensions = (state.Metadata.ImageWidth, state.Metadata.ImageHeight)
         };
 
         var message = $"Canvas analysis for session '{sessionId}': " +
-            $"{analysis.primitiveCount} primitives, " +
+            $"{analysis.entityCount} top-level entities, " +
             $"{state.ConnectedUsers.Count} connected users, " +
-            $"{analysis.lockedPrimitives.Count} locked primitives.";
+            $"{analysis.lockedEntities.Count} locked entities.";
 
         return (true, "AnalyzeCanvas", "Analyze the current canvas state and provide insights about the vector primitives",
             message, analysis);
+    }
+
+    private static IEnumerable<Models.EntityNode> Flatten(IEnumerable<Models.EntityNode> nodes)
+    {
+        foreach (var node in nodes)
+        {
+            yield return node;
+            foreach (var child in Flatten(node.Children))
+                yield return child;
+        }
     }
 
     private (bool, string, string, string?, object?) GenerateLayout(Dictionary<string, object>? arguments)

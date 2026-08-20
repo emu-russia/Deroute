@@ -92,6 +92,9 @@ public class Entity
 	public int UserData;        // For temp values
 
 	[XmlIgnore]
+	public string CollabId;     // Collaboration entity id assigned by the CollabMCP server
+
+	[XmlIgnore]
 	public float SavedLambdaX;
 	[XmlIgnore]
 	public float SavedLambdaY;
@@ -130,6 +133,7 @@ public class Entity
 			_traverseBlackList = new List<EntityType>();
 			_traverseBlackList.AddRange(other._traverseBlackList);
 		}
+		CollabId = other.CollabId;
 	}
 
 	[Category("Entity Properties")]

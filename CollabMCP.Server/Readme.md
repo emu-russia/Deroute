@@ -75,7 +75,7 @@
 | `McpResources` | `Mcp/McpResources.cs` | MCP resource definitions (canvas state, operation history URIs) |
 | `McpPrompts` | `Mcp/McpPrompts.cs` | MCP prompt templates (AnalyzeCanvas, GenerateLayout) |
 | `ApiKeyAuthMiddleware` | `Middleware/ApiKeyAuthMiddleware.cs` | API key validation for all endpoints except health check |
-| `VectorPrimitive` | `Models/Entities.cs` | Vector primitive data model (points, colors, lock state, version) |
+| `EntityNode` | `Models/Entities.cs` | Full entity data model (application Entity mirror + lock state, version) |
 | `SessionState` | `Models/Entities.cs` | Complete session state (metadata, primitives, history, connected users) |
 | `SessionMetadata` | `Models/Entities.cs` | Session metadata (background image, dimensions, timestamps) |
 | `OperationLogEntry` | `Models/Entities.cs` | Audit log entry (operation type, user, timestamp, details) |
@@ -194,31 +194,44 @@ Add a new vector primitive to a canvas session.
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `sessionId` | string | Yes | Target session ID |
-| `type` | string | Yes | Primitive type: `rectangle`, `polygon`, `line`, `ellipse`, `polyline` |
-| `points` | number[] | Yes | Coordinate pairs: `[x1, y1, x2, y2, ...]` |
-| `strokeColor` | string | No | Hex color code (default: `#000000`) |
-| `strokeWidth` | number | No | Line width (default: `1`) |
-| `fillColor` | string | No | Fill color (default: `transparent`) |
+| `type` | string | Yes | EntityType name: `ViasInput`, `ViasOutput`, `ViasInout`, `ViasConnect`, `ViasFloating`, `ViasPower`, `ViasGround`, `WireInterconnect`, `WirePower`, `WireGround`, `CellNot`..`CellOther`, `UnitRegfile`/`UnitMemory`/`UnitCustom`, `Beacon`, `Region`, `Layer` |
+| `points` | number[] | Yes | Flat coordinate pairs: `[x1, y1, x2, y2, ...]` |
+| `parentId` | string | No | Parent entity id (e.g. a `Layer`) to attach under |
+| `label` | string | No | Display label |
+| `priority` | number | No | Z-order priority |
+| `widthOverride` | number | No | Line/entity width override |
+| `colorOverride` | string | No | Hex color code |
+| `fontOverride` | string | No | Font override |
+| `labelAlignment` | string | No | TextAlignment name |
+| `traverseBlackList` | string[] | No | Prohibited entity types for traverse |
+| `module` | string | No | Shared Verilog module name |
+| `visible` | boolean | No | Visibility (default `true`) |
+| `children` | object[] | No | Nested entities (same schema) |
 
 **Response:** Serialized primitive with success message.
 
 #### 2. `update_primitive`
 
-Update an existing primitive's properties.
+Update an existing entity's properties.
 
 **Parameters:**
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `sessionId` | string | Yes | Target session ID |
-| `primitiveId` | string | Yes | Primitive to update |
-| `points` | number[] | No | New coordinate pairs |
-| `type` | string | No | New type |
-| `strokeColor` | string | No | New stroke color |
-| `strokeWidth` | number | No | New stroke width |
-| `fillColor` | string | No | New fill color |
+| `primitiveId` | string | Yes | Entity to update |
+| `points` | number[] | No | New flat coordinate pairs `[x1, y1, ...]` |
+| `type` | string | No | New EntityType name |
+| `label` | string | No | New display label |
+| `priority` | number | No | New z-order priority |
+| `widthOverride` | number | No | New width override |
+| `colorOverride` | string | No | New hex color |
+| `fontOverride` | string | No | New font override |
+| `labelAlignment` | string | No | New TextAlignment name |
+| `module` | string | No | New Verilog module name |
+| `visible` | boolean | No | New visibility |
 
-**Response:** `{ "content": [{ "type": "text", "text": "{\"message\":\"Primitive updated successfully\"}" }] }`
+**Response:** `{ "content": [{ "type": "text", "text": "{\"message\":\"Entity updated successfully\"}" }] }`
 
 #### 3. `delete_primitive`
 
@@ -306,11 +319,12 @@ Provides instructions for generating vector primitives from a text description.
 | Method | Parameters | Description |
 |--------|------------|-------------|
 | `JoinSession` | `sessionId`, `userId` | Join a canvas session; receives full snapshot |
-| `SendPrimitiveCreated` | `sessionId`, `primitiveId`, `type`, `points`, `strokeColor`, `strokeWidth`, `fillColor`, `userId` | Create a new primitive |
-| `SendPrimitiveUpdated` | `sessionId`, `primitiveId`, `type`, `points`, `strokeColor`, `strokeWidth`, `fillColor`, `userId` | Update an existing primitive |
-| `SendPositionUpdate` | `sessionId`, `primitiveId`, `points`, `userId` | Real-time position update (with delta buffering) |
-| `LockPrimitive` | `sessionId`, `primitiveId` | Lock a primitive for exclusive editing |
-| `UnlockPrimitive` | `sessionId`, `primitiveId` | Unlock a previously locked primitive |
+| `SendEntityCreated` | `sessionId`, `entity` (EntityDto), `userId`, `parentId` | Create a new entity (full application entity model) |
+| `SendEntityUpdated` | `sessionId`, `entity` (EntityDto), `userId` | Update an existing entity |
+| `SendEntityDeleted` | `sessionId`, `entityId` | Delete an entity (broadcasts `OnEntityDeleted`) |
+| `SendPositionUpdate` | `sessionId`, `entityId`, `points`, `userId` | Real-time position update (with delta buffering) |
+| `LockEntity` | `sessionId`, `entityId` | Lock an entity for exclusive editing |
+| `UnlockEntity` | `sessionId`, `entityId` | Unlock a previously locked entity |
 | `GetSessionState` | `sessionId` | Retrieve current session state |
 | `GetHistory` | `sessionId`, `count` (default 50) | Retrieve operation history |
 | `GetConnectedUsers` | `sessionId` | List connected users |
@@ -321,25 +335,33 @@ Provides instructions for generating vector primitives from a text description.
 |-------|---------|-------------|
 | `OnUserJoined` | `{ UserId, Snapshot }` | User joined with full canvas snapshot; also broadcast to group |
 | `OnUserLeft` | `{ UserId }` | User disconnected; broadcast to group |
-| `OnPrimitiveCreated` | Serialized primitive object | New primitive created; broadcast to session group |
-| `OnPrimitiveUpdated` | Serialized primitive object | Primitive updated; broadcast to session group |
-| `OnPrimitiveLocked` | Serialized primitive object | Primitive locked; broadcast to session group |
-| `OnPrimitiveUnlocked` | Serialized primitive object | Primitive unlocked; broadcast to session group |
+| `OnEntityCreated` | EntityDto | New entity created; broadcast to session group |
+| `OnEntityUpdated` | EntityDto | Entity updated; broadcast to session group |
+| `OnEntityLocked` | EntityDto | Entity locked; broadcast to session group |
+| `OnEntityUnlocked` | EntityDto | Entity unlocked; broadcast to session group |
 | `OnPositionUpdated` | `{ PrimitiveId, Points }` | Real-time position delta; broadcast to session group |
-| `OnPrimitiveError` | `{ error }` | Error response for primitive operations |
-| `OnLockError` | `{ PrimitiveId, Error }` | Error response for lock operations |
+| `OnEntityError` | `{ error }` | Error response for entity operations |
+| `OnLockError` | `{ EntityId, Error }` | Error response for lock operations |
 | `OnSessionError` | `{ error }` | Session-level error |
 
-### Serialized Primitive Object
+### EntityDto (wire format)
 
 ```json
 {
   "id": "guid",
-  "type": "rectangle",
-  "points": [{ "x": 100, "y": 100 }, { "x": 300, "y": 400 }],
-  "strokeColor": "#FF0000",
-  "strokeWidth": 2,
-  "fillColor": "transparent",
+  "type": "ViasInput",
+  "label": "IN1",
+  "lambdaX": 100, "lambdaY": 100, "lambdaEndX": 300, "lambdaEndY": 400,
+  "lambdaWidth": 0, "lambdaHeight": 0,
+  "priority": 0, "widthOverride": 2,
+  "colorOverride": "#FF0000",
+  "fontOverride": null,
+  "labelAlignment": "GlobalSettings",
+  "points": [100, 100, 300, 400],
+  "traverseBlackList": [],
+  "module": null,
+  "visible": true,
+  "children": [ { "…": "nested EntityDto" } ],
   "createdBy": "user-id",
   "lockedBy": "user-id or \"none\"",
   "lockedAt": "ISO 8601 or \"\"",
@@ -353,17 +375,28 @@ Provides instructions for generating vector primitives from a text description.
 
 ## Data Model
 
-### VectorPrimitive
+The server stores the **full application entity model** (mirror of `EntityBox.Entity`), enriched
+with collaboration fields.
+
+### EntityNode
 
 | Property | Type | Description |
 |----------|------|-------------|
 | `Id` | string | Unique identifier (GUID) |
-| `Type` | string | Primitive type (`rectangle`, `polygon`, `line`, `ellipse`, `polyline`) |
-| `Points` | List\<Point\> | Ordered list of 2D coordinates |
-| `StrokeColor` | string | Hex color code (default `#000000`) |
-| `StrokeWidth` | double | Line width in pixels (default `1.0`) |
-| `FillColor` | string | Fill color (default `transparent`) |
-| `CreatedBy` | string | User ID who created the primitive |
+| `Type` | string | EntityType enum name (`ViasInput`..`ViasGround`, `WireInterconnect`/`WirePower`/`WireGround`, `CellNot`..`CellOther`, `UnitRegfile`/`UnitMemory`/`UnitCustom`, `Beacon`, `Region`, `Layer`, `Root`) |
+| `Label` | string\? | Display label |
+| `LambdaX/Y/EndX/EndY`, `LambdaWidth/Height` | float | Geometry in lambda units |
+| `Priority` | int | Z-order priority |
+| `WidthOverride` | int | Line/entity width override |
+| `ColorOverride` | string\? | Hex color `#RRGGBB` |
+| `FontOverride` | string\? | FontXmlConverter string |
+| `LabelAlignment` | string | TextAlignment enum name |
+| `PathPoints` | List\<EntityPoint\>\? | Ordered list of 2D coordinates |
+| `TraverseBlackList` | List\<string\>\? | Prohibited entity types for traverse |
+| `Module` | string\? | Shared Verilog module name |
+| `Visible` | bool | Visibility |
+| `Children` | List\<EntityNode\> | Nested entities (layers) |
+| `CreatedBy` | string | User ID who created the entity |
 | `LockedBy` | string\? | User ID of current lock holder (null = unlocked) |
 | `LockedAt` | DateTime\? | Timestamp of lock acquisition |
 | `Version` | int | Optimistic concurrency version counter |
@@ -375,7 +408,8 @@ Provides instructions for generating vector primitives from a text description.
 | Property | Type | Description |
 |----------|------|-------------|
 | `Metadata` | SessionMetadata | Session-level metadata |
-| `Primitives` | ConcurrentDictionary\<string, VectorPrimitive\> | All primitives in the session |
+| `Entities` | List\<EntityNode\> | Top-level entities (list order = z-order) |
+| `EntityIndex` | ConcurrentDictionary\<string, EntityNode\> | O(1) lookup by entity id across the tree |
 | `History` | List\<OperationLogEntry\> | Operation audit log (max 1000 entries, trimmed to 500 on overflow) |
 | `ConnectedUsers` | HashSet\<string\> | Currently connected user IDs |
 | `Version` | int | Session-level version counter |
@@ -413,37 +447,51 @@ Sessions are persisted as XML files in the configured `XmlStoragePath` directory
 
 **File naming:** `{sessionId}.xml`
 
-**Structure:**
+**Structure (format v2):**
 
 ```xml
-<Session>
+<Session FormatVersion="2">
   <Metadata>
+    <SessionId>sess-id</SessionId>
     <BackgroundImageId />
     <BackgroundImageUrl />
     <ImageWidth>0</ImageWidth>
     <ImageHeight>0</ImageHeight>
     <CreatedAt>2026-07-28T00:00:00.000Z</CreatedAt>
     <LastActivity>2026-07-28T00:00:00.000Z</LastActivity>
+    <Version>1</Version>
   </Metadata>
-  <Primitives>
-    <Primitive>
+  <Entities>
+    <EntityNode>
       <Id>guid</Id>
-      <Type>rectangle</Type>
-      <Points>
+      <Type>ViasInput</Type>
+      <Label>IN1</Label>
+      <LambdaX>100</LambdaX><LambdaY>100</LambdaY>
+      <LambdaEndX>300</LambdaEndX><LambdaEndY>400</LambdaEndY>
+      <LambdaWidth>0</LambdaWidth><LambdaHeight>0</LambdaHeight>
+      <Priority>0</Priority>
+      <WidthOverride>2</WidthOverride>
+      <ColorOverride>#FF0000</ColorOverride>
+      <FontOverride />
+      <LabelAlignment>GlobalSettings</LabelAlignment>
+      <PathPoints>
         <Point><X>100</X><Y>100</Y></Point>
         <Point><X>300</X><Y>400</Y></Point>
-      </Points>
-      <StrokeColor>#FF0000</StrokeColor>
-      <StrokeWidth>2</StrokeWidth>
-      <FillColor>transparent</FillColor>
+      </PathPoints>
+      <TraverseBlackList />
+      <Module />
+      <Visible>true</Visible>
       <CreatedBy>user-id</CreatedBy>
       <LockedBy>user-id</LockedBy>
       <LockedAt>2026-07-28T00:00:00.000Z</LockedAt>
       <Version>1</Version>
       <CreatedAt>2026-07-28T00:00:00.000Z</CreatedAt>
       <UpdatedAt>2026-07-28T00:00:00.000Z</UpdatedAt>
-    </Primitive>
-  </Primitives>
+      <Children>
+        <EntityNode>…nested…</EntityNode>
+      </Children>
+    </EntityNode>
+  </Entities>
   <History>
     <Entry>
       <Operation>Created</Operation>
@@ -463,7 +511,8 @@ Sessions are persisted as XML files in the configured `XmlStoragePath` directory
 
 - Sessions are loaded from XML into memory on first access (lazy loading)
 - Every state mutation (create/update/delete/lock/unlock/clear/user-join/user-leave) triggers immediate XML save
-- Sessions are removed from memory and saved to XML on explicit delete request
+- Real-time position updates are applied in memory only (no version bump, no XML write); the next real mutation persists them
+- Sessions are removed from memory and their XML file is deleted on explicit delete request
 - New sessions are created in memory if no XML file exists
 
 ---
@@ -554,12 +603,13 @@ Sessions are persisted as XML files in the configured `XmlStoragePath` directory
 
 | Package | Version | Purpose |
 |---------|---------|---------|
-| Microsoft.AspNetCore.SignalR | 1.2.0 | Real-time WebSocket communication |
-| Newtonsoft.Json | 13.0.4 | JSON serialization |
+| Newtonsoft.Json | 13.0.4 | JSON serialization (declared; runtime uses System.Text.Json) |
 | Serilog | 4.2.0 | Structured logging |
 | Serilog.Sinks.File | 6.0.0 | File-based log sink |
 | Serilog.Sinks.Console | 6.0.0 | Console log sink |
 | Microsoft.AspNetCore.OpenApi | 10.0.10 | OpenAPI/Swagger support |
+
+> Note: SignalR is provided by the ASP.NET Core 10 shared framework; no separate package reference is required.
 
 ---
 

@@ -6,6 +6,10 @@ using Microsoft.Extensions.Options;
 
 namespace CollabMCP.Server.Services;
 
+/// <summary>
+/// XML persistence for sessions (format v2): full EntityNode model.
+/// Only the current format is supported — no legacy/migration paths.
+/// </summary>
 public class XmlSessionStore
 {
     private readonly string _storagePath;
@@ -48,72 +52,55 @@ public class XmlSessionStore
             if (root == null)
                 return CreateNewSession(sessionId);
 
-            var metadata = new SessionMetadata
-            {
-                SessionId = sessionId,
-                BackgroundImageId = root.Element("BackgroundImageId")?.Value,
-                BackgroundImageUrl = root.Element("BackgroundImageUrl")?.Value,
-                ImageWidth = int.Parse(root.Element("ImageWidth")?.Value ?? "0"),
-                ImageHeight = int.Parse(root.Element("ImageHeight")?.Value ?? "0"),
-                CreatedAt = DateTime.TryParse(root.Element("CreatedAt")?.Value, out var dt) ? dt : DateTime.UtcNow,
-                LastActivity = DateTime.TryParse(root.Element("LastActivity")?.Value, out var dt2) ? dt2 : DateTime.UtcNow
-            };
-
-            var primitives = new ConcurrentDictionary<string, VectorPrimitive>();
-            var primitivesNode = root.Element("Primitives");
-            if (primitivesNode != null)
-            {
-                foreach (var primNode in primitivesNode.Elements("Primitive"))
-                {
-                    var prim = DeserializePrimitive(primNode);
-                    if (prim != null)
-                        primitives[prim.Id] = prim;
-                }
-            }
-
-            var history = new List<OperationLogEntry>();
-            var historyNode = root.Element("History");
-            if (historyNode != null)
-            {
-                foreach (var entryNode in historyNode.Elements("Entry"))
-                {
-                    history.Add(new OperationLogEntry
-                    {
-                        Operation = entryNode.Element("Operation")?.Value ?? string.Empty,
-                        PrimitiveId = entryNode.Element("PrimitiveId")?.Value ?? string.Empty,
-                        UserId = entryNode.Element("UserId")?.Value ?? string.Empty,
-                        Timestamp = DateTime.TryParse(entryNode.Element("Timestamp")?.Value, out var ts) ? ts : DateTime.UtcNow,
-                        Details = entryNode.Element("Details")?.Value
-                    });
-                }
-            }
-
-            var connectedUsers = new HashSet<string>();
-            var usersNode = root.Element("ConnectedUsers");
-            if (usersNode != null)
-            {
-                foreach (var userNode in usersNode.Elements("User"))
-                {
-                    var userId = userNode.Value;
-                    if (!string.IsNullOrWhiteSpace(userId))
-                        connectedUsers.Add(userId);
-                }
-            }
-
-            return new SessionState
-            {
-                Metadata = metadata,
-                Primitives = primitives,
-                History = history,
-                ConnectedUsers = connectedUsers,
-                Version = metadata.Version
-            };
+            return LoadSessionV2(root, sessionId);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error loading session {SessionId} from {FilePath}", sessionId, filePath);
             return CreateNewSession(sessionId);
         }
+    }
+
+    private SessionState LoadSessionV2(XElement root, string sessionId)
+    {
+        var metadata = ReadMetadata(root, sessionId);
+
+        var entities = new List<EntityNode>();
+        var index = new ConcurrentDictionary<string, EntityNode>();
+        var entitiesNode = root.Element("Entities");
+        if (entitiesNode != null)
+        {
+            foreach (var nodeEl in entitiesNode.Elements("EntityNode"))
+            {
+                var node = DeserializeEntityNode(nodeEl);
+                if (node != null)
+                {
+                    entities.Add(node);
+                    IndexEntity(node, index);
+                }
+            }
+        }
+
+        var history = ReadHistory(root);
+        var connectedUsers = ReadConnectedUsers(root);
+
+        return new SessionState
+        {
+            Metadata = metadata,
+            Entities = entities,
+            EntityIndex = index,
+            History = history,
+            ConnectedUsers = connectedUsers,
+            Version = metadata.Version
+        };
+    }
+
+    private static void IndexEntity(EntityNode node, ConcurrentDictionary<string, EntityNode> index)
+    {
+        if (string.IsNullOrEmpty(node.Id)) return;
+        index[node.Id] = node;
+        foreach (var child in node.Children)
+            IndexEntity(child, index);
     }
 
     public void SaveSession(SessionState state)
@@ -124,36 +111,20 @@ public class XmlSessionStore
         {
             var doc = new XDocument(
                 new XElement("Session",
+                    new XAttribute("FormatVersion", "2"),
                     new XElement("Metadata",
+                        new XElement("SessionId", state.Metadata.SessionId),
                         new XElement("BackgroundImageId", state.Metadata.BackgroundImageId ?? string.Empty),
                         new XElement("BackgroundImageUrl", state.Metadata.BackgroundImageUrl ?? string.Empty),
                         new XElement("ImageWidth", state.Metadata.ImageWidth ?? 0),
                         new XElement("ImageHeight", state.Metadata.ImageHeight ?? 0),
                         new XElement("CreatedAt", state.Metadata.CreatedAt.ToString("o")),
-                        new XElement("LastActivity", DateTime.UtcNow.ToString("o"))
+                        new XElement("LastActivity", DateTime.UtcNow.ToString("o")),
+                        new XElement("Version", state.Metadata.Version)
                     ),
-                    new XElement("Primitives",
-                        from prim in state.Primitives.Values
-                        select new XElement("Primitive",
-                            new XElement("Id", prim.Id),
-                            new XElement("Type", prim.Type),
-                            new XElement("Points",
-                                from pt in prim.Points
-                                select new XElement("Point",
-                                    new XElement("X", pt.X),
-                                    new XElement("Y", pt.Y)
-                                )
-                            ),
-                            new XElement("StrokeColor", prim.StrokeColor),
-                            new XElement("StrokeWidth", prim.StrokeWidth),
-                            new XElement("FillColor", prim.FillColor),
-                            new XElement("CreatedBy", prim.CreatedBy),
-                            new XElement("LockedBy", prim.LockedBy ?? string.Empty),
-                            new XElement("LockedAt", prim.LockedAt?.ToString("o") ?? string.Empty),
-                            new XElement("Version", prim.Version),
-                            new XElement("CreatedAt", prim.CreatedAt.ToString("o")),
-                            new XElement("UpdatedAt", DateTime.UtcNow.ToString("o"))
-                        )
+                    new XElement("Entities",
+                        from node in state.Entities
+                        select SerializeEntityNode(node)
                     ),
                     new XElement("History",
                         from entry in state.History
@@ -181,6 +152,131 @@ public class XmlSessionStore
         }
     }
 
+    private static XElement SerializeEntityNode(EntityNode node)
+    {
+        return new XElement("EntityNode",
+            new XElement("Id", node.Id),
+            new XElement("Type", node.Type),
+            new XElement("Label", node.Label ?? string.Empty),
+            new XElement("LambdaX", node.LambdaX),
+            new XElement("LambdaY", node.LambdaY),
+            new XElement("LambdaEndX", node.LambdaEndX),
+            new XElement("LambdaEndY", node.LambdaEndY),
+            new XElement("LambdaWidth", node.LambdaWidth),
+            new XElement("LambdaHeight", node.LambdaHeight),
+            new XElement("Priority", node.Priority),
+            new XElement("WidthOverride", node.WidthOverride),
+            new XElement("ColorOverride", node.ColorOverride ?? string.Empty),
+            new XElement("FontOverride", node.FontOverride ?? string.Empty),
+            new XElement("LabelAlignment", node.LabelAlignment),
+            new XElement("PathPoints",
+                from pt in node.PathPoints ?? new List<EntityPoint>()
+                select new XElement("Point",
+                    new XElement("X", pt.X),
+                    new XElement("Y", pt.Y)
+                )
+            ),
+            new XElement("TraverseBlackList",
+                from t in node.TraverseBlackList ?? new List<string>()
+                select new XElement("EntityType", t)
+            ),
+            new XElement("Module", node.Module ?? string.Empty),
+            new XElement("Visible", node.Visible),
+            new XElement("CreatedBy", node.CreatedBy),
+            new XElement("LockedBy", node.LockedBy ?? string.Empty),
+            new XElement("LockedAt", node.LockedAt?.ToString("o") ?? string.Empty),
+            new XElement("Version", node.Version),
+            new XElement("CreatedAt", node.CreatedAt.ToString("o")),
+            new XElement("UpdatedAt", node.UpdatedAt.ToString("o")),
+            new XElement("Children",
+                from child in node.Children
+                select SerializeEntityNode(child)
+            )
+        );
+    }
+
+    private EntityNode? DeserializeEntityNode(XElement el)
+    {
+        try
+        {
+            var lockedBy = el.Element("LockedBy")?.Value;
+            var lockedAt = el.Element("LockedAt")?.Value;
+
+            var node = new EntityNode
+            {
+                Id = el.Element("Id")?.Value ?? Guid.NewGuid().ToString(),
+                Type = el.Element("Type")?.Value ?? "WireInterconnect",
+                Label = el.Element("Label")?.Value,
+                LambdaX = ParseFloat(el, "LambdaX"),
+                LambdaY = ParseFloat(el, "LambdaY"),
+                LambdaEndX = ParseFloat(el, "LambdaEndX"),
+                LambdaEndY = ParseFloat(el, "LambdaEndY"),
+                LambdaWidth = ParseFloat(el, "LambdaWidth"),
+                LambdaHeight = ParseFloat(el, "LambdaHeight"),
+                Priority = ParseInt(el, "Priority"),
+                WidthOverride = ParseInt(el, "WidthOverride"),
+                ColorOverride = el.Element("ColorOverride")?.Value,
+                FontOverride = el.Element("FontOverride")?.Value,
+                LabelAlignment = el.Element("LabelAlignment")?.Value ?? "GlobalSettings",
+                Module = el.Element("Module")?.Value,
+                Visible = !bool.TryParse(el.Element("Visible")?.Value, out var vis) || vis,
+                CreatedBy = el.Element("CreatedBy")?.Value ?? string.Empty,
+                LockedBy = string.IsNullOrEmpty(lockedBy) ? null : lockedBy,
+                LockedAt = string.IsNullOrEmpty(lockedAt) ? null : DateTime.TryParse(lockedAt, out var la) ? la : null,
+                Version = ParseInt(el, "Version", 1),
+                CreatedAt = DateTime.TryParse(el.Element("CreatedAt")?.Value, out var ca) ? ca : DateTime.UtcNow,
+                UpdatedAt = DateTime.TryParse(el.Element("UpdatedAt")?.Value, out var ua) ? ua : DateTime.UtcNow
+            };
+
+            var pathPoints = new List<EntityPoint>();
+            var ptsEl = el.Element("PathPoints");
+            if (ptsEl != null)
+            {
+                foreach (var pt in ptsEl.Elements("Point"))
+                {
+                    pathPoints.Add(new EntityPoint
+                    {
+                        X = ParseFloat(pt, "X"),
+                        Y = ParseFloat(pt, "Y")
+                    });
+                }
+            }
+            node.PathPoints = pathPoints.Count > 0 ? pathPoints : null;
+
+            var blackList = new List<string>();
+            var blEl = el.Element("TraverseBlackList");
+            if (blEl != null)
+            {
+                foreach (var t in blEl.Elements("EntityType"))
+                {
+                    if (!string.IsNullOrEmpty(t.Value))
+                        blackList.Add(t.Value);
+                }
+            }
+            node.TraverseBlackList = blackList.Count > 0 ? blackList : null;
+
+            var children = new List<EntityNode>();
+            var childrenEl = el.Element("Children");
+            if (childrenEl != null)
+            {
+                foreach (var childEl in childrenEl.Elements("EntityNode"))
+                {
+                    var child = DeserializeEntityNode(childEl);
+                    if (child != null)
+                        children.Add(child);
+                }
+            }
+            node.Children = children;
+
+            return node;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deserializing entity node");
+            return null;
+        }
+    }
+
     public bool DeleteSession(string sessionId)
     {
         var filePath = GetSessionFilePath(sessionId);
@@ -203,6 +299,62 @@ public class XmlSessionStore
             .ToList();
     }
 
+    // ---------------------------------------------------------------- shared readers
+
+    private static SessionMetadata ReadMetadata(XElement root, string sessionId)
+    {
+        var meta = root.Element("Metadata");
+        XElement? Field(string name) => meta?.Element(name) ?? root.Element(name);
+
+        return new SessionMetadata
+        {
+            SessionId = sessionId,
+            BackgroundImageId = Field("BackgroundImageId")?.Value,
+            BackgroundImageUrl = Field("BackgroundImageUrl")?.Value,
+            ImageWidth = int.TryParse(Field("ImageWidth")?.Value, out var w) ? w : null,
+            ImageHeight = int.TryParse(Field("ImageHeight")?.Value, out var h) ? h : null,
+            CreatedAt = DateTime.TryParse(Field("CreatedAt")?.Value, out var dt) ? dt : DateTime.UtcNow,
+            LastActivity = DateTime.TryParse(Field("LastActivity")?.Value, out var dt2) ? dt2 : DateTime.UtcNow,
+            Version = int.TryParse(Field("Version")?.Value, out var v) ? v : 1
+        };
+    }
+
+    private static List<OperationLogEntry> ReadHistory(XElement root)
+    {
+        var history = new List<OperationLogEntry>();
+        var historyNode = root.Element("History");
+        if (historyNode != null)
+        {
+            foreach (var entryNode in historyNode.Elements("Entry"))
+            {
+                history.Add(new OperationLogEntry
+                {
+                    Operation = entryNode.Element("Operation")?.Value ?? string.Empty,
+                    PrimitiveId = entryNode.Element("PrimitiveId")?.Value ?? string.Empty,
+                    UserId = entryNode.Element("UserId")?.Value ?? string.Empty,
+                    Timestamp = DateTime.TryParse(entryNode.Element("Timestamp")?.Value, out var ts) ? ts : DateTime.UtcNow,
+                    Details = entryNode.Element("Details")?.Value
+                });
+            }
+        }
+        return history;
+    }
+
+    private static HashSet<string> ReadConnectedUsers(XElement root)
+    {
+        var connectedUsers = new HashSet<string>();
+        var usersNode = root.Element("ConnectedUsers");
+        if (usersNode != null)
+        {
+            foreach (var userNode in usersNode.Elements("User"))
+            {
+                if (!string.IsNullOrWhiteSpace(userNode.Value))
+                    connectedUsers.Add(userNode.Value);
+            }
+        }
+        return connectedUsers;
+    }
+
     private SessionState CreateNewSession(string sessionId)
     {
         return new SessionState
@@ -213,53 +365,20 @@ public class XmlSessionStore
                 CreatedAt = DateTime.UtcNow,
                 LastActivity = DateTime.UtcNow
             },
-            Primitives = new ConcurrentDictionary<string, VectorPrimitive>(),
+            Entities = new List<EntityNode>(),
+            EntityIndex = new ConcurrentDictionary<string, EntityNode>(),
             History = new List<OperationLogEntry>(),
             ConnectedUsers = new HashSet<string>()
         };
     }
 
-    private VectorPrimitive? DeserializePrimitive(XElement element)
+    private static float ParseFloat(XElement el, string name, float def = 0)
     {
-        try
-        {
-            var pointsElement = element.Element("Points");
-            var points = new List<Point>();
-            if (pointsElement != null)
-            {
-                foreach (var ptElement in pointsElement.Elements("Point"))
-                {
-                    points.Add(new Point
-                    {
-                        X = double.Parse(ptElement.Element("X")?.Value ?? "0"),
-                        Y = double.Parse(ptElement.Element("Y")?.Value ?? "0")
-                    });
-                }
-            }
+        return float.TryParse(el.Element(name)?.Value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var v) ? v : def;
+    }
 
-            var lockedBy = element.Element("LockedBy")?.Value;
-            var lockedAt = element.Element("LockedAt")?.Value;
-
-            return new VectorPrimitive
-            {
-                Id = element.Element("Id")?.Value ?? Guid.NewGuid().ToString(),
-                Type = element.Element("Type")?.Value ?? string.Empty,
-                Points = points,
-                StrokeColor = element.Element("StrokeColor")?.Value ?? "#000000",
-                StrokeWidth = double.Parse(element.Element("StrokeWidth")?.Value ?? "1"),
-                FillColor = element.Element("FillColor")?.Value ?? "transparent",
-                CreatedBy = element.Element("CreatedBy")?.Value ?? string.Empty,
-                LockedBy = string.IsNullOrEmpty(lockedBy) ? null : lockedBy,
-                LockedAt = string.IsNullOrEmpty(lockedAt) ? null : DateTime.TryParse(lockedAt, out var la) ? la : null,
-                Version = int.Parse(element.Element("Version")?.Value ?? "1"),
-                CreatedAt = DateTime.TryParse(element.Element("CreatedAt")?.Value, out var ca) ? ca : DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            };
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error deserializing primitive");
-            return null;
-        }
+    private static int ParseInt(XElement el, string name, int def = 0)
+    {
+        return int.TryParse(el.Element(name)?.Value, out var v) ? v : def;
     }
 }

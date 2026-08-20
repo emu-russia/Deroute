@@ -38,12 +38,42 @@ public class SessionManager
         return _sessions.TryGetValue(sessionId, out session);
     }
 
+    /// <summary>
+    /// Read-oriented lazy load: returns the session from memory, or loads it from the
+    /// XML store if present, or returns false when the session does not exist at all.
+    /// Unlike <see cref="GetOrCreateSession"/> it never creates a new empty session.
+    /// </summary>
+    public bool TryLoadSession(string sessionId, out SessionState? session)
+    {
+        if (_sessions.TryGetValue(sessionId, out session))
+            return true;
+
+        lock (_lockObj)
+        {
+            if (_sessions.TryGetValue(sessionId, out session))
+                return true;
+
+            if (!_xmlStore.SessionExists(sessionId))
+            {
+                session = null;
+                return false;
+            }
+
+            session = _xmlStore.LoadSession(sessionId);
+            _sessions[sessionId] = session;
+            _logger.LogInformation("Session loaded from XML: {SessionId}", sessionId);
+            return true;
+        }
+    }
+
     public void RemoveSession(string sessionId)
     {
         if (_sessions.TryRemove(sessionId, out var session))
         {
-            _xmlStore.SaveSession(session);
-            _logger.LogInformation("Session removed and saved: {SessionId}", sessionId);
+            // A DELETE removes the session entirely: drop the in-memory state and
+            // delete its XML file so it does not reappear on the next lazy load.
+            _xmlStore.DeleteSession(sessionId);
+            _logger.LogInformation("Session removed and deleted: {SessionId}", sessionId);
         }
     }
 
@@ -55,22 +85,15 @@ public class SessionManager
         }
     }
 
+    // ---------------------------------------------------------------- users
+
     public void AddUserToSession(string sessionId, string userId)
     {
         var session = GetOrCreateSession(sessionId);
         session.ConnectedUsers.Add(userId);
         session.Metadata.LastActivity = DateTime.UtcNow;
 
-        var entry = new OperationLogEntry
-        {
-            Operation = "UserJoined",
-            UserId = userId,
-            Timestamp = DateTime.UtcNow
-        };
-        session.History.Add(entry);
-        if (session.History.Count > 1000)
-            session.History = session.History.Skip(Math.Max(0, session.History.Count - 500)).ToList();
-
+        AddHistory(session, "UserJoined", string.Empty, userId, null);
         _xmlStore.SaveSession(session);
         _logger.LogInformation("User {UserId} joined session {SessionId}", userId, sessionId);
     }
@@ -81,7 +104,8 @@ public class SessionManager
         session.ConnectedUsers.Remove(userId);
         session.Metadata.LastActivity = DateTime.UtcNow;
 
-        foreach (var prim in session.Primitives.Values)
+        // Automatic unlock of all primitives locked by the departing user
+        foreach (var prim in session.EntityIndex.Values)
         {
             if (prim.LockedBy == userId)
             {
@@ -90,14 +114,7 @@ public class SessionManager
             }
         }
 
-        var entry = new OperationLogEntry
-        {
-            Operation = "UserLeft",
-            UserId = userId,
-            Timestamp = DateTime.UtcNow
-        };
-        session.History.Add(entry);
-
+        AddHistory(session, "UserLeft", string.Empty, userId, null);
         _xmlStore.SaveSession(session);
         _logger.LogInformation("User {UserId} left session {SessionId}", userId, sessionId);
     }
@@ -114,155 +131,102 @@ public class SessionManager
         return session.ConnectedUsers.Contains(userId);
     }
 
-    public VectorPrimitive? GetPrimitive(string sessionId, string primitiveId)
+    // ---------------------------------------------------------------- entity CRUD
+
+    public EntityNode? GetEntity(string sessionId, string entityId)
     {
         var session = GetOrCreateSession(sessionId);
-        return session.Primitives.TryGetValue(primitiveId, out var prim) ? prim : null;
+        return session.EntityIndex.TryGetValue(entityId, out var node) ? node : null;
     }
 
-    public (VectorPrimitive? Primitive, string? Error) TryLockPrimitive(string sessionId, string primitiveId, string userId)
+    public (EntityNode? Entity, string? Error) AddEntity(string sessionId, EntityNode entity, string userId, string? parentId = null)
     {
         var session = GetOrCreateSession(sessionId);
 
-        if (!session.Primitives.TryGetValue(primitiveId, out var prim))
-            return (null, "Primitive not found");
+        if (session.EntityIndex.ContainsKey(entity.Id))
+            return (null, "Entity with this ID already exists");
 
-        if (prim.LockedBy != null && prim.LockedBy != userId)
+        entity.CreatedBy = userId;
+        entity.CreatedAt = DateTime.UtcNow;
+        entity.UpdatedAt = DateTime.UtcNow;
+        entity.Version = 1;
+        entity.LockedBy = null;
+        entity.LockedAt = null;
+
+        if (!string.IsNullOrEmpty(parentId))
         {
-            _logger.LogWarning("Primitive {PrimitiveId} locked by {LockedBy}, request from {UserId}",
-                primitiveId, prim.LockedBy, userId);
-            return (null, $"Primitive locked by user {prim.LockedBy}");
+            var parent = session.EntityIndex.TryGetValue(parentId, out var p) ? p : null;
+            if (parent == null)
+                return (null, "Parent entity not found");
+            parent.Children.Add(entity);
+        }
+        else
+        {
+            session.Entities.Add(entity);
         }
 
-        prim.LockedBy = userId;
-        prim.LockedAt = DateTime.UtcNow;
-        prim.Version++;
-        prim.UpdatedAt = DateTime.UtcNow;
-
         session.Version++;
-
-        var entry = new OperationLogEntry
-        {
-            Operation = "Locked",
-            PrimitiveId = primitiveId,
-            UserId = userId,
-            Timestamp = DateTime.UtcNow
-        };
-        session.History.Add(entry);
-
+        IndexEntity(session, entity);
+        AddHistory(session, "Created", entity.Id, userId, null);
         _xmlStore.SaveSession(session);
-        return (prim, null);
+        return (entity, null);
     }
 
-    public VectorPrimitive UnlockPrimitive(string sessionId, string primitiveId, string userId)
-    {
-        var session = GetOrCreateSession(sessionId);
-        if (!session.Primitives.TryGetValue(primitiveId, out var prim))
-            return new VectorPrimitive { Id = primitiveId };
-
-        if (prim.LockedBy == userId)
-        {
-            prim.LockedBy = null;
-            prim.LockedAt = null;
-            prim.Version++;
-            prim.UpdatedAt = DateTime.UtcNow;
-            session.Version++;
-
-            var entry = new OperationLogEntry
-            {
-                Operation = "Unlocked",
-                PrimitiveId = primitiveId,
-                UserId = userId,
-                Timestamp = DateTime.UtcNow
-            };
-            session.History.Add(entry);
-
-            _xmlStore.SaveSession(session);
-        }
-
-        return prim;
-    }
-
-    public (VectorPrimitive? Primitive, string? Error) AddPrimitive(string sessionId, VectorPrimitive primitive, string userId)
+    public (EntityNode? Entity, string? Error) UpdateEntity(string sessionId, string entityId, EntityNode updated, string userId)
     {
         var session = GetOrCreateSession(sessionId);
 
-        if (session.Primitives.ContainsKey(primitive.Id))
-            return (null, "Primitive with this ID already exists");
-
-        primitive.CreatedBy = userId;
-        primitive.CreatedAt = DateTime.UtcNow;
-        primitive.UpdatedAt = DateTime.UtcNow;
-        primitive.Version = 1;
-
-        session.Primitives[primitive.Id] = primitive;
-        session.Version++;
-
-        var entry = new OperationLogEntry
-        {
-            Operation = "Created",
-            PrimitiveId = primitive.Id,
-            UserId = userId,
-            Timestamp = DateTime.UtcNow
-        };
-        session.History.Add(entry);
-
-        _xmlStore.SaveSession(session);
-        return (primitive, null);
-    }
-
-    public (VectorPrimitive? Primitive, string? Error) UpdatePrimitive(string sessionId, string primitiveId, VectorPrimitive updated, string userId)
-    {
-        var session = GetOrCreateSession(sessionId);
-
-        if (!session.Primitives.TryGetValue(primitiveId, out var existing))
-            return (null, "Primitive not found");
+        if (!session.EntityIndex.TryGetValue(entityId, out var existing))
+            return (null, "Entity not found");
 
         if (existing.LockedBy != null && existing.LockedBy != userId)
-            return (null, $"Primitive locked by user {existing.LockedBy}");
+            return (null, $"Entity locked by user {existing.LockedBy}");
 
+        existing.Label = updated.Label;
         existing.Type = updated.Type;
-        existing.Points = updated.Points;
-        existing.StrokeColor = updated.StrokeColor;
-        existing.StrokeWidth = updated.StrokeWidth;
-        existing.FillColor = updated.FillColor;
+        existing.LambdaX = updated.LambdaX;
+        existing.LambdaY = updated.LambdaY;
+        existing.LambdaEndX = updated.LambdaEndX;
+        existing.LambdaEndY = updated.LambdaEndY;
+        existing.LambdaWidth = updated.LambdaWidth;
+        existing.LambdaHeight = updated.LambdaHeight;
+        existing.Priority = updated.Priority;
+        existing.WidthOverride = updated.WidthOverride;
+        existing.ColorOverride = updated.ColorOverride;
+        existing.FontOverride = updated.FontOverride;
+        existing.LabelAlignment = updated.LabelAlignment;
+        existing.PathPoints = updated.PathPoints;
+        existing.TraverseBlackList = updated.TraverseBlackList;
+        existing.Module = updated.Module;
+        existing.Visible = updated.Visible;
+        if (updated.Children.Count > 0)
+            existing.Children = updated.Children;
         existing.Version++;
         existing.UpdatedAt = DateTime.UtcNow;
 
         session.Version++;
-
-        var entry = new OperationLogEntry
-        {
-            Operation = "Updated",
-            PrimitiveId = primitiveId,
-            UserId = userId,
-            Timestamp = DateTime.UtcNow,
-            Details = $"Version {existing.Version}"
-        };
-        session.History.Add(entry);
-
+        AddHistory(session, "Updated", entityId, userId, $"Version {existing.Version}");
         _xmlStore.SaveSession(session);
         return (existing, null);
     }
 
-    public (bool Success, string? Error) DeletePrimitive(string sessionId, string primitiveId, string userId)
+    public (bool Success, string? Error) DeleteEntity(string sessionId, string entityId, string userId)
     {
         var session = GetOrCreateSession(sessionId);
 
-        if (!session.Primitives.TryRemove(primitiveId, out _))
-            return (false, "Primitive not found");
+        if (!session.EntityIndex.TryGetValue(entityId, out var target))
+            return (false, "Entity not found");
+
+        if (target.LockedBy != null && target.LockedBy != userId)
+            return (false, $"Entity locked by user {target.LockedBy}");
+
+        var removed = RemoveFromTree(session.Entities, target);
+        if (!removed)
+            return (false, "Entity not found");
 
         session.Version++;
-
-        var entry = new OperationLogEntry
-        {
-            Operation = "Deleted",
-            PrimitiveId = primitiveId,
-            UserId = userId,
-            Timestamp = DateTime.UtcNow
-        };
-        session.History.Add(entry);
-
+        RemoveFromIndex(session, target);
+        AddHistory(session, "Deleted", entityId, userId, null);
         _xmlStore.SaveSession(session);
         return (true, null);
     }
@@ -270,21 +234,95 @@ public class SessionManager
     public (bool Success, string? Error) ClearCanvas(string sessionId, string userId)
     {
         var session = GetOrCreateSession(sessionId);
-        var count = session.Primitives.Count;
-        session.Primitives.Clear();
+        var count = session.Entities.Count;
+        session.Entities.Clear();
+        session.EntityIndex.Clear();
         session.Version++;
 
-        var entry = new OperationLogEntry
-        {
-            Operation = "Cleared",
-            UserId = userId,
-            Timestamp = DateTime.UtcNow,
-            Details = $"Cleared {count} primitives"
-        };
-        session.History.Add(entry);
-
+        AddHistory(session, "Cleared", string.Empty, userId, $"Cleared {count} entities");
         _xmlStore.SaveSession(session);
         return (true, null);
+    }
+
+    public (EntityNode? Entity, string? Error) TryLockEntity(string sessionId, string entityId, string userId)
+    {
+        var session = GetOrCreateSession(sessionId);
+
+        if (!session.EntityIndex.TryGetValue(entityId, out var node))
+            return (null, "Entity not found");
+
+        if (node.LockedBy != null && node.LockedBy != userId)
+        {
+            _logger.LogWarning("Entity {EntityId} locked by {LockedBy}, request from {UserId}",
+                entityId, node.LockedBy, userId);
+            return (null, $"Entity locked by user {node.LockedBy}");
+        }
+
+        node.LockedBy = userId;
+        node.LockedAt = DateTime.UtcNow;
+        node.Version++;
+        node.UpdatedAt = DateTime.UtcNow;
+
+        session.Version++;
+        AddHistory(session, "Locked", entityId, userId, null);
+        _xmlStore.SaveSession(session);
+        return (node, null);
+    }
+
+    public EntityNode UnlockEntity(string sessionId, string entityId, string userId)
+    {
+        var session = GetOrCreateSession(sessionId);
+        if (!session.EntityIndex.TryGetValue(entityId, out var node))
+            return new EntityNode { Id = entityId };
+
+        if (node.LockedBy == userId)
+        {
+            node.LockedBy = null;
+            node.LockedAt = null;
+            node.Version++;
+            node.UpdatedAt = DateTime.UtcNow;
+            session.Version++;
+
+            AddHistory(session, "Unlocked", entityId, userId, null);
+            _xmlStore.SaveSession(session);
+        }
+
+        return node;
+    }
+
+    /// <summary>
+    /// Applies a real-time position delta to the stored entity (PathPoints and Lambda* from
+    /// the first/last point). Position updates are transient: no version bump, no history
+    /// entry, and no XML write (the state is persisted by the next real mutation).
+    /// </summary>
+    public void ApplyPositionUpdate(string sessionId, string entityId, List<double> flatPoints)
+    {
+        var session = GetOrCreateSession(sessionId);
+        if (!session.EntityIndex.TryGetValue(entityId, out var node))
+            return;
+
+        if (flatPoints == null || flatPoints.Count < 2)
+            return;
+
+        var points = new List<EntityPoint>();
+        for (int i = 0; i + 1 < flatPoints.Count; i += 2)
+        {
+            points.Add(new EntityPoint
+            {
+                X = (float)flatPoints[i],
+                Y = (float)flatPoints[i + 1]
+            });
+        }
+
+        if (points.Count > 0)
+        {
+            node.PathPoints = points;
+            node.LambdaX = points[0].X;
+            node.LambdaY = points[0].Y;
+            node.LambdaEndX = points[^1].X;
+            node.LambdaEndY = points[^1].Y;
+        }
+        session.Metadata.LastActivity = DateTime.UtcNow;
     }
 
     public List<OperationLogEntry> GetHistory(string sessionId, int count = 50)
@@ -296,5 +334,61 @@ public class SessionManager
     public List<string> GetSessionIds()
     {
         return _sessions.Keys.ToList();
+    }
+
+    /// <summary>All session IDs: in-memory sessions plus sessions persisted on disk.</summary>
+    public List<string> GetAllSessionIds()
+    {
+        var ids = new HashSet<string>(_sessions.Keys, StringComparer.OrdinalIgnoreCase);
+        foreach (var id in _xmlStore.ListSessions())
+            ids.Add(id);
+        return ids.ToList();
+    }
+
+    // ---------------------------------------------------------------- helpers
+
+    private static void AddHistory(SessionState session, string operation, string entityId, string userId, string? details)
+    {
+        session.History.Add(new OperationLogEntry
+        {
+            Operation = operation,
+            PrimitiveId = entityId,
+            UserId = userId,
+            Timestamp = DateTime.UtcNow,
+            Details = details
+        });
+        if (session.History.Count > 1000)
+            session.History = session.History.Skip(Math.Max(0, session.History.Count - 500)).ToList();
+    }
+
+    private static void IndexEntity(SessionState session, EntityNode node)
+    {
+        if (string.IsNullOrEmpty(node.Id)) return;
+        session.EntityIndex[node.Id] = node;
+        foreach (var child in node.Children)
+            IndexEntity(session, child);
+    }
+
+    private static void RemoveFromIndex(SessionState session, EntityNode node)
+    {
+        session.EntityIndex.TryRemove(node.Id, out _);
+        foreach (var child in node.Children)
+            RemoveFromIndex(session, child);
+    }
+
+    /// <summary>Removes the node (with its subtree) from the tree. Returns false if not found.</summary>
+    private static bool RemoveFromTree(List<EntityNode> nodes, EntityNode target)
+    {
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            if (nodes[i] == target)
+            {
+                nodes.RemoveAt(i);
+                return true;
+            }
+            if (RemoveFromTree(nodes[i].Children, target))
+                return true;
+        }
+        return false;
     }
 }

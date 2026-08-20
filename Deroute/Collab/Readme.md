@@ -7,9 +7,21 @@
 **Technology Stack:**
 - **Language:** C# (.NET Framework / .NET Core)
 - **Protocol:** WebSocket (SignalR Protocol)
-- **Data Format:** JSON (MiniJson parser)
+- **Data Format:** JSON (Newtonsoft.Json / Json.NET)
 - **UI:** Windows Forms
-- **Conversion:** Entity ↔ VectorPrimitiveData
+- **Conversion:** Entity ↔ EntityData
+
+## Build Notes (Newtonsoft.Json dependency)
+
+`Newtonsoft.Json` 13.0.4 is declared in `Deroute/packages.config` and restored into the
+(untracked) `Deroute/packages` folder — no DLL is committed to the repository.
+
+- **Visual Studio:** packages.config is restored automatically on build.
+- **Command line (MSBuild):**
+  ```
+  msbuild Deroute\DerouteSharp.sln /t:Restore /p:RestorePackagesConfig=true
+  msbuild Deroute\DerouteSharp.sln /t:Build /p:Configuration=Debug
+  ```
 
 ---
 
@@ -251,18 +263,27 @@ Timer-based throttle for position updates, preventing excessive server requests.
 | `_entityOriginalColors` | `Dictionary<string, Color>` | Original entity colors |
 | `_entityLockOwners` | `Dictionary<string, string>` | Lock owners (entityId → userId) |
 
+### Status Controls
+
+| Control | Description |
+|---------|-------------|
+| `collabStatusIndicator` | `ToolStripStatusLabel` — connection state with color coding (replaces the old combo box, whose `DropDownList` could not display dynamic text) |
+| `collabStatusMessage` | `ToolStripStatusLabel` (spring) — latest CollabMCP message/error with full text |
+| `collabStatusContextMenu` | Right-click on the indicator: **Connect / Disconnect / Reconnect**, separator, **Session...**, **Users...** |
+
 ### Integration Methods
 
 | Method | Description |
 |--------|-------------|
 | `InitializeCollab()` | Setup all event handlers, create throttler/queue/timer, auto-connect |
-| `UpdateCollabStatus(status, userCount)` | Update status in UI with color coding |
+| `UpdateCollabStatus(status, userCount)` | Update the status indicator with color coding |
+| `SetStatusMessage(message)` | Show a transient message/error in `collabStatusMessage` |
 | `RefreshCollabStatus()` | Periodic status refresh (every 5 sec) |
-| `ApplyRemotePrimitive(data)` | Apply remotely created primitive to canvas |
-| `ApplyRemoteUpdate(data)` | Apply remotely updated primitive |
+| `ApplyRemoteEntity(data)` | Apply a remotely created entity (full model) to canvas |
+| `ApplyRemoteUpdate(data)` | Apply a remotely updated entity (or a position delta) |
 | `ApplyRemoteLock(lockData)` | Visualize lock (user color overlay) |
 | `ApplyRemoteUnlock(lockData)` | Remove lock visualization |
-| `ApplyRemoteDelete(data)` | Remove primitive from canvas |
+| `ApplyRemoteDelete(data)` | Remove entity (and its subtree) from canvas |
 | `InvokeOnUiThread(action)` | Thread-safe UI method invocation |
 | `QueueOfflineChange(change)` | Add change to offline queue |
 | `FlushOfflineChanges()` | Send accumulated offline changes |
@@ -273,70 +294,113 @@ Timer-based throttle for position updates, preventing excessive server requests.
 |--------|-------|
 | `Connected` | `Green` |
 | `Error` / `Disconnected` | `Red` |
-| Other (Connecting, etc.) | `Orange` |
+| `Connecting` / reconnecting | `Orange` |
+| `Disabled` | `Gray` |
 
 ### Lock Visualization
 
-When a primitive is locked:
+When an entity is locked:
 1. Original color saved to `_entityOriginalColors`
 2. Lock user's color retrieved from palette (`GetUserColor`)
-3. Primitive redrawn with `Color.FromArgb(150, lockColor)` — semi-transparent overlay
+3. Entity redrawn with `Color.FromArgb(150, lockColor)` — semi-transparent overlay
 4. On unlock, original color is restored
 
 ---
 
-## Exchange Protocol (JSON Commands)
+## Exchange Protocol (SignalR JSON Protocol)
 
-### Client → Server
+The client connects to the server's SignalR hub at `/collabhub` over a raw WebSocket and speaks the
+**SignalR JSON protocol**:
 
-| Command | Parameters | Description |
+1. **Handshake:** the first message is `{"protocol":"json","version":1}` terminated by `0x1E`.
+   The server replies with `{}` on success.
+2. **Framing:** every JSON record is terminated by the record separator byte `0x1E`.
+   Several records may arrive in a single WebSocket frame.
+3. **Client → server calls** are `type: 1` invocations:
+   `{"type":1,"invocationId":"N","target":"<Method>","arguments":[...]}`.
+   Void calls get a `type: 3` completion; request/response calls (e.g. `GetSessionState`)
+   return their result in the matching completion.
+4. **Server → client events** are `type: 1` messages with a `target` equal to the event name.
+5. **Pings:** the server sends `{"type":6}` keep-alive pings; the client answers with `{"type":6}`.
+6. **Close:** `{"type":7}` closes the connection gracefully.
+
+### Client → Server (hub methods, `type:1` invocations)
+
+| Target | Arguments | Description |
 |----------|-----------|-------------|
-| `JoinSession` | `sessionId`, `userId` | Join a session |
-| `SendPrimitiveCreated` | `sessionId`, `primitiveId`, `type`, `points`, `strokeColor`, `strokeWidth`, `fillColor`, `userId` | Create primitive |
-| `SendPrimitiveUpdated` | `sessionId`, `primitiveId`, `points`, `strokeColor`, `strokeWidth`, `fillColor`, `userId` | Update primitive |
-| `SendPositionUpdate` | `sessionId`, `primitiveId`, `points`, `userId` | Update position |
-| `LockPrimitive` | `sessionId`, `primitiveId` | Lock primitive |
-| `UnlockPrimitive` | `sessionId`, `primitiveId` | Unlock primitive |
-| `GetConnectedUsers` | `sessionId` | Request connected users |
-| `GetSessionState` | `sessionId` | Request session state |
+| `JoinSession` | `[sessionId, userId]` | Join a session |
+| `SendEntityCreated` | `[sessionId, entityDto, userId, parentId]` | Create an entity (full DTO; `parentId` empty for top-level) |
+| `SendEntityUpdated` | `[sessionId, entityDto, userId]` | Update an entity (full DTO) |
+| `SendEntityDeleted` | `[sessionId, entityId]` | Delete an entity (with its subtree) |
+| `SendPositionUpdate` | `[sessionId, entityId, points, userId]` | Real-time position update (`points` — flat array) |
+| `LockEntity` | `[sessionId, entityId]` | Lock an entity |
+| `UnlockEntity` | `[sessionId, entityId]` | Unlock an entity |
+| `GetConnectedUsers` | `[sessionId]` | Returns `List<string>` in the completion result |
+| `GetSessionState` | `[sessionId]` | Returns session state in the completion result |
+| `GetHistory` | `[sessionId, count]` | Returns operation history |
 
-### Server → Client
+### Server → Client (events, `type:1` with target)
 
-| Command | Parameters | Description |
+| Event | Arguments[0] | Description |
 |----------|-----------|-------------|
-| `OnUserJoined` | `userId`, `snapshot` | User joined (with snapshot) |
+| `OnUserJoined` | `{userId, snapshot}` (to joining caller) or `userId` (group broadcast) | User joined; the joining client receives the full snapshot |
 | `OnUserLeft` | `userId` | User left session |
-| `OnPrimitiveCreated` | `primitive` | New primitive created |
-| `OnPrimitiveUpdated` | `primitive` | Primitive updated |
-| `OnPrimitiveLocked` | `primitive` | Primitive locked |
-| `OnPrimitiveUnlocked` | `primitive` | Primitive unlocked |
-| `OnPrimitiveDeleted` | `primitiveId` | Primitive deleted |
+| `OnEntityCreated` | entity DTO | New entity created |
+| `OnEntityUpdated` | entity DTO | Entity updated |
+| `OnEntityLocked` | entity DTO | Entity locked (`lockedBy` set) |
+| `OnEntityUnlocked` | entity DTO | Entity unlocked |
+| `OnEntityDeleted` | `entityId` | Entity deleted |
 | `OnCanvasCleared` | — | Canvas cleared |
-| `OnPositionUpdated` | `primitiveId`, `points` | Position update |
-| `OnSnapshot` | — | Full state snapshot |
-| `OnError` | `error` | Error |
+| `OnPositionUpdated` | `{primitiveId, points}` | Real-time position update |
+| `OnEntityError` | `error` | Entity operation error |
+| `OnLockError` | `{entityId, error}` | Lock operation error |
+| `OnSessionError` | `error` | Session-level error |
+
+On `OnUserJoined` with a snapshot, the client fires `OnSnapshotReceived`; the UI then fetches the
+full state via `GetSessionStateAsync()` (which correlates request/response by `invocationId`).
 
 ---
 
-## Primitive Data Format (JSON)
+## Entity Data Format (JSON, server wire format)
+
+The server transmits the full entity model (`EntityDto`). Keys are camelCase; `points` is a flat
+array of coordinate pairs `[x1, y1, x2, y2, ...]`; children are nested recursively:
 
 ```json
 {
-  "Id": "a1b2c3d4-e5f6-...",
-  "Type": "rectangle",
-  "Points": [
-    { "X": 100.0, "Y": 50.0 },
-    { "X": 300.0, "Y": 200.0 }
+  "id": "a1b2c3d4-e5f6-...",
+  "type": "ViasInput",
+  "label": "IN1",
+  "lambdaX": 100.0,
+  "lambdaY": 50.0,
+  "lambdaEndX": 300.0,
+  "lambdaEndY": 200.0,
+  "lambdaWidth": 0.0,
+  "lambdaHeight": 0.0,
+  "priority": 0,
+  "widthOverride": 2,
+  "colorOverride": "#FF6B6B",
+  "fontOverride": null,
+  "labelAlignment": "GlobalSettings",
+  "points": [100.0, 50.0, 300.0, 200.0],
+  "traverseBlackList": [],
+  "module": null,
+  "visible": true,
+  "children": [
+    {
+      "id": "...",
+      "type": "ViasOutput",
+      "label": "OUT1",
+      "points": [300.0, 200.0, 300.0, 200.0],
+      "children": []
+    }
   ],
-  "StrokeColor": "#FF6B6B",
-  "StrokeWidth": 2.0,
-  "FillColor": "transparent",
-  "CreatedBy": "user_a",
-  "LockedBy": "user_b",
-  "LockedAt": "2025-01-15T10:30:00.0000000Z",
-  "Version": 5,
-  "CreatedAt": "2025-01-15T10:00:00.0000000Z",
-  "UpdatedAt": "2025-01-15T10:30:00.0000000Z"
+  "createdBy": "user_a",
+  "lockedBy": "user_b",
+  "lockedAt": "2025-01-15T10:30:00.0000000Z",
+  "version": 5,
+  "createdAt": "2025-01-15T10:00:00.0000000Z",
+  "updatedAt": "2025-01-15T10:30:00.0000000Z"
 }
 ```
 
@@ -368,38 +432,47 @@ When a primitive is locked:
 
 ## Configuration (CollabMCP in FormSettings)
 
-CollabMCP settings are available in the "CollabMCP" tab of application settings via `PropertyGrid`.
+The "CollabMCP" tab of the application settings opens the dedicated **`FormCollabSettings`**
+dialog (masked API key, connection test, session picker) instead of a raw PropertyGrid.
 
 | Parameter | Description |
 |-----------|-------------|
 | `Enabled` | Enable collaboration |
 | `ServerUrl` | Server URL |
-| `ApiKey` | API key |
-| `UserId` | User ID |
-| `SessionId` | Session ID |
+| `ApiKey` | API key (masked, with "Show" toggle) |
+| `UserId` | User ID (auto-generated) |
+| `SessionId` | Session ID (editable or picked via `FormCollabSession`) |
 | `Username` | Username |
 | `ReconnectDelayMs` | Reconnection delay |
 | `MaxReconnectAttempts` | Max reconnection attempts |
+
+`FormCollabSession` lists the sessions available on the server (`GET /api/sessions`), lets you
+join an existing one, create a new id, or copy it. Choosing a session reconnects without
+restarting the application. `FormCollabUsers` shows connected participants with their palette
+color and the 15-color legend.
 
 ---
 
 ## Reconnection Mechanism
 
-1. On connection loss, client fires `OnError` event
-2. `FormMainCollab` updates status in UI (red color)
-3. User can right-click on status bar → "Reconnect"
-4. `ConnectAsync()` is called for reconnection
-5. After connection, `GetSessionStateAsync()` is automatically requested for synchronization
-6. Received snapshot is applied to canvas via `ApplyRemotePrimitive`
+1. On connection loss, the receive loop exits and `OnDisconnected` fires
+2. `CollabClient` automatically retries: up to `MaxReconnectAttempts` times with
+   `ReconnectDelayMs` delay between attempts (only while `Enabled` and not manually disconnected)
+3. During reconnection `OnError` reports the attempt counter (`Reconnecting 2/50...`)
+4. The user can also manually reconnect via the status bar "Reconnect" → `ConnectAsync()`
+5. On a successful reconnection, the server sends the session snapshot inside
+   `OnUserJoined`; `OnSnapshotReceived` fires and `GetSessionStateAsync()` (request/response
+   correlated by `invocationId`) returns the full state, applied to the canvas
 
 ---
 
 ## Offline Changes Mechanism
 
-1. When disconnected, user continues working on canvas
-2. All changes (primitive creation, updates) are added to `_offlineQueue`
-3. On reconnection, `FlushOfflineChanges()` sends accumulated changes to server
-4. Each change is sent as corresponding command (`SendPrimitiveCreatedAsync` / `SendPrimitiveUpdatedAsync`)
+1. While disconnected (and collaboration enabled), local canvas changes are added to `_offlineQueue`
+2. On reconnection (`OnConnected`), `FlushOfflineChanges()` sends the accumulated changes:
+   `created` → `SendPrimitiveCreatedAsync`, `updated` → `SendPrimitiveUpdatedAsync`,
+   `deleted` → `SendPrimitiveDeletedAsync`
+3. While connected, local additions/removals are published to the server immediately
 
 ---
 
@@ -419,7 +492,7 @@ CollabMCP settings are available in the "CollabMCP" tab of application settings 
 | Dependency | Purpose |
 |------------|---------|
 | `System.Net.WebSockets` | WebSocket client |
-| `MiniJson` | JSON parsing |
+| `Newtonsoft.Json` | JSON parsing (Json.NET) |
 | `System.Drawing` | Color operations (`ColorTranslator`) |
 | `System.Windows.Forms.Timer` | UI timers |
 | `System.Collections.Concurrent` | Thread-safe collections |

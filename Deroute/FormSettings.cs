@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -18,6 +18,7 @@ namespace DerouteSharp
 		private SizeSettings sizeSettings;
 		private ShapeSettings shapeSettings;
 		private CollabMcpSettings collabMcpSettings;
+		private CollabSettings collabSettingsInstance;
 
 		[Serializable()]
 		public class SerializedCollabMcpSettings
@@ -74,8 +75,27 @@ namespace DerouteSharp
 
 			if (collabSettings != null)
 			{
+				collabSettingsInstance = collabSettings;
 				collabMcpSettings = new CollabMcpSettings(collabSettings);
-				propertyGridCollabMcp.SelectedObject = collabMcpSettings;
+			}
+		}
+
+		private void btnOpenCollabSettings_Click(object sender, EventArgs e)
+		{
+			using (var dlg = new FormCollabSettings(collabSettingsInstance))
+			{
+				if (dlg.ShowDialog(this) == DialogResult.OK && collabMcpSettings != null)
+				{
+					// Refresh the property grid (advanced/developer view) from the new values
+					collabMcpSettings.Enabled = collabSettingsInstance.Enabled;
+					collabMcpSettings.ServerUrl = collabSettingsInstance.ServerUrl;
+					collabMcpSettings.ApiKey = collabSettingsInstance.ApiKey;
+					collabMcpSettings.UserId = collabSettingsInstance.UserId;
+					collabMcpSettings.SessionId = collabSettingsInstance.SessionId;
+					collabMcpSettings.Username = collabSettingsInstance.Username;
+					collabMcpSettings.ReconnectDelayMs = collabSettingsInstance.ReconnectDelayMs;
+					collabMcpSettings.MaxReconnectAttempts = collabSettingsInstance.MaxReconnectAttempts;
+				}
 			}
 		}
 

@@ -52,14 +52,15 @@ namespace DerouteSharp
 				});
 			};
 
-			_collabClient.OnUserJoined += (s, userId) =>
+			_collabClient.OnUserJoined += async (s, userId) =>
 			{
 #if DEBUG && (!__MonoCS__)
 				Console.WriteLine($"[Collab UI] OnUserJoined: userId={userId}");
 #endif
-				InvokeOnUiThread(() =>
+				await InvokeOnUiThreadAsync(async () =>
 				{
-					_collabUserCount = _collabClient.GetConnectedUsersAsync().Result.Count;
+					var users = await _collabClient.GetConnectedUsersAsync();
+					_collabUserCount = users.Count;
 					var color = _collabClient.GetUserColor(userId);
 					var msg = $"User {userId} joined (color: {color})";
 					toolStripStatusLabel1.Text = msg;
@@ -78,42 +79,42 @@ namespace DerouteSharp
 				});
 			};
 
-			_collabClient.OnPrimitiveCreated += (s, data) =>
+			_collabClient.OnEntityCreated += (s, data) =>
 			{
 #if DEBUG && (!__MonoCS__)
-				Console.WriteLine($"[Collab UI] OnPrimitiveCreated: id={data.Id}, type={data.Type}, createdBy={data.CreatedBy}");
+				Console.WriteLine($"[Collab UI] OnEntityCreated: id={data.Id}, type={data.Type}, createdBy={data.CreatedBy}");
 #endif
-				InvokeOnUiThread(() => ApplyRemotePrimitive(data));
+				InvokeOnUiThread(() => ApplyRemoteEntity(data));
 			};
 
-			_collabClient.OnPrimitiveUpdated += (s, data) =>
+			_collabClient.OnEntityUpdated += (s, data) =>
 			{
 #if DEBUG && (!__MonoCS__)
-				Console.WriteLine($"[Collab UI] OnPrimitiveUpdated: id={data.Id}, points={data.Points?.Count ?? 0}");
+				Console.WriteLine($"[Collab UI] OnEntityUpdated: id={data.Id}, points={data.Points?.Count ?? 0}");
 #endif
 				InvokeOnUiThread(() => ApplyRemoteUpdate(data));
 			};
 
-			_collabClient.OnPrimitiveLocked += (s, lockData) =>
+			_collabClient.OnEntityLocked += (s, lockData) =>
 			{
 #if DEBUG && (!__MonoCS__)
-				Console.WriteLine($"[Collab UI] OnPrimitiveLocked: primitiveId={lockData.PrimitiveId}, lockedBy={lockData.LockedBy}");
+				Console.WriteLine($"[Collab UI] OnEntityLocked: primitiveId={lockData.PrimitiveId}, lockedBy={lockData.LockedBy}");
 #endif
 				InvokeOnUiThread(() => ApplyRemoteLock(lockData));
 			};
 
-			_collabClient.OnPrimitiveUnlocked += (s, lockData) =>
+			_collabClient.OnEntityUnlocked += (s, lockData) =>
 			{
 #if DEBUG && (!__MonoCS__)
-				Console.WriteLine($"[Collab UI] OnPrimitiveUnlocked: primitiveId={lockData.PrimitiveId}");
+				Console.WriteLine($"[Collab UI] OnEntityUnlocked: primitiveId={lockData.PrimitiveId}");
 #endif
 				InvokeOnUiThread(() => ApplyRemoteUnlock(lockData));
 			};
 
-			_collabClient.OnPrimitiveDeleted += (s, data) =>
+			_collabClient.OnEntityDeleted += (s, data) =>
 			{
 #if DEBUG && (!__MonoCS__)
-				Console.WriteLine($"[Collab UI] OnPrimitiveDeleted: id={data.Id}");
+				Console.WriteLine($"[Collab UI] OnEntityDeleted: id={data.Id}");
 #endif
 				InvokeOnUiThread(() => ApplyRemoteDelete(data));
 			};
@@ -153,56 +154,39 @@ namespace DerouteSharp
 						var state = await _collabClient.GetSessionStateAsync();
 						InvokeOnUiThread(() =>
 						{
-							if (state.ContainsKey("primitives"))
+							if (state.ContainsKey("entities"))
 							{
-								var primList = state["primitives"] as System.Collections.Generic.List<object>;
-								if (primList != null)
+								var entityList = state["entities"] as System.Collections.Generic.List<object>;
+								if (entityList != null)
 								{
-									foreach (var primObj in primList)
+									foreach (var entityObj in entityList)
 									{
 										try
 										{
-											var primDict = primObj as System.Collections.Generic.Dictionary<string, object>;
-											if (primDict == null) continue;
+											var entityDict = entityObj as System.Collections.Generic.Dictionary<string, object>;
+											if (entityDict == null) continue;
 
-											var primId = primDict["id"] as string;
-											var primType = primDict["type"] as string;
-											var points = primDict["points"] as System.Collections.Generic.List<object>;
-											var strokeColor = primDict["strokeColor"] as string;
-											var strokeWidth = Convert.ToSingle(primDict["strokeWidth"]);
-											var createdBy = primDict["createdBy"] as string;
-											var lockedBy = primDict["lockedBy"] as string;
+											var data = EntityConverter.FromDict(entityDict);
+											if (string.IsNullOrEmpty(data.Id)) continue;
 
-											var color = ColorTranslator.FromHtml(strokeColor ?? "#000000");
-											var entity = new Entity
+											var entity = EntityConverter.ToEntity(data, _collabSettings.UserId);
+											entityBox1.root.Children.Add(entity);
+
+											if (!string.IsNullOrEmpty(data.ColorOverride))
 											{
-												Label = primId,
-												Type = primType == "rectangle" ? EntityType.Region : EntityType.WireInterconnect,
-												ColorOverride = color,
-												WidthOverride = (int)strokeWidth,
-												UserData = createdBy?.GetHashCode() ?? 0
-											};
-
-											if (points != null && points.Count >= 4)
-											{
-												entity.LambdaX = Convert.ToSingle(points[0]);
-												entity.LambdaY = Convert.ToSingle(points[1]);
-												entity.LambdaEndX = Convert.ToSingle(points[points.Count - 2]);
-												entity.LambdaEndY = Convert.ToSingle(points[points.Count - 1]);
+												try { _entityOriginalColors[data.Id] = ColorTranslator.FromHtml(data.ColorOverride); }
+												catch { }
 											}
 
-											entityBox1.root.Children.Add(entity);
-											_entityOriginalColors[primId] = color;
-
-											if (!string.IsNullOrEmpty(lockedBy) && lockedBy != "none")
+											if (!string.IsNullOrEmpty(data.LockedBy) && data.LockedBy != "none" && data.LockedBy != _collabSettings.UserId)
 											{
-												_entityLockOwners[primId] = lockedBy;
-												entity.ColorOverride = Color.FromArgb(150, Color.Red);
+												_entityLockOwners[data.Id] = data.LockedBy;
+												entity.ColorOverride = Color.FromArgb(150, ColorTranslator.FromHtml(_collabClient.GetUserColor(data.LockedBy)));
 											}
 										}
 										catch (Exception ex)
 										{
-											Console.WriteLine($"Error applying snapshot primitive: {ex.Message}");
+											Console.WriteLine($"Error applying snapshot entity: {ex.Message}");
 										}
 									}
 								}
@@ -220,7 +204,15 @@ namespace DerouteSharp
 			{
 				InvokeOnUiThread(() =>
 				{
-					UpdateCollabStatus($"Error: {error.Substring(0, Math.Min(30, error.Length))}", _collabUserCount);
+					// Reconnection progress is a status change, not an error
+					if (error != null && error.StartsWith("Connection lost. Reconnecting"))
+					{
+						UpdateCollabStatus("Connecting", _collabUserCount);
+						SetStatusMessage(error);
+						return;
+					}
+					UpdateCollabStatus("Error", _collabUserCount);
+					SetStatusMessage(error ?? "Unknown error");
 				});
 			};
 
@@ -253,6 +245,7 @@ namespace DerouteSharp
 #if DEBUG && (!__MonoCS__)
 				Console.WriteLine("[Collab] Auto-connect enabled, starting connection...");
 #endif
+				UpdateCollabStatus("Connecting", 0);
 				Task.Run(async () =>
 				{
 					await _collabClient.ConnectAsync();
@@ -268,60 +261,65 @@ namespace DerouteSharp
 
 		private void UpdateCollabStatus(string status, int userCount)
 		{
-			string comboBoxText;
-			int selectedIndex = 0;
+			string text;
+			System.Drawing.Color color;
 
 			if (status.Contains("Error"))
 			{
-				comboBoxText = $"Error: {status.Substring(6)}";
-				selectedIndex = 4;
+				text = "Collab: Error";
+				color = System.Drawing.Color.Red;
+				SetStatusMessage(status.StartsWith("Error:") ? status.Substring(7) : status);
 			}
 			else if (status.Contains("Connected"))
 			{
-				if (userCount > 0)
-				{
-					comboBoxText = $"Connected ({userCount} users)";
-				}
-				else
-				{
-					comboBoxText = "Connected";
-				}
-				selectedIndex = 1;
-			}
-			else if (status.Contains("Disconnected"))
-			{
-				comboBoxText = "Disconnected";
-				selectedIndex = 3;
+				text = userCount > 0 ? $"Collab: Connected ({userCount} users)" : "Collab: Connected";
+				color = System.Drawing.Color.Green;
 			}
 			else if (status.Contains("Connecting"))
 			{
-				comboBoxText = "Connecting...";
-				selectedIndex = 2;
+				text = "Collab: Connecting...";
+				color = System.Drawing.Color.Orange;
+			}
+			else if (status.Contains("Disconnected"))
+			{
+				text = "Collab: Disconnected";
+				color = System.Drawing.Color.Red;
 			}
 			else
 			{
-				comboBoxText = "Disabled";
-				selectedIndex = 0;
+				text = "Collab: Disabled";
+				color = System.Drawing.Color.Gray;
 			}
 
+			Action apply = () =>
+			{
+				collabStatusIndicator.Text = text;
+				collabStatusIndicator.ForeColor = color;
+			};
+
 			if (InvokeRequired)
-			{
-				Invoke(new Action(() =>
-				{
-					collabStatusComboBox.SelectedIndex = selectedIndex;
-					collabStatusComboBox.Text = comboBoxText;
-				}));
-			}
+				Invoke(apply);
 			else
+				apply();
+		}
+
+		private void SetStatusMessage(string message)
+		{
+			Action apply = () =>
 			{
-				collabStatusComboBox.SelectedIndex = selectedIndex;
-				collabStatusComboBox.Text = comboBoxText;
-			}
+				collabStatusMessage.Text = message ?? "";
+				collabStatusMessage.ToolTipText = message ?? "";
+			};
+
+			if (InvokeRequired)
+				Invoke(apply);
+			else
+				apply();
 		}
 
 		private async void RefreshCollabStatus()
 		{
-			if (!_collabClient.IsConnected || string.IsNullOrEmpty(_collabSettings.SessionId))
+			if (_collabClient == null || !_collabClient.IsConnected || string.IsNullOrEmpty(_collabSettings.SessionId))
 				return;
 
 			try
@@ -335,20 +333,16 @@ namespace DerouteSharp
 
 				if (_collabClient.IsConnected)
 				{
-					var newText = $"Connected ({_collabUserCount} users, session: {sessionShort})";
+					var newText = $"Collab: Connected ({_collabUserCount} users, session: {sessionShort})";
+					Action apply = () =>
+					{
+						collabStatusIndicator.Text = newText;
+						collabStatusIndicator.ForeColor = System.Drawing.Color.Green;
+					};
 					if (InvokeRequired)
-					{
-						Invoke(new Action(() =>
-						{
-							collabStatusComboBox.SelectedIndex = 1;
-							collabStatusComboBox.Text = newText;
-						}));
-					}
+						Invoke(apply);
 					else
-					{
-						collabStatusComboBox.SelectedIndex = 1;
-						collabStatusComboBox.Text = newText;
-					}
+						apply();
 				}
 			}
 			catch
@@ -359,9 +353,43 @@ namespace DerouteSharp
 
 		private void StatusStripMouseDown(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Right && e.X > 0 && e.X < statusStrip1.Items.Count * 100)
+			if (e.Button != MouseButtons.Right) return;
+
+			// Show the CollabMCP menu only when right-clicking on the collab indicator
+			var rect = collabStatusIndicator.Bounds;
+			rect.Inflate(8, 8);
+			if (rect.Contains(e.Location))
 			{
 				collabStatusContextMenu.Show(statusStrip1, e.Location);
+			}
+		}
+
+		private void CollabConnectMenuItem_Click(object sender, EventArgs e)
+		{
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine("[Collab UI] CollabConnectMenuItem_Click");
+#endif
+			if (_collabClient != null)
+			{
+				UpdateCollabStatus("Connecting", _collabUserCount);
+				Task.Run(async () =>
+				{
+					await _collabClient.ConnectAsync();
+				});
+			}
+		}
+
+		private void CollabDisconnectMenuItem_Click(object sender, EventArgs e)
+		{
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine("[Collab UI] CollabDisconnectMenuItem_Click");
+#endif
+			if (_collabClient != null)
+			{
+				Task.Run(async () =>
+				{
+					await _collabClient.DisconnectAsync();
+				});
 			}
 		}
 
@@ -372,6 +400,7 @@ namespace DerouteSharp
 #endif
 			if (_collabClient != null)
 			{
+				UpdateCollabStatus("Connecting", _collabUserCount);
 				Task.Run(async () =>
 				{
 					await _collabClient.ConnectAsync();
@@ -379,85 +408,126 @@ namespace DerouteSharp
 			}
 		}
 
-		private void CollabStatusComboBox_SelectedIndexChanged(object sender, EventArgs e)
+		private void CollabSessionMenuItem_Click(object sender, EventArgs e)
 		{
 #if DEBUG && (!__MonoCS__)
-			Console.WriteLine($"[Collab UI] CollabStatusComboBox_SelectedIndexChanged: {collabStatusComboBox.SelectedItem}");
+			Console.WriteLine("[Collab UI] CollabSessionMenuItem_Click");
 #endif
-			if (collabStatusComboBox.SelectedItem != null && collabStatusComboBox.SelectedItem.ToString() == "Reconnect")
+			using (var dlg = new FormCollabSession(_collabClient, _collabSettings))
 			{
-				if (_collabClient != null)
+				if (dlg.ShowDialog(this) == DialogResult.OK)
 				{
+					// Apply the new session without restarting: reconnect to it.
 					Task.Run(async () =>
 					{
+						await _collabClient.DisconnectAsync();
+						UpdateCollabStatus("Connecting", 0);
 						await _collabClient.ConnectAsync();
 					});
 				}
 			}
 		}
 
-		private void ApplyRemotePrimitive(VectorPrimitiveData data)
+		private void CollabUsersMenuItem_Click(object sender, EventArgs e)
 		{
-			if (_isSyncing) return;
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine("[Collab UI] CollabUsersMenuItem_Click");
+#endif
+			using (var dlg = new FormCollabUsers(_collabClient, _collabSettings))
+			{
+				dlg.ShowDialog(this);
+			}
+		}
+
+		/// <summary>Finds an entity anywhere in the canvas tree by its collab id (fallback: Label).</summary>
+		private static Entity FindEntity(List<Entity> nodes, string id)
+		{
+			if (string.IsNullOrEmpty(id)) return null;
+			foreach (var node in nodes)
+			{
+				if (node.CollabId == id || (string.IsNullOrEmpty(node.CollabId) && node.Label == id))
+					return node;
+				var child = FindEntity(node.Children, id);
+				if (child != null) return child;
+			}
+			return null;
+		}
+
+		private void ApplyRemoteEntity(EntityData data)
+		{
+			if (_isSyncing || string.IsNullOrEmpty(data.Id)) return;
 
 #if DEBUG && (!__MonoCS__)
-			Console.WriteLine($"[Collab Apply] ApplyRemotePrimitive: id={data.Id}, type={data.Type}, color={data.StrokeColor}, createdBy={data.CreatedBy}, lockedBy={data.LockedBy}");
+			Console.WriteLine($"[Collab Apply] ApplyRemoteEntity: id={data.Id}, type={data.Type}, createdBy={data.CreatedBy}");
 #endif
-			var color = ColorTranslator.FromHtml(data.StrokeColor ?? "#000000");
 			var entity = EntityConverter.ToEntity(data, _collabSettings.UserId);
-
 			entityBox1.root.Children.Add(entity);
-			_entityOriginalColors[data.Id] = color;
-			entityBox1.Invalidate();
+
+			if (!string.IsNullOrEmpty(data.ColorOverride))
+			{
+				try { _entityOriginalColors[data.Id] = ColorTranslator.FromHtml(data.ColorOverride); }
+				catch { }
+			}
 
 			if (!string.IsNullOrEmpty(data.LockedBy) && data.LockedBy != "none" && data.LockedBy != _collabSettings.UserId)
 			{
 				_entityLockOwners[data.Id] = data.LockedBy;
-				entity.ColorOverride = Color.FromArgb(150, Color.Red);
+				entity.ColorOverride = Color.FromArgb(150, ColorTranslator.FromHtml(_collabClient.GetUserColor(data.LockedBy)));
 			}
+
+			entityBox1.Invalidate();
 		}
 
-		private void ApplyRemoteUpdate(VectorPrimitiveData data)
+		private void ApplyRemoteUpdate(EntityData data)
 		{
-			if (_isSyncing) return;
+			if (_isSyncing || string.IsNullOrEmpty(data.Id)) return;
 
 #if DEBUG && (!__MonoCS__)
-			Console.WriteLine($"[Collab Apply] ApplyRemoteUpdate: id={data.Id}, points={data.Points?.Count ?? 0}, color={data.StrokeColor}");
+			Console.WriteLine($"[Collab Apply] ApplyRemoteUpdate: id={data.Id}, type={data.Type ?? "(position delta)"}, points={data.Points?.Count ?? 0}");
 #endif
-			var entity = entityBox1.root.Children.FirstOrDefault(e => e.Label == data.Id);
-			if (entity != null)
+			var entity = FindEntity(entityBox1.root.Children, data.Id);
+			if (entity == null)
 			{
-				if (data.Points != null && data.Points.Count >= 4)
+#if DEBUG && (!__MonoCS__)
+				Console.WriteLine($"[Collab Apply] ApplyRemoteUpdate: entity not found for id={data.Id}");
+#endif
+				return;
+			}
+
+			if (string.IsNullOrEmpty(data.Type))
+			{
+				// Position delta (OnPositionUpdated): only coordinates change.
+				if (data.Points != null && data.Points.Count >= 2)
 				{
+					entity.PathPoints = new List<System.Drawing.PointF>();
+					for (int i = 0; i + 1 < data.Points.Count; i += 2)
+						entity.PathPoints.Add(new System.Drawing.PointF(data.Points[i], data.Points[i + 1]));
+
 					entity.LambdaX = data.Points[0];
 					entity.LambdaY = data.Points[1];
 					entity.LambdaEndX = data.Points[data.Points.Count - 2];
 					entity.LambdaEndY = data.Points[data.Points.Count - 1];
 				}
-
-				if (!string.IsNullOrEmpty(data.StrokeColor))
-				{
-					var color = ColorTranslator.FromHtml(data.StrokeColor);
-					_entityOriginalColors[data.Id] = color;
-
-					if (_entityLockOwners.TryGetValue(data.Id, out var owner) && owner != _collabSettings.UserId)
-					{
-						entity.ColorOverride = Color.FromArgb(150, color);
-					}
-					else
-					{
-						entity.ColorOverride = color;
-					}
-				}
-
-				entityBox1.Invalidate();
 			}
 			else
 			{
-#if DEBUG && (!__MonoCS__)
-				Console.WriteLine($"[Collab Apply] ApplyRemoteUpdate: entity not found for id={data.Id}");
-#endif
+				// Full entity update: apply all fields.
+				var converted = EntityConverter.ToEntity(data, _collabSettings.UserId);
+				EntityConverter.CopyTo(converted, entity);
+
+				if (!string.IsNullOrEmpty(data.ColorOverride))
+				{
+					try { _entityOriginalColors[data.Id] = ColorTranslator.FromHtml(data.ColorOverride); }
+					catch { }
+				}
+
+				if (_entityLockOwners.TryGetValue(data.Id, out var owner) && owner != _collabSettings.UserId)
+				{
+					entity.ColorOverride = Color.FromArgb(150, ColorTranslator.FromHtml(_collabClient.GetUserColor(owner)));
+				}
 			}
+
+			entityBox1.Invalidate();
 		}
 
 		private void ApplyRemoteLock(LockData data)
@@ -465,17 +535,12 @@ namespace DerouteSharp
 #if DEBUG && (!__MonoCS__)
 			Console.WriteLine($"[Collab Apply] ApplyRemoteLock: primitiveId={data.PrimitiveId}, lockedBy={data.LockedBy}, isLocked={data.IsLocked}");
 #endif
-			var entity = entityBox1.root.Children.FirstOrDefault(e => e.Label == data.PrimitiveId);
+			var entity = FindEntity(entityBox1.root.Children, data.PrimitiveId);
 			if (entity != null)
 			{
 				if (data.IsLocked && data.LockedBy != _collabSettings.UserId)
 				{
 					_entityLockOwners[data.PrimitiveId] = data.LockedBy;
-					var origColor = _entityOriginalColors.ContainsKey(data.PrimitiveId)
-						? _entityOriginalColors[data.PrimitiveId]
-						: Color.Black;
-					entity.ColorOverride = Color.FromArgb(150, origColor);
-
 					var lockColor = ColorTranslator.FromHtml(_collabClient.GetUserColor(data.LockedBy));
 					entity.ColorOverride = Color.FromArgb(150, lockColor);
 
@@ -490,7 +555,7 @@ namespace DerouteSharp
 #if DEBUG && (!__MonoCS__)
 			Console.WriteLine($"[Collab Apply] ApplyRemoteUnlock: primitiveId={data.PrimitiveId}");
 #endif
-			var entity = entityBox1.root.Children.FirstOrDefault(e => e.Label == data.PrimitiveId);
+			var entity = FindEntity(entityBox1.root.Children, data.PrimitiveId);
 			if (entity != null)
 			{
 				_entityLockOwners.Remove(data.PrimitiveId);
@@ -502,17 +567,19 @@ namespace DerouteSharp
 			}
 		}
 
-		private void ApplyRemoteDelete(VectorPrimitiveData data)
+		private void ApplyRemoteDelete(EntityData data)
 		{
+			if (string.IsNullOrEmpty(data.Id)) return;
+
 #if DEBUG && (!__MonoCS__)
 			Console.WriteLine($"[Collab Apply] ApplyRemoteDelete: id={data.Id}");
 #endif
-			var entity = entityBox1.root.Children.FirstOrDefault(e => e.Label == data.Id);
+			var entity = FindEntity(entityBox1.root.Children, data.Id);
 			if (entity != null)
 			{
-				entityBox1.root.Children.Remove(entity);
-				_entityOriginalColors.Remove(data.Id);
-				_entityLockOwners.Remove(data.Id);
+				// remove the subtree and clean up lock/color bookkeeping recursively
+				RemoveEntityAndChildren(entityBox1.root.Children, entity);
+				ClearBookkeeping(entity, data.Id);
 				entityBox1.Invalidate();
 			}
 			else
@@ -521,6 +588,29 @@ namespace DerouteSharp
 				Console.WriteLine($"[Collab Apply] ApplyRemoteDelete: entity not found for id={data.Id}");
 #endif
 			}
+		}
+
+		private static bool RemoveEntityAndChildren(List<Entity> nodes, Entity target)
+		{
+			for (int i = 0; i < nodes.Count; i++)
+			{
+				if (nodes[i] == target)
+				{
+					nodes.RemoveAt(i);
+					return true;
+				}
+				if (RemoveEntityAndChildren(nodes[i].Children, target))
+					return true;
+			}
+			return false;
+		}
+
+		private void ClearBookkeeping(Entity entity, string id)
+		{
+			_entityOriginalColors.Remove(id);
+			_entityLockOwners.Remove(id);
+			foreach (var child in entity.Children)
+				ClearBookkeeping(child, child.CollabId ?? child.Label);
 		}
 
 		private void InvokeOnUiThread(Action action)
@@ -535,10 +625,33 @@ namespace DerouteSharp
 			}
 		}
 
+		/// <summary>Runs an async action on the UI thread and awaits its completion without
+		/// blocking the calling thread (avoids deadlocks from .Result on the UI thread).</summary>
+		private Task InvokeOnUiThreadAsync(Func<Task> action)
+		{
+			if (!InvokeRequired)
+				return action();
+
+			var tcs = new TaskCompletionSource<bool>();
+			BeginInvoke(new Action(async () =>
+			{
+				try
+				{
+					await action();
+					tcs.SetResult(true);
+				}
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+				}
+			}));
+			return tcs.Task;
+		}
+
 		private void QueueOfflineChange(OfflineChange change)
 		{
 #if DEBUG && (!__MonoCS__)
-			Console.WriteLine($"[Collab Offline] QueueOfflineChange: type={change.ChangeType}, primitiveId={change.PrimitiveId}, entityType={change.EntityType}");
+			Console.WriteLine($"[Collab Offline] QueueOfflineChange: type={change.ChangeType}, primitiveId={change.PrimitiveId}");
 #endif
 			_offlineQueue.Add(change);
 		}
@@ -562,76 +675,51 @@ namespace DerouteSharp
 #endif
 				if (change.ChangeType == "created")
 				{
-					var entityType = !string.IsNullOrEmpty(change.EntityType)
-						? change.EntityType.ToLower()
-						: "polyline";
-
-					string primitiveType;
-					switch (entityType)
-					{
-						case "region":
-						case "rectangle":
-						case "polygon":
-						case "ellipse":
-							primitiveType = "rectangle";
-							break;
-						case "wireinterconnect":
-						case "line":
-						case "polyline":
-							primitiveType = "polyline";
-							break;
-						default:
-							primitiveType = "polyline";
-							break;
-					}
-
-					await _collabClient.SendPrimitiveCreatedAsync(
-						primitiveType,
-						change.Points ?? new List<float>(),
-						change.StrokeColor ?? "#000000",
-						change.StrokeWidth,
-						change.FillColor ?? "transparent");
+					await _collabClient.SendEntityCreatedAsync(change.Entity, change.ParentId);
 				}
 				else if (change.ChangeType == "updated")
 				{
-					await _collabClient.SendPrimitiveUpdatedAsync(
-						change.PrimitiveId,
-						change.Points ?? new List<float>(),
-						change.StrokeColor ?? "#000000",
-						change.StrokeWidth,
-						change.FillColor ?? "transparent");
+					await _collabClient.SendEntityUpdatedAsync(change.Entity);
+				}
+				else if (change.ChangeType == "deleted")
+				{
+					await _collabClient.SendEntityDeletedAsync(change.PrimitiveId);
 				}
 			}
+
+#if DEBUG && (!__MonoCS__)
+			Console.WriteLine($"[Collab Offline] FlushOfflineChanges: {changes.Count} changes flushed");
+#endif
 		}
 
 		private void EntityBox_OnEntityAdd(object sender, Entity entity, EventArgs e)
 		{
-			if (_collabClient == null || _collabClient.IsConnected)
+			if (_collabClient == null || !_collabSettings.Enabled)
 				return;
 
 #if DEBUG && (!__MonoCS__)
-			Console.WriteLine($"[Collab Offline] EntityBox_OnEntityAdd: entityType={entity.Type}, label={entity.Label}, isConnected={_collabClient.IsConnected}");
+			Console.WriteLine($"[Collab] EntityBox_OnEntityAdd: entityType={entity.Type}, label={entity.Label}, isConnected={_collabClient.IsConnected}");
 #endif
-			var primData = EntityConverter.ToPrimitiveData(entity, _collabSettings.UserId);
+			var data = EntityConverter.ToEntityData(entity, _collabSettings.UserId);
+			entity.CollabId = data.Id; // the server entity id now identifies this entity
+			var parentId = entity.parent != null && !string.IsNullOrEmpty(entity.parent.CollabId)
+				? entity.parent.CollabId
+				: "";
+
+			if (_collabClient.IsConnected)
+			{
+				// Live sync: publish the new entity immediately.
+				Task.Run(async () => await _collabClient.SendEntityCreatedAsync(data, parentId));
+				return;
+			}
 
 			var change = new OfflineChange
 			{
 				ChangeType = "created",
-				PrimitiveId = primData.Id,
+				PrimitiveId = data.Id,
+				ParentId = parentId,
 				SessionId = _collabSettings.SessionId,
-				EntityType = entity.Type.ToString(),
-				EntityLabel = entity.Label,
-				Points = primData.Points,
-				StrokeColor = primData.StrokeColor,
-				StrokeWidth = primData.StrokeWidth,
-				FillColor = primData.FillColor ?? "transparent",
-				LambdaX = entity.LambdaX,
-				LambdaY = entity.LambdaY,
-				LambdaEndX = entity.LambdaEndX,
-				LambdaEndY = entity.LambdaEndY,
-				PathPoints = entity.PathPoints != null
-					? entity.PathPoints.Select(p => (float)p.X).ToList()
-					: null
+				Entity = data
 			};
 
 			InvokeOnUiThread(() =>
@@ -642,19 +730,26 @@ namespace DerouteSharp
 
 		private void EntityBox_OnEntityRemove(object sender, Entity entity, EventArgs e)
 		{
-			if (_collabClient == null || _collabClient.IsConnected)
+			if (_collabClient == null || !_collabSettings.Enabled)
 				return;
 
 #if DEBUG && (!__MonoCS__)
-			Console.WriteLine($"[Collab Offline] EntityBox_OnEntityRemove: entityType={entity.Type}, label={entity.Label}, isConnected={_collabClient.IsConnected}");
+			Console.WriteLine($"[Collab] EntityBox_OnEntityRemove: entityType={entity.Type}, label={entity.Label}, isConnected={_collabClient.IsConnected}");
 #endif
+			var entityId = entity.CollabId ?? entity.Label ?? Guid.NewGuid().ToString();
+
+			if (_collabClient.IsConnected)
+			{
+				// Live sync: delete the entity on the server immediately.
+				Task.Run(async () => await _collabClient.SendEntityDeletedAsync(entityId));
+				return;
+			}
+
 			var change = new OfflineChange
 			{
 				ChangeType = "deleted",
-				PrimitiveId = entity.Label ?? Guid.NewGuid().ToString(),
-				SessionId = _collabSettings.SessionId,
-				EntityType = entity.Type.ToString(),
-				EntityLabel = entity.Label
+				PrimitiveId = entityId,
+				SessionId = _collabSettings.SessionId
 			};
 
 			InvokeOnUiThread(() =>

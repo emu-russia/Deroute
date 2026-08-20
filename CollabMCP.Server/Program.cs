@@ -41,6 +41,7 @@ try
     builder.Services.AddSingleton<IConfiguration>(config);
     builder.Services.AddSingleton<XmlSessionStore>();
     builder.Services.AddSingleton<SessionManager>();
+    builder.Services.AddSingleton<PositionUpdateFlusher>();
     builder.Services.AddSignalR();
 
     // MCP services
@@ -66,14 +67,12 @@ try
 
     app.MapGet("/api/sessions/{sessionId}", (string sessionId, SessionManager sessionManager) =>
     {
-#pragma warning disable CS8602
-        if (sessionManager.TryGetSession(sessionId, out var state) && state.Metadata is { } metadata)
-#pragma warning restore CS8602
+        if (sessionManager.TryLoadSession(sessionId, out var state) && state is { Metadata: { } metadata })
         {
             return Results.Ok(new
             {
                 Metadata = metadata,
-                PrimitiveCount = state.Primitives.Count,
+                EntityCount = state.Entities.Count,
                 ConnectedUsers = state.ConnectedUsers.ToList()
             });
         }
