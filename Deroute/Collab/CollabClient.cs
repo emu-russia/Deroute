@@ -14,10 +14,15 @@ namespace DerouteSharp.Collab
     internal static class CollabDebug
     {
 #if DEBUG && (!__MonoCS__)
-        public static void Log(string msg) => Console.WriteLine("[Collab] " + msg);
-        public static void LogOut(string msg) => Console.WriteLine("[Collab->Srv] " + msg);
-        public static void LogIn(string msg) => Console.WriteLine("[Collab<-Srv] " + msg);
-        public static void LogErr(string msg) => Console.WriteLine("[Collab ERR] " + msg);
+        private static readonly string LogFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "collab-client-debug.log");
+        private static void WriteFile(string msg)
+        {
+            try { System.IO.File.AppendAllText(LogFile, DateTime.Now.ToString("HH:mm:ss.fff ") + msg + Environment.NewLine); } catch { }
+        }
+        public static void Log(string msg) { Console.WriteLine("[Collab] " + msg); WriteFile("[Collab] " + msg); }
+        public static void LogOut(string msg) { Console.WriteLine("[Collab->Srv] " + msg); WriteFile("[Collab->Srv] " + msg); }
+        public static void LogIn(string msg) { Console.WriteLine("[Collab<-Srv] " + msg); WriteFile("[Collab<-Srv] " + msg); }
+        public static void LogErr(string msg) { Console.WriteLine("[Collab ERR] " + msg); WriteFile("[Collab ERR] " + msg); }
 #else
         public static void Log(string msg) { }
         public static void LogOut(string msg) { }

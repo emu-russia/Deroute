@@ -756,6 +756,9 @@ Set:
 - **Server URL** — `http://localhost:5000` (or the actual server address).
 - **API key** — the server's `AdminApiKey` (masked; use **Show** to see it).
 - **Username** — how you will be shown to other participants.
+- **User ID** — identifies you in the session (auto-generated; **Regenerate** creates a new
+  one). Use a **different User ID in every app instance** (e.g. when testing with two copies
+  on one machine) so participants are counted separately.
 - **Session ID** — optional; can be chosen later from the session list.
 - **Reconnect delay / Max attempts** — automatic reconnection behavior.
 

@@ -19,6 +19,8 @@ namespace DerouteSharp
         private TextBox txtApiKey;
         private CheckBox chkShowKey;
         private TextBox txtUsername;
+        private TextBox txtUserId;
+        private Button btnRegenUserId;
         private TextBox txtSessionId;
         private NumericUpDown nudReconnectDelay;
         private NumericUpDown nudMaxAttempts;
@@ -40,14 +42,14 @@ namespace DerouteSharp
             MaximizeBox = false;
             MinimizeBox = false;
             StartPosition = FormStartPosition.CenterParent;
-            ClientSize = new Size(420, 330);
+            ClientSize = new Size(440, 400);
 
             int y = 14;
             chkEnabled = new CheckBox { Text = "Enable collaboration", Location = new Point(14, y), AutoSize = true, Checked = _settings.Enabled };
             y += 30;
 
             AddLabel("Server URL:", y); y += 20;
-            txtServerUrl = new TextBox { Location = new Point(14, y), Size = new Size(392, 23), Text = _settings.ServerUrl };
+            txtServerUrl = new TextBox { Location = new Point(14, y), Size = new Size(412, 23), Text = _settings.ServerUrl };
             y += 30;
 
             AddLabel("API key:", y); y += 20;
@@ -57,12 +59,18 @@ namespace DerouteSharp
             y += 30;
 
             AddLabel("Username:", y); y += 20;
-            txtUsername = new TextBox { Location = new Point(14, y), Size = new Size(392, 23), Text = _settings.Username };
+            txtUsername = new TextBox { Location = new Point(14, y), Size = new Size(412, 23), Text = _settings.Username };
+            y += 30;
+
+            AddLabel("User ID (identifies you in the session):", y); y += 20;
+            txtUserId = new TextBox { Location = new Point(14, y), Size = new Size(300, 23), Text = _settings.UserId };
+            btnRegenUserId = new Button { Text = "Regenerate", Location = new Point(320, y), Size = new Size(106, 24) };
+            btnRegenUserId.Click += (s, e) => txtUserId.Text = Guid.NewGuid().ToString("N").Substring(0, 8);
             y += 30;
 
             AddLabel("Session ID:", y); y += 20;
             txtSessionId = new TextBox { Location = new Point(14, y), Size = new Size(300, 23), Text = _settings.SessionId };
-            btnPickSession = new Button { Text = "Pick...", Location = new Point(320, y), Size = new Size(86, 24) };
+            btnPickSession = new Button { Text = "Pick...", Location = new Point(320, y), Size = new Size(106, 24) };
             btnPickSession.Click += (s, e) =>
             {
                 using (var dlg = new FormCollabSession(_client, _settings))
@@ -109,16 +117,17 @@ namespace DerouteSharp
             };
             y += 32;
 
-            lblStatus = new Label { Location = new Point(150, 246), Size = new Size(260, 20), ForeColor = Color.DimGray };
+            lblStatus = new Label { Location = new Point(152, y), Size = new Size(270, 20), ForeColor = Color.DimGray };
+            y += 24;
 
-            var btnOk = new Button { Text = "OK", Location = new Point(232, 290), Size = new Size(86, 28), DialogResult = DialogResult.OK };
-            var btnCancel = new Button { Text = "Cancel", Location = new Point(326, 290), Size = new Size(82, 28), DialogResult = DialogResult.Cancel };
+            var btnOk = new Button { Text = "OK", Location = new Point(252, y), Size = new Size(86, 28), DialogResult = DialogResult.OK };
+            var btnCancel = new Button { Text = "Cancel", Location = new Point(346, y), Size = new Size(82, 28), DialogResult = DialogResult.Cancel };
             CancelButton = btnCancel;
 
             Controls.AddRange(new Control[]
             {
-                chkEnabled, txtServerUrl, txtApiKey, chkShowKey, txtUsername, txtSessionId, btnPickSession,
-                nudReconnectDelay, nudMaxAttempts, btnTest, lblStatus, btnOk, btnCancel
+                chkEnabled, txtServerUrl, txtApiKey, chkShowKey, txtUsername, txtUserId, btnRegenUserId,
+                txtSessionId, btnPickSession, nudReconnectDelay, nudMaxAttempts, btnTest, lblStatus, btnOk, btnCancel
             });
         }
 
@@ -135,6 +144,8 @@ namespace DerouteSharp
                 _settings.ServerUrl = txtServerUrl.Text.Trim();
                 _settings.ApiKey = txtApiKey.Text;
                 _settings.Username = txtUsername.Text.Trim();
+                if (!string.IsNullOrEmpty(txtUserId.Text.Trim()))
+                    _settings.UserId = txtUserId.Text.Trim();
                 _settings.SessionId = txtSessionId.Text.Trim();
                 _settings.ReconnectDelayMs = (int)nudReconnectDelay.Value;
                 _settings.MaxReconnectAttempts = (int)nudMaxAttempts.Value;

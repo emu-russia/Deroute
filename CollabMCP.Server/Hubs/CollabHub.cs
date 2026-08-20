@@ -43,9 +43,18 @@ public class CollabHub : Hub
         if (client && clientInfo != null)
         {
             _logger.LogInformation("Client disconnected: {ConnectionId}, user {UserId}", Context.ConnectionId, clientInfo.UserId);
-            _sessionManager.RemoveUserFromSession(clientInfo.SessionId, clientInfo.UserId);
 
-            await Clients.Group(clientInfo.SessionId).SendAsync("OnUserLeft", clientInfo.UserId);
+            // The same UserId may be connected from several connections (e.g. two app
+            // instances on one machine). Only leave the session when the last connection
+            // of that user is gone.
+            bool stillConnected = _clients.Values.Any(c =>
+                c.UserId == clientInfo.UserId && c.SessionId == clientInfo.SessionId);
+
+            if (!stillConnected)
+            {
+                _sessionManager.RemoveUserFromSession(clientInfo.SessionId, clientInfo.UserId);
+                await Clients.Group(clientInfo.SessionId).SendAsync("OnUserLeft", clientInfo.UserId);
+            }
 
             // Flush any buffered position updates for the departing user
             _positionFlusher.FlushSession(clientInfo.SessionId, clientInfo.UserId);
@@ -59,13 +68,9 @@ public class CollabHub : Hub
         _logger.LogInformation("User {UserId} joining session {SessionId} via connection {ConnectionId}",
             userId, sessionId, Context.ConnectionId);
 
-        var existingClient = _clients.FirstOrDefault(c => c.Value.UserId == userId);
-        if (existingClient.Key != null)
-        {
-            await Clients.Clients(existingClient.Key).SendAsync("OnSessionError", "User already connected from another connection");
-            return;
-        }
-
+        // Multiple connections with the same UserId are allowed (a user may run several
+        // instances, or test locally with two copies). The session tracks users as a set,
+        // so the user appears once in the participant list.
         _clients[Context.ConnectionId] = new ClientInfo
         {
             ConnectionId = Context.ConnectionId,
