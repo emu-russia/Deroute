@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -896,6 +896,30 @@ namespace DerouteSharp
 				var collabMcpSettings = new FormSettings.CollabMcpSettings(_collabSettings);
 				FormSettings.SaveSettings(entityBox1, collabMcpSettings);
 				entityBox1.Invalidate();
+
+				// Apply CollabMCP settings immediately (no restart needed):
+				// connect when collaboration was enabled, disconnect when disabled.
+				if (_collabClient != null)
+				{
+					if (_collabSettings.Enabled && !string.IsNullOrEmpty(_collabSettings.ApiKey))
+					{
+						UpdateCollabStatus("Connecting", _collabUserCount);
+						System.Threading.Tasks.Task.Run(async () =>
+						{
+							await _collabClient.ConnectAsync();
+						});
+					}
+					else
+					{
+						if (_collabSettings.Enabled)
+							SetStatusMessage("CollabMCP is enabled, but no API key is set — enter it in Settings -> CollabMCP.");
+						UpdateCollabStatus("Disabled", 0);
+						System.Threading.Tasks.Task.Run(async () =>
+						{
+							await _collabClient.DisconnectAsync();
+						});
+					}
+				}
 			}
 		}
 

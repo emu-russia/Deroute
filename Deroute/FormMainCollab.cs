@@ -225,6 +225,9 @@ namespace DerouteSharp
 			_collabStatusTimer.Start();
 
 			statusStrip1.MouseDown += StatusStripMouseDown;
+			collabStatusLabel.MouseDown += StatusStripMouseDown;
+			collabStatusIndicator.MouseDown += StatusStripMouseDown;
+			collabStatusMessage.MouseDown += StatusStripMouseDown;
 
 			_positionThrottler = new CoordinateThrottler(this, 33);
 			_positionThrottler.OnFlush += (updates) =>
@@ -256,6 +259,7 @@ namespace DerouteSharp
 #if DEBUG && (!__MonoCS__)
 				Console.WriteLine("[Collab] Auto-connect skipped: enabled=" + _collabSettings.Enabled + ", hasKey=" + !string.IsNullOrEmpty(_collabSettings.ApiKey));
 #endif
+				UpdateCollabStatus("Disabled", 0);
 			}
 		}
 
@@ -353,14 +357,12 @@ namespace DerouteSharp
 
 		private void StatusStripMouseDown(object sender, MouseEventArgs e)
 		{
-			if (e.Button != MouseButtons.Right) return;
-
-			// Show the CollabMCP menu only when right-clicking on the collab indicator
-			var rect = collabStatusIndicator.Bounds;
-			rect.Inflate(8, 8);
-			if (rect.Contains(e.Location))
+			// Right-click anywhere on the status strip (or on the collab items themselves)
+			// opens the CollabMCP menu. ToolStripItem.MouseDown does not bubble to the
+			// strip, so the same handler is attached to the collab items as well.
+			if (e.Button == MouseButtons.Right)
 			{
-				collabStatusContextMenu.Show(statusStrip1, e.Location);
+				collabStatusContextMenu.Show(Control.MousePosition);
 			}
 		}
 
