@@ -38,6 +38,7 @@
 21. [Settings](#settings)
 21. [Key Bindings](#key-bindings)
 22. [Saving and Loading](#saving-and-loading)
+23. [Multi-User Collaboration (CollabMCP)](#multi-user-collaboration-collabmcp)
 
 ---
 
@@ -649,6 +650,175 @@ Deroute entities are saved as **XML files**:
 ### Cell Library Files
 
 Cell libraries are also saved as XML files and can be loaded/saved independently from entities.
+
+---
+
+## Multi-User Collaboration (CollabMCP)
+
+Deroute can be used by **several people (and AI agents) at the same time** on a shared canvas. The
+collaboration runs through the **CollabMCP server** — a small ASP.NET Core service that keeps the
+session state, synchronizes changes in real time (SignalR) and exposes the canvas to AI agents via
+the Model Context Protocol (MCP).
+
+```
+  Deroute (desktop)  <--SignalR (WebSocket)-->  CollabMCP Server  <--MCP (HTTP)-->  AI agents
+  User A / User B / ...                          (sessions, locks,            (add/update/
+                                                 XML storage)                  inspect entities)
+```
+
+---
+
+### Part 1. Server setup
+
+#### Requirements
+
+- **.NET 10 SDK** (the server targets `net10.0`).
+- Network access to `nuget.org` for the first restore (the server uses `Serilog`, `Newtonsoft.Json`, etc.).
+
+#### Build and run
+
+```bat
+dotnet build CollabMCP.Server\CollabMCP.Server.csproj -c Debug
+dotnet run --project CollabMCP.Server\CollabMCP.Server.csproj -c Debug
+```
+
+On startup the server prints its banner and begins listening on `http://0.0.0.0:5000`:
+
+![CollabMCP server console](imgstore/collab_server_console.png)
+
+The health check confirms the server is up: `http://localhost:5000/api/health` →
+`{"status":"ok","uptime":"..."}`.
+
+#### Configuration
+
+Server settings live in `CollabMCP.Server/appsettings.json` (section `Server`):
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `Url` | `http://0.0.0.0` | Bind address |
+| `Port` | `5000` | HTTP port |
+| `AdminApiKey` | `change-me-admin-key` | **API key** — every client/agent request must carry it |
+| `XmlStoragePath` | `./sessions` | Folder for session XML files (created automatically) |
+| `LogPath` | `./Logs` | Serilog daily log files |
+| `ThrottleIntervalMs` | `33` | Position-update broadcast throttle (~30 FPS) |
+
+Any value can be overridden with environment variables using the `Server__` prefix, e.g.
+`Server__Port=6000` or `Server__AdminApiKey=my-secret`.
+
+#### API keys and users
+
+The server has **no user accounts or passwords**. Access is controlled by a single shared
+**API key** (`Server.AdminApiKey`):
+
+- Every request (REST, MCP, WebSocket) must send the header **`X-Api-Key: <key>`**.
+- Missing header → `401`; wrong value → `403`; only `/api/health` is public.
+- **Change `change-me-admin-key` before any real use.**
+
+A "user" inside a session is identified by the **UserId** string that the client sends when it
+joins (`JoinSession`). The Deroute client generates one automatically (`Tools -> Settings ->
+CollabMCP`), and you can edit it. The user id is also the lock owner id: an entity locked by one
+user can be edited only by that user.
+
+#### Session storage
+
+Each session is a directory-independent set of **XML files** in `XmlStoragePath` (one file per
+session id, `sessions\<id>.xml`), created lazily on first use. Useful endpoints:
+
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /api/health` | Health check (no key) |
+| `GET /api/sessions` | List session ids (API key) |
+| `GET /api/sessions/{id}` | Session metadata + entity count + connected users |
+| `DELETE /api/sessions/{id}` | Remove a session (memory + file) |
+| `/mcp`, `/mcp/sse`, `/mcp/events`, `/mcp/tools`, `/mcp/prompts`, `/mcp/resources` | MCP for AI agents |
+
+> Detailed protocol documentation: [CollabMCP.Server/Readme.md](../CollabMCP.Server/Readme.md).
+
+---
+
+### Part 2. Connecting from the Deroute client
+
+#### Step 1 — Start the server
+
+Run the server as described above, note its address (`http://localhost:5000`) and the
+**API key** (`AdminApiKey`).
+
+#### Step 2 — Enter connection settings
+
+Open `Tools -> Settings`, switch to the **CollabMCP** tab and press
+**"Open CollabMCP settings..."**:
+
+![CollabMCP settings](imgstore/collab_settings.png)
+
+Set:
+
+- **Enable collaboration** — checked.
+- **Server URL** — `http://localhost:5000` (or the actual server address).
+- **API key** — the server's `AdminApiKey` (masked; use **Show** to see it).
+- **Username** — how you will be shown to other participants.
+- **Session ID** — optional; can be chosen later from the session list.
+- **Reconnect delay / Max attempts** — automatic reconnection behavior.
+
+Press **"Test connection"** to verify the server is reachable, then **OK**.
+
+#### Step 3 — Choose or create a session
+
+In the status bar, right-click the **CollabMCP:** indicator and choose **Session...**:
+
+![CollabMCP session dialog](imgstore/collab_session.png)
+
+- **Refresh** loads the list of sessions currently on the server.
+- Select a session and press **Join**, or type a new id and press **Create new**.
+- **Copy id** copies the session id to the clipboard.
+- Press **OK** — the application reconnects to the chosen session **without restarting**.
+
+You can also type the session id directly in the settings dialog instead.
+
+#### Step 4 — Connect
+
+Right-click the **CollabMCP:** indicator in the status bar and choose **Connect**
+(or enable auto-connect — if *Enable collaboration* is checked, the client connects on startup).
+The indicator shows the state with a color:
+
+| State | Color | Meaning |
+|-------|-------|---------|
+| `Collab: Disabled` | gray | Collaboration is off |
+| `Collab: Connecting...` | orange | Connecting / reconnecting |
+| `Collab: Connected (N users, session: ...)` | green | Connected, N participants |
+| `Collab: Disconnected` / `Collab: Error` | red | Connection lost / error |
+
+Details and error texts are shown in the message label right next to the indicator. On a
+successful join the canvas is filled with the session snapshot.
+
+![Deroute main window with CollabMCP status indicator](imgstore/collab_main_window.png)
+
+#### Users and colors
+
+Right-click the indicator → **Users...** opens the participants window. Each participant is
+assigned a color from the 15-color palette; the legend is shown at the bottom of the window:
+
+![CollabMCP users window](imgstore/collab_users.png)
+
+#### Working together
+
+- Entities you **create, edit, move or delete** are synchronized in real time; movement
+  (position updates) is throttled to ~30 updates per second.
+- **Locking:** when you start editing, lock the entity (right-click the entity if your build has
+  locking controls, or via an AI agent). A locked entity is tinted with the owner's color and can
+  be modified only by the lock holder. Locks are released automatically when the user disconnects.
+- **Offline queue:** if the connection drops, your local changes are queued and sent automatically
+  on reconnection, so you can keep working while offline.
+- **AI agents** can inspect and modify the canvas through MCP tools (`add_primitive`,
+  `update_primitive`, `delete_primitive`, `clear_canvas`, `get_canvas_state`, `list_sessions`).
+
+#### Troubleshooting
+
+| Symptom | Likely cause / fix |
+|---------|--------------------|
+| "Connection failed" | Server not running, wrong port, or the URL is missing `http://` |
+| "API key required / Invalid API key" | The key in the settings differs from `Server.AdminApiKey` |
+| Indicator stays red after reconnect attempts | Server unreachable; check firewall/port |
+| Entity "locked by ..." on update | Another user (or agent) holds the lock; wait for release |
 
 ---
 
