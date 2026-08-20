@@ -96,6 +96,11 @@ try
 catch (Exception ex)
 {
     Log.Fatal(ex, "CollabMCP Server failed to start");
+    if (ex.Message.Contains("address already in use", StringComparison.OrdinalIgnoreCase) ||
+        ex.Message.Contains("Failed to bind", StringComparison.OrdinalIgnoreCase))
+    {
+        Log.Fatal("Port {Port} is already in use. Stop the other server instance, or change Server:Port in appsettings.json (or the Server__Port environment variable), then start again.", serverConfig.Port);
+    }
 }
 finally
 {
