@@ -42,7 +42,10 @@ namespace DerouteSharp
             MaximizeBox = false;
             MinimizeBox = false;
             StartPosition = FormStartPosition.CenterParent;
-            ClientSize = new Size(440, 400);
+            // Grow/shrink to fit all controls (buttons must stay visible regardless of rows)
+            AutoSize = true;
+            AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            ClientSize = new Size(440, 420);
 
             int y = 14;
             chkEnabled = new CheckBox { Text = "Enable collaboration", Location = new Point(14, y), AutoSize = true, Checked = _settings.Enabled };
