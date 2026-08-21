@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using DerouteSharp.Collab;
 
 namespace DerouteSharp
 {
@@ -16,6 +17,21 @@ namespace DerouteSharp
 		private OpacitySettings opacitySettings;
 		private SizeSettings sizeSettings;
 		private ShapeSettings shapeSettings;
+		private CollabMcpSettings collabMcpSettings;
+		private CollabSettings collabSettingsInstance;
+
+		[Serializable()]
+		public class SerializedCollabMcpSettings
+		{
+			public bool Enabled = false;
+			public string ServerUrl = "http://localhost:5000";
+			public string ApiKey = string.Empty;
+			public string UserId = string.Empty;
+			public string SessionId = string.Empty;
+			public string Username = string.Empty;
+			public int ReconnectDelayMs = 2000;
+			public int MaxReconnectAttempts = 50;
+		}
 
 		[Serializable()]
 		public class SerializedSettings
@@ -26,11 +42,12 @@ namespace DerouteSharp
 			public OpacitySettings opacitySettings = new OpacitySettings(null);
 			public SizeSettings sizeSettings = new SizeSettings(null);
 			public ShapeSettings shapeSettings = new ShapeSettings(null);
+			public SerializedCollabMcpSettings collabMcpSettings = new SerializedCollabMcpSettings();
 		}
 
 		private EntityBox savedEntityBox;
 
-		public FormSettings(EntityBox entityBox)
+		public FormSettings(EntityBox entityBox, CollabSettings collabSettings = null)
 		{
 			InitializeComponent();
 
@@ -55,6 +72,31 @@ namespace DerouteSharp
 
 			shapeSettings = new ShapeSettings(entityBox);
 			propertyGridShape.SelectedObject = shapeSettings;
+
+			if (collabSettings != null)
+			{
+				collabSettingsInstance = collabSettings;
+				collabMcpSettings = new CollabMcpSettings(collabSettings);
+			}
+		}
+
+		private void btnOpenCollabSettings_Click(object sender, EventArgs e)
+		{
+			using (var dlg = new FormCollabSettings(collabSettingsInstance))
+			{
+				if (dlg.ShowDialog(this) == DialogResult.OK && collabMcpSettings != null)
+				{
+					// Refresh the property grid (advanced/developer view) from the new values
+					collabMcpSettings.Enabled = collabSettingsInstance.Enabled;
+					collabMcpSettings.ServerUrl = collabSettingsInstance.ServerUrl;
+					collabMcpSettings.ApiKey = collabSettingsInstance.ApiKey;
+					collabMcpSettings.UserId = collabSettingsInstance.UserId;
+					collabMcpSettings.SessionId = collabSettingsInstance.SessionId;
+					collabMcpSettings.Username = collabSettingsInstance.Username;
+					collabMcpSettings.ReconnectDelayMs = collabSettingsInstance.ReconnectDelayMs;
+					collabMcpSettings.MaxReconnectAttempts = collabSettingsInstance.MaxReconnectAttempts;
+				}
+			}
 		}
 
 		private void FormSettings_KeyDown(object sender, KeyEventArgs e)
@@ -74,6 +116,11 @@ namespace DerouteSharp
 			opacitySettings.Save();
 			sizeSettings.Save();
 			shapeSettings.Save();
+
+			if (collabMcpSettings != null)
+			{
+				collabMcpSettings.Save();
+			}
 
 			SaveSettings(savedEntityBox);
 
@@ -478,9 +525,82 @@ namespace DerouteSharp
 		}
 
 
-		public static void LoadSettings (EntityBox entityBox)
+		[Serializable()]
+		public class CollabMcpSettings
+		{
+			[Description("Enable collaboration via CollabMCP")]
+			public bool Enabled { get; set; }
+			[Description("URL of the CollabMCP server")]
+			public string ServerUrl { get; set; } = "http://localhost:5000";
+			[Description("API key for authentication with the CollabMCP server")]
+			public string ApiKey { get; set; } = string.Empty;
+			[Description("Unique identifier for the current user")]
+			public string UserId { get; set; }
+			[Description("Session ID for the current collaboration session")]
+			public string SessionId { get; set; }
+			[Description("Display name shown to other collaborators")]
+			public string Username { get; set; }
+			[Description("Delay in milliseconds before attempting to reconnect after a connection loss")]
+			public int ReconnectDelayMs { get; set; } = 2000;
+			[Description("Maximum number of reconnection attempts before giving up")]
+			public int MaxReconnectAttempts { get; set; } = 50;
+
+			private CollabSettings _collabSettings;
+
+			public CollabMcpSettings() { }
+
+			public CollabMcpSettings(CollabSettings collabSettings)
+			{
+				if (collabSettings == null)
+					return;
+
+				_collabSettings = collabSettings;
+
+				Enabled = collabSettings.Enabled;
+				ServerUrl = collabSettings.ServerUrl;
+				ApiKey = collabSettings.ApiKey;
+				UserId = collabSettings.UserId;
+				SessionId = collabSettings.SessionId;
+				Username = collabSettings.Username;
+				ReconnectDelayMs = collabSettings.ReconnectDelayMs;
+				MaxReconnectAttempts = collabSettings.MaxReconnectAttempts;
+			}
+
+			public void Save()
+			{
+				if (_collabSettings == null)
+					return;
+
+				_collabSettings.Enabled = Enabled;
+				_collabSettings.ServerUrl = ServerUrl;
+				_collabSettings.ApiKey = ApiKey;
+				_collabSettings.UserId = UserId;
+				_collabSettings.SessionId = SessionId;
+				_collabSettings.Username = Username;
+				_collabSettings.ReconnectDelayMs = ReconnectDelayMs;
+				_collabSettings.MaxReconnectAttempts = MaxReconnectAttempts;
+			}
+		}
+
+
+		public static void LoadSettings (EntityBox entityBox, CollabMcpSettings collabMcpSettings = null)
 		{
 			Properties.Settings settings = Properties.Settings.Default;
+
+			if (collabMcpSettings != null)
+			{
+				collabMcpSettings.Enabled = settings.CollabEnabled;
+				collabMcpSettings.ServerUrl = settings.CollabServerUrl;
+				collabMcpSettings.ApiKey = settings.CollabApiKey;
+				// Keep the auto-generated UserId when nothing was persisted yet
+				// (the default stored value is an empty string).
+				if (!string.IsNullOrEmpty(settings.CollabUserId))
+					collabMcpSettings.UserId = settings.CollabUserId;
+				collabMcpSettings.SessionId = settings.CollabSessionId;
+				collabMcpSettings.Username = settings.CollabUsername;
+				collabMcpSettings.ReconnectDelayMs = settings.CollabReconnectDelayMs;
+				collabMcpSettings.MaxReconnectAttempts = settings.CollabMaxReconnectAttempts;
+			}
 
 			// Load global settings
 
@@ -592,9 +712,21 @@ namespace DerouteSharp
 			entityBox.Invalidate();
 		}
 
-		public static void SaveSettings (EntityBox entityBox)
+		public static void SaveSettings (EntityBox entityBox, CollabMcpSettings collabMcpSettings = null)
 		{
 			Properties.Settings settings = Properties.Settings.Default;
+
+			if (collabMcpSettings != null)
+			{
+				settings.CollabEnabled = collabMcpSettings.Enabled;
+				settings.CollabServerUrl = collabMcpSettings.ServerUrl;
+				settings.CollabApiKey = collabMcpSettings.ApiKey;
+				settings.CollabUserId = collabMcpSettings.UserId;
+				settings.CollabSessionId = collabMcpSettings.SessionId;
+				settings.CollabUsername = collabMcpSettings.Username;
+				settings.CollabReconnectDelayMs = collabMcpSettings.ReconnectDelayMs;
+				settings.CollabMaxReconnectAttempts = collabMcpSettings.MaxReconnectAttempts;
+			}
 
 			// Save global settings
 
@@ -694,7 +826,7 @@ namespace DerouteSharp
 			settings.Save();
 		}
 
-		public static void LoadSettingsFromFile(string filename, EntityBox entityBox)
+		public static void LoadSettingsFromFile(string filename, EntityBox entityBox, CollabMcpSettings collabMcpSettings = null)
 		{
 			SerializedSettings settings = new SerializedSettings();
 
@@ -733,6 +865,22 @@ namespace DerouteSharp
 			global.ViasNeighborRadius = settings.globalSettings.ViasNeighborRadius;
 
 			global.Save();
+
+			// Load CollabMCP settings
+
+			if (collabMcpSettings != null)
+			{
+				collabMcpSettings.Enabled = settings.collabMcpSettings.Enabled;
+				collabMcpSettings.ServerUrl = settings.collabMcpSettings.ServerUrl;
+				collabMcpSettings.ApiKey = settings.collabMcpSettings.ApiKey;
+				// Keep the auto-generated UserId when the file has none
+				if (!string.IsNullOrEmpty(settings.collabMcpSettings.UserId))
+					collabMcpSettings.UserId = settings.collabMcpSettings.UserId;
+				collabMcpSettings.SessionId = settings.collabMcpSettings.SessionId;
+				collabMcpSettings.Username = settings.collabMcpSettings.Username;
+				collabMcpSettings.ReconnectDelayMs = settings.collabMcpSettings.ReconnectDelayMs;
+				collabMcpSettings.MaxReconnectAttempts = settings.collabMcpSettings.MaxReconnectAttempts;
+			}
 
 			// Load color settings 
 
@@ -815,7 +963,7 @@ namespace DerouteSharp
 			entityBox.Invalidate();
 		}
 
-		public static void SaveSettingsToFile(string filename, EntityBox entityBox)
+		public static void SaveSettingsToFile(string filename, EntityBox entityBox, CollabMcpSettings collabMcpSettings = null)
 		{
 			SerializedSettings settings = new SerializedSettings();
 
@@ -845,6 +993,17 @@ namespace DerouteSharp
 			settings.globalSettings.MinimapViewportOpacity = global.MinimapViewportOpacity;
 			settings.globalSettings.MinimapMinSize = global.MinimapMinSize;
 			settings.globalSettings.ViasNeighborRadius = global.ViasNeighborRadius;
+
+			// Save CollabMCP settings
+
+			settings.collabMcpSettings.Enabled = collabMcpSettings?.Enabled ?? false;
+			settings.collabMcpSettings.ServerUrl = collabMcpSettings?.ServerUrl ?? "http://localhost:5000";
+			settings.collabMcpSettings.ApiKey = collabMcpSettings?.ApiKey ?? string.Empty;
+			settings.collabMcpSettings.UserId = collabMcpSettings?.UserId ?? string.Empty;
+			settings.collabMcpSettings.SessionId = collabMcpSettings?.SessionId ?? string.Empty;
+			settings.collabMcpSettings.Username = collabMcpSettings?.Username ?? string.Empty;
+			settings.collabMcpSettings.ReconnectDelayMs = collabMcpSettings?.ReconnectDelayMs ?? 2000;
+			settings.collabMcpSettings.MaxReconnectAttempts = collabMcpSettings?.MaxReconnectAttempts ?? 50;
 
 			// Save color settings
 

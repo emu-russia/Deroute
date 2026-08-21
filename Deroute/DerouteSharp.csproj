@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -12,6 +12,9 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <!-- packages.config restore (Newtonsoft.Json). CLI: msbuild DerouteSharp.sln /t:Restore /p:RestorePackagesConfig=true
+         (Visual Studio restores packages.config automatically on build). -->
+    <RestorePackagesConfig>true</RestorePackagesConfig>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
@@ -67,8 +70,12 @@
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CellSupport.cs" />
@@ -110,6 +117,15 @@
     <Compile Include="FormGetVerilogSettings.Designer.cs">
       <DependentUpon>FormGetVerilogSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormCollabSession.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCollabSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCollabUsers.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -122,7 +138,6 @@
     <Compile Include="FormBulkRename.Designer.cs">
       <DependentUpon>FormBulkRename.cs</DependentUpon>
     </Compile>
-
     <Compile Include="FormEnterValue.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,6 +149,9 @@
     </Compile>
     <Compile Include="FormEntityLocator.Designer.cs">
       <DependentUpon>FormEntityLocator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMainCollab.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMiniEntityBox.cs">
       <SubType>Form</SubType>
@@ -147,14 +165,12 @@
     <Compile Include="FormProgress.Designer.cs">
       <DependentUpon>FormProgress.cs</DependentUpon>
     </Compile>
-
     <Compile Include="FormSettings.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSettings.Designer.cs">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </Compile>
-
     <Compile Include="FormWaves.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -188,6 +204,10 @@
     <Compile Include="WavesControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Collab\CollabSettings.cs" />
+    <Compile Include="Collab\CollabClient.cs" />
+    <Compile Include="Collab\OfflineQueue.cs" />
+    <Compile Include="Collab\EntityConverter.cs" />
     <EmbeddedResource Include="FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
@@ -212,7 +232,6 @@
     <EmbeddedResource Include="FormBulkRename.resx">
       <DependentUpon>FormBulkRename.cs</DependentUpon>
     </EmbeddedResource>
-
     <EmbeddedResource Include="FormEnterValue.resx">
       <DependentUpon>FormEnterValue.cs</DependentUpon>
     </EmbeddedResource>
@@ -225,11 +244,9 @@
     <EmbeddedResource Include="FormProgress.resx">
       <DependentUpon>FormProgress.cs</DependentUpon>
     </EmbeddedResource>
-
     <EmbeddedResource Include="FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </EmbeddedResource>
-
     <EmbeddedResource Include="FormWaves.resx">
       <DependentUpon>FormWaves.cs</DependentUpon>
     </EmbeddedResource>
@@ -297,7 +314,6 @@
       <Project>{b054bdba-d0a2-4712-bb9f-4368c37be0eb}</Project>
       <Name>EntityBox</Name>
     </ProjectReference>
-
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
@@ -306,6 +322,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

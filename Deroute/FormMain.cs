@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -10,7 +10,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.IO;
 using System.IO.Compression;
-using System.Xml.Serialization;
 using System.Text.RegularExpressions;
 
 //
@@ -37,6 +36,7 @@ namespace DerouteSharp
 		public FormMain()
 		{
 			InitializeComponent();
+			this.FormClosing += FormMain_FormClosing;
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
@@ -77,18 +77,28 @@ namespace DerouteSharp
 			savedText = Text;
 			Console.WriteLine(savedText);
 
-			FormSettings.LoadSettings(entityBox1);
+			var collabMcpSettings = new FormSettings.CollabMcpSettings(_collabSettings);
+			FormSettings.LoadSettings(entityBox1, collabMcpSettings);
+			collabMcpSettings.Save();
 
 			PopulateTree();
 
 			entityBox1.Focus();
 			
 			sim = new DerouteSim(entityBox1);
-		}
+
+            InitializeCollab();
+        }
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
+		}
+
+		private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			var collabMcpSettings = new FormSettings.CollabMcpSettings(_collabSettings);
+			FormSettings.SaveSettings(entityBox1, collabMcpSettings);
 		}
 
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -283,6 +293,8 @@ namespace DerouteSharp
 				var filename = openFileDialog2.FileName;
 				Text = savedText + " - " + filename;
 
+				var collabMcpSettings = new FormSettings.CollabMcpSettings(_collabSettings);
+
 				if (Path.GetExtension(filename).ToLower() == ".xmlz")
 				{
 					string temp_xml_dir = GetTemporaryDirectory();
@@ -293,7 +305,8 @@ namespace DerouteSharp
 					{
 						if (file.FullName.Contains("deroute_settings.xml"))
 						{
-							FormSettings.LoadSettingsFromFile(file.FullName, entityBox1);
+							FormSettings.LoadSettingsFromFile(file.FullName, entityBox1, collabMcpSettings);
+							collabMcpSettings.Save();
 							file.Delete();
 							continue;
 						}
@@ -334,13 +347,16 @@ namespace DerouteSharp
 				var filename = saveFileDialog2.FileName;
 				Text = savedText + " - " + filename;
 
+				var collabMcpSettings = new FormSettings.CollabMcpSettings(_collabSettings);
+				collabMcpSettings.Save();
+
 				if (Path.GetExtension(filename).ToLower() == ".xmlz")
 				{
 					string temp_xml_dir = GetTemporaryDirectory();
 					string temp_xml_filename = temp_xml_dir + "/" + Path.GetFileNameWithoutExtension(filename) + ".xml";
 					entityBox1.Serialize(temp_xml_filename);
 					string temp_settings_filename = temp_xml_dir + "/deroute_settings.xml";
-					FormSettings.SaveSettingsToFile(temp_settings_filename, entityBox1);
+					FormSettings.SaveSettingsToFile(temp_settings_filename, entityBox1, collabMcpSettings);
 					if (File.Exists(filename))
 					{
 						File.Delete(filename);
@@ -865,7 +881,7 @@ namespace DerouteSharp
 
 		private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			FormSettings settings = new FormSettings(entityBox1);
+			FormSettings settings = new FormSettings(entityBox1, _collabSettings);
 
 			settings.FormClosed += Settings_FormClosed;
 			settings.ShowDialog();
@@ -877,7 +893,25 @@ namespace DerouteSharp
 
 			if (settings.DialogResult == DialogResult.OK)
 			{
+				var collabMcpSettings = new FormSettings.CollabMcpSettings(_collabSettings);
+				FormSettings.SaveSettings(entityBox1, collabMcpSettings);
 				entityBox1.Invalidate();
+
+				// Reflect the new CollabMCP settings without connecting automatically —
+				// the user connects manually via the status-bar menu.
+				if (_collabClient != null)
+				{
+					if (_collabSettings.Enabled && !string.IsNullOrEmpty(_collabSettings.ApiKey))
+					{
+						UpdateCollabStatus("Ready", _collabUserCount);
+					}
+					else
+					{
+						if (_collabSettings.Enabled)
+							SetStatusMessage("CollabMCP is enabled, but no API key is set — enter it in Settings -> CollabMCP.");
+						UpdateCollabStatus("Disabled", 0);
+					}
+				}
 			}
 		}
 
@@ -885,7 +919,9 @@ namespace DerouteSharp
 		{
 			if (openFileDialog3.ShowDialog() == DialogResult.OK)
 			{
-				FormSettings.LoadSettingsFromFile(openFileDialog3.FileName, entityBox1);
+				var collabMcpSettings = new FormSettings.CollabMcpSettings(_collabSettings);
+				FormSettings.LoadSettingsFromFile(openFileDialog3.FileName, entityBox1, collabMcpSettings);
+				collabMcpSettings.Save();
 			}
 		}
 
@@ -893,7 +929,9 @@ namespace DerouteSharp
 		{
 			if (saveFileDialog4.ShowDialog() == DialogResult.OK)
 			{
-				FormSettings.SaveSettingsToFile(saveFileDialog4.FileName, entityBox1);
+				var collabMcpSettings = new FormSettings.CollabMcpSettings(_collabSettings);
+				collabMcpSettings.Save();
+				FormSettings.SaveSettingsToFile(saveFileDialog4.FileName, entityBox1, collabMcpSettings);
 			}
 		}
 
@@ -1602,6 +1640,7 @@ namespace DerouteSharp
 		}
 
 		#endregion "Layers"
+
 	}       // Form1
 
 

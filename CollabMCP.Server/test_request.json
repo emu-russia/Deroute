@@ -1,0 +1,1 @@
+﻿{"jsonrpc":"2.0","method":"tools/call","id":"2","params":{"name":"add_primitive","arguments":{"sessionId":"test-session-1","type":"rectangle","points":[100,100,300,400],"strokeColor":"#FF0000","strokeWidth":2}}}

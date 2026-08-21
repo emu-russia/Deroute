@@ -1,4 +1,4 @@
-﻿namespace DerouteSharp
+namespace DerouteSharp
 {
 	partial class FormMain
 	{
@@ -171,6 +171,15 @@
 
 			this.toolStripStatusLabel15 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabelTimeSpent = new System.Windows.Forms.ToolStripStatusLabel();
+			this.collabStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.collabStatusIndicator = new System.Windows.Forms.ToolStripStatusLabel();
+			this.collabStatusMessage = new System.Windows.Forms.ToolStripStatusLabel();
+			this.collabStatusContextMenu = new System.Windows.Forms.ContextMenuStrip();
+			this.collabConnectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.collabDisconnectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.collabReconnectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.collabSessionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.collabUsersMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitContainer3 = new System.Windows.Forms.SplitContainer();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
@@ -1380,13 +1389,86 @@
             this.toolStripStatusLabel13,
 			this.toolStripStatusLabel14,
             this.toolStripStatusLabel15,
-            this.toolStripStatusLabelTimeSpent});
+            this.toolStripStatusLabelTimeSpent,
+            this.collabStatusLabel,
+            this.collabStatusIndicator,
+            this.collabStatusMessage});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 644);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.ShowItemToolTips = true;
 			this.statusStrip1.Size = new System.Drawing.Size(1218, 24);
 			this.statusStrip1.TabIndex = 3;
 			this.statusStrip1.Text = "statusStrip1";
+			// 
+			// collabStatusLabel
+			// 
+		this.collabStatusLabel.Name = "collabStatusLabel";
+		this.collabStatusLabel.Size = new System.Drawing.Size(87, 19);
+		this.collabStatusLabel.Text = "CollabMCP:";
+		this.collabStatusLabel.ToolTipText = "Right-click for CollabMCP actions";
+		// 
+		// collabStatusIndicator
+		// 
+		this.collabStatusIndicator.Name = "collabStatusIndicator";
+		this.collabStatusIndicator.Size = new System.Drawing.Size(140, 19);
+		this.collabStatusIndicator.Text = "Disabled";
+		this.collabStatusIndicator.ForeColor = System.Drawing.Color.Gray;
+		this.collabStatusIndicator.ToolTipText = "CollabMCP connection status";
+		// 
+		// collabStatusMessage
+		// 
+		this.collabStatusMessage.Name = "collabStatusMessage";
+		this.collabStatusMessage.Size = new System.Drawing.Size(200, 19);
+		this.collabStatusMessage.Text = "";
+		this.collabStatusMessage.Spring = true;
+		this.collabStatusMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+		this.collabStatusMessage.ToolTipText = "Latest CollabMCP message";
+			// 
+			// collabStatusContextMenu
+			// 
+			this.collabStatusContextMenu.Name = "collabStatusContextMenu";
+			this.collabStatusContextMenu.Size = new System.Drawing.Size(160, 96);
+			this.collabStatusContextMenu.Items.Add(this.collabConnectMenuItem);
+			this.collabStatusContextMenu.Items.Add(this.collabDisconnectMenuItem);
+			this.collabStatusContextMenu.Items.Add(this.collabReconnectMenuItem);
+			this.collabStatusContextMenu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+			this.collabStatusContextMenu.Items.Add(this.collabSessionMenuItem);
+			this.collabStatusContextMenu.Items.Add(this.collabUsersMenuItem);
+			// 
+			// collabConnectMenuItem
+			// 
+			this.collabConnectMenuItem.Name = "collabConnectMenuItem";
+			this.collabConnectMenuItem.Size = new System.Drawing.Size(159, 22);
+			this.collabConnectMenuItem.Text = "Connect";
+			this.collabConnectMenuItem.Click += CollabConnectMenuItem_Click;
+			// 
+			// collabDisconnectMenuItem
+			// 
+			this.collabDisconnectMenuItem.Name = "collabDisconnectMenuItem";
+			this.collabDisconnectMenuItem.Size = new System.Drawing.Size(159, 22);
+			this.collabDisconnectMenuItem.Text = "Disconnect";
+			this.collabDisconnectMenuItem.Click += CollabDisconnectMenuItem_Click;
+			// 
+			// collabReconnectMenuItem
+			// 
+			this.collabReconnectMenuItem.Name = "collabReconnectMenuItem";
+			this.collabReconnectMenuItem.Size = new System.Drawing.Size(159, 22);
+			this.collabReconnectMenuItem.Text = "Reconnect";
+			this.collabReconnectMenuItem.Click += CollabReconnectMenuItem_Click;
+			// 
+			// collabSessionMenuItem
+			// 
+			this.collabSessionMenuItem.Name = "collabSessionMenuItem";
+			this.collabSessionMenuItem.Size = new System.Drawing.Size(159, 22);
+			this.collabSessionMenuItem.Text = "Session...";
+			this.collabSessionMenuItem.Click += CollabSessionMenuItem_Click;
+			// 
+			// collabUsersMenuItem
+			// 
+			this.collabUsersMenuItem.Name = "collabUsersMenuItem";
+			this.collabUsersMenuItem.Size = new System.Drawing.Size(159, 22);
+			this.collabUsersMenuItem.Text = "Users...";
+			this.collabUsersMenuItem.Click += CollabUsersMenuItem_Click;
 			// 
 			// toolStripStatusLabel1
 			// 
@@ -1811,6 +1893,15 @@
 		private System.Windows.Forms.ToolStripMenuItem removeNotOrthogonalWiresToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel15;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelTimeSpent;
+		private System.Windows.Forms.ToolStripStatusLabel collabStatusLabel;
+		private System.Windows.Forms.ToolStripStatusLabel collabStatusIndicator;
+		private System.Windows.Forms.ToolStripStatusLabel collabStatusMessage;
+		private System.Windows.Forms.ContextMenuStrip collabStatusContextMenu;
+		private System.Windows.Forms.ToolStripMenuItem collabConnectMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem collabDisconnectMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem collabReconnectMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem collabSessionMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem collabUsersMenuItem;
 		private System.ComponentModel.BackgroundWorker backgroundWorkerTimeSpent;
 		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;

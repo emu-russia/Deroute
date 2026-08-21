@@ -194,5 +194,29 @@
     <Setting Name="ViasNeighborRadius" Type="System.Single" Scope="User">
       <Value Profile="(Default)">1.5</Value>
     </Setting>
+    <Setting Name="CollabEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="CollabServerUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://localhost:5000</Value>
+    </Setting>
+    <Setting Name="CollabApiKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)"></Value>
+    </Setting>
+    <Setting Name="CollabUserId" Type="System.String" Scope="User">
+      <Value Profile="(Default)"></Value>
+    </Setting>
+    <Setting Name="CollabSessionId" Type="System.String" Scope="User">
+      <Value Profile="(Default)"></Value>
+    </Setting>
+    <Setting Name="CollabUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)"></Value>
+    </Setting>
+    <Setting Name="CollabReconnectDelayMs" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2000</Value>
+    </Setting>
+    <Setting Name="CollabMaxReconnectAttempts" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

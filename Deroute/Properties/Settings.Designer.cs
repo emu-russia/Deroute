@@ -793,5 +793,125 @@ namespace DerouteSharp.Properties {
                 this["ViasNeighborRadius"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool CollabEnabled
+        {
+            get
+            {
+                return ((bool)(this["CollabEnabled"]));
+            }
+            set
+            {
+                this["CollabEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:5000")]
+        public string CollabServerUrl
+        {
+            get
+            {
+                return ((string)(this["CollabServerUrl"]));
+            }
+            set
+            {
+                this["CollabServerUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CollabApiKey
+        {
+            get
+            {
+                return ((string)(this["CollabApiKey"]));
+            }
+            set
+            {
+                this["CollabApiKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CollabUserId
+        {
+            get
+            {
+                return ((string)(this["CollabUserId"]));
+            }
+            set
+            {
+                this["CollabUserId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CollabSessionId
+        {
+            get
+            {
+                return ((string)(this["CollabSessionId"]));
+            }
+            set
+            {
+                this["CollabSessionId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CollabUsername
+        {
+            get
+            {
+                return ((string)(this["CollabUsername"]));
+            }
+            set
+            {
+                this["CollabUsername"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
+        public int CollabReconnectDelayMs
+        {
+            get
+            {
+                return ((int)(this["CollabReconnectDelayMs"]));
+            }
+            set
+            {
+                this["CollabReconnectDelayMs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public int CollabMaxReconnectAttempts
+        {
+            get
+            {
+                return ((int)(this["CollabMaxReconnectAttempts"]));
+            }
+            set
+            {
+                this["CollabMaxReconnectAttempts"] = value;
+            }
+        }
     }
 }
